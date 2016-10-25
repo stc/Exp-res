@@ -14,7 +14,7 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-	ofSetLogLevel(OF_LOG_VERBOSE);
+	//ofSetLogLevel(OF_LOG_VERBOSE);
     
 	leap.open();
     
@@ -23,13 +23,10 @@ void ofApp::setup(){
     ofClear(255,255,255, 0);
     leapView.end();
 	cam.setOrientation(ofPoint(-20, 0, 0));
-	//glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_NORMALIZE);
-    
+	
     camWidth = 640;  // try to grab at this size.
     camHeight = 480;
     
-    //we can now get back a list of devices.
     vector<ofVideoDevice> devices = vidGrabber.listDevices();
     
     for(int i = 0; i < devices.size(); i++){
@@ -46,6 +43,11 @@ void ofApp::setup(){
     
     videoPixels.allocate(camWidth, camHeight, OF_PIXELS_RGB);
     videoTexture.allocate(videoPixels);
+    
+    mTextFont.setup("Quicksand-Bold.ttf", 1.0, 1024, false, 8, 2.0f);
+    
+    bTrain = new Button("TRAIN", ofVec2f(ofGetWidth()/2,ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFont);
+    
 }
 
 void ofApp::update(){
@@ -104,9 +106,11 @@ void ofApp::draw(){
     ofPopMatrix();
     
     ofSetColor(200);
-	ofDrawBitmapString("Connected? " + ofToString(leap.isConnected()), 20, 20);
+	mTextFont.draw("Leap connected: " + ofToString(leap.isConnected()), 12, 20, 20);
     
     drawLeapView(20,ofGetHeight()-220);
+    
+    bTrain->draw();
 }
 
 void ofApp::drawLeapView(int left, int top) {
@@ -143,7 +147,7 @@ void ofApp::drawLeapView(int left, int top) {
             ofDrawSphere(dip.x, dip.y, dip.z, 4);
             ofDrawSphere(tip.x, tip.y, tip.z, 4);
             
-            ofSetColor(255,255);
+            ofSetColor(255,100);
             ofSetLineWidth(10);
             ofDrawLine(mcp.x, mcp.y, mcp.z, pip.x, pip.y, pip.z);
             ofDrawLine(pip.x, pip.y, pip.z, dip.x, dip.y, dip.z);
@@ -163,7 +167,13 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){}
 void ofApp::mouseMoved(int x, int y ){}
 void ofApp::mouseDragged(int x, int y, int button){}
-void ofApp::mousePressed(int x, int y, int button){}
+void ofApp::mousePressed(int x, int y, int button){
+    string btn = "";
+    if(bTrain->over(ofVec2f(x,y)) != "" ) {
+        btn = bTrain->over(ofVec2f(x,y));
+        cout << btn << endl;
+    }
+}
 void ofApp::mouseReleased(int x, int y, int button){}
 void ofApp::windowResized(int w, int h){}
 void ofApp::gotMessage(ofMessage msg){}

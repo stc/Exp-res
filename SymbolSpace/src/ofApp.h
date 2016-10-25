@@ -4,8 +4,10 @@
 #include "ofxLeapMotion2.h"
 #include "ofxSodaLib.h"
 #include "ofxOsc.h"
+#include "ofxFontStash.h"
+#include "Button.h"
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
     
 public:
     void setup();
@@ -38,6 +40,12 @@ public:
     ofTexture videoTexture;
     int camWidth;
     int camHeight;
+    
+    Button * bTrain;
+    Button * bRun;
+    vector < Button * > bClasses;
+    
+    ofxFontStash mTextFont;
 
     ofxSodaLib soda;
     void audioReceived(float * input, int bufferSize, int nChannels);
