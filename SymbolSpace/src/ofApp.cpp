@@ -1,6 +1,16 @@
 #include "ofApp.h"
 
 void ofApp::setup(){
+    int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
+    ofSoundStreamSetup(2, 2, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+    
+    // give absolute paths to soundfiles
+    string path = "sounds";
+    ofDirectory dir(path);
+    string absPath = dir.getAbsolutePath();
+    
+    soda.init();
+    soda.createSampler("s1",absPath + "/s1.wav",10);
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
@@ -105,7 +115,7 @@ void ofApp::drawLeapView(int left, int top) {
     ofBackground(0);
     ofPushMatrix();
     ofRotate(90, 0, 0, 1);
-    ofSetColor(120);
+    ofSetColor(120,100);
     ofDrawGridPlane(800, 20, false);
     ofPopMatrix();
     
@@ -127,13 +137,13 @@ void ofApp::drawLeapView(int left, int top) {
             ofPoint dip = simpleHands[i].fingers[ fingerTypes[f] ].dip;  // distal
             ofPoint tip = simpleHands[i].fingers[ fingerTypes[f] ].tip;  // fingertip
             
-            ofSetColor(255,180);
+            ofSetColor(255);
             ofDrawSphere(mcp.x, mcp.y, mcp.z, 4);
             ofDrawSphere(pip.x, pip.y, pip.z, 4);
             ofDrawSphere(dip.x, dip.y, dip.z, 4);
             ofDrawSphere(tip.x, tip.y, tip.z, 4);
             
-            ofSetColor(255,100);
+            ofSetColor(255,255);
             ofSetLineWidth(10);
             ofDrawLine(mcp.x, mcp.y, mcp.z, pip.x, pip.y, pip.z);
             ofDrawLine(pip.x, pip.y, pip.z, dip.x, dip.y, dip.z);
@@ -145,7 +155,11 @@ void ofApp::drawLeapView(int left, int top) {
     leapView.draw(left, top);
 }
 
-void ofApp::keyPressed(int key){}
+void ofApp::keyPressed(int key){
+    if(key== ' ') {
+        soda.set("s1")->play();
+    }
+}
 void ofApp::keyReleased(int key){}
 void ofApp::mouseMoved(int x, int y ){}
 void ofApp::mouseDragged(int x, int y, int button){}
@@ -154,6 +168,16 @@ void ofApp::mouseReleased(int x, int y, int button){}
 void ofApp::windowResized(int w, int h){}
 void ofApp::gotMessage(ofMessage msg){}
 void ofApp::dragEvent(ofDragInfo dragInfo){}
+
+
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
+    soda.audioReceived(input, bufferSize, nChannels);
+}
+
+void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
+    soda.audioRequested(output, bufferSize, nChannels);
+}
+
 
 void ofApp::exit(){
     leap.close();

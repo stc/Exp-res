@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 #include "ofxLeapMotion2.h"
+#include "ofxSodaLib.h"
+#include "ofxOsc.h"
 
 class ofApp : public ofBaseApp{
     
@@ -23,7 +25,6 @@ public:
     
     void drawLeapView(int left, int top);
     
-    
 	ofxLeapMotion leap;
 	vector <ofxLeapMotionSimpleHand> simpleHands;
     
@@ -38,5 +39,7 @@ public:
     int camWidth;
     int camHeight;
 
-    
+    ofxSodaLib soda;
+    void audioReceived(float * input, int bufferSize, int nChannels);
+    void audioRequested(float * output, int bufferSize, int nChannels);
 };
