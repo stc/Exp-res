@@ -11,17 +11,34 @@ void ofApp::setup(){
     string absPath = dir.getAbsolutePath();
     
     soda.init();
-    soda.createFreezer("scale-0",absPath + "/cycle3.wav");
-    soda.createFreezer("scale-1",absPath + "/e.wav");
-    soda.createFreezer("scale-2",absPath + "/g.wav");
-    soda.createFreezer("scale-3",absPath + "/a.wav");
+    soda.createFreezer("scale-0",absPath + "/flute_d.wav");
+    soda.createFreezer("scale-1",absPath + "/flute_e.wav");
+    soda.createFreezer("scale-2",absPath + "/flute_g.wav");
+    soda.createFreezer("scale-3",absPath + "/flute_a.wav");
+    
+    soda.createSampler("speech0", absPath + "/toop_01.wav", 1);
+    soda.createSampler("speech1", absPath + "/toop_02.wav", 1);
+    soda.createSampler("speech2", absPath + "/toop_03.wav", 1);
+    soda.createSampler("speech3", absPath + "/toop_04.wav", 1);
+    soda.createSampler("speech4", absPath + "/toop_05.wav", 1);
+    soda.createSampler("speech5", absPath + "/toop_06.wav", 1);
+    soda.createSampler("speech6", absPath + "/toop_07.wav", 1);
+    soda.createSampler("speech7", absPath + "/toop_08.wav", 1);
+    soda.createSampler("speech8", absPath + "/toop_09.wav", 1);
+    soda.createSampler("speech9", absPath + "/toop_10.wav", 1);
+    soda.createSampler("speech10", absPath + "/toop_11.wav", 1);
+    soda.createSampler("speech11", absPath + "/toop_12.wav", 1);
+    
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
 	
     // we have 15 features from leap
     for(int i=0; i<15; i++) features.push_back(0);
-    
     
 	leap.open();
     
@@ -135,7 +152,23 @@ void ofApp::update(){
 
 void ofApp::draw(){
     
-    soda.set("scale-0")->pan(ofGetMouseX() / float(ofGetWidth()))->shift(ofGetMouseX() / float(ofGetWidth()))->play();
+    // testing
+    //soda.set("scale-0")->pan(ofGetMouseX() / float(ofGetWidth()))->shift(ofGetMouseX() / float(ofGetWidth()))->play();
+    float v = mouseX / float(ofGetWidth());
+    
+    if(speeches[0]->play(v)) {
+        soda.set("speech0")->depth(0.01)->pan(0)->play();
+    }
+    if(speeches[1]->play(v)) {
+        soda.set("speech1")->depth(0.01)->pan(0.25)->play();
+    }
+    if(speeches[2]->play(v)) {
+        soda.set("speech3")->depth(0.01)->pan(0.75)->play();
+    }
+    if(speeches[3]->play(v)) {
+        soda.set("speech2")->depth(0.01)->pan(1)->play();
+    }
+
     ofBackgroundGradient(ofColor(0), ofColor(30, 30, 30),  OF_GRADIENT_BAR);
     ofPushMatrix();
     ofSetRectMode( OF_RECTMODE_CENTER );
@@ -285,17 +318,33 @@ void ofApp::receiveOSC() {
             if(m.getArgAsInt(0) < 5) {
                 mClassificationResult = ofClamp(m.getArgAsInt(0) - 1,0,4);
                 
-                if(mClassificationResult == 0) {
-                    soda.set("scale-0")->shift(mTrackingResult)->depth(0.3)->play();
-                }
-                if(mClassificationResult == 1) {
-                    soda.set("scale-1")->shift(mTrackingResult)->pan(0.2)->play();
-                }
-                if(mClassificationResult == 2) {
-                    soda.set("scale-2")->shift(mTrackingResult)->pan(0.3)->play();
-                }
-                if(mClassificationResult == 3) {
-                    soda.set("scale-3")->shift(mTrackingResult)->play();
+                if(!mPlaySpeech) {
+                    if(mClassificationResult == 0) {
+                        soda.set("scale-0")->shift(mTrackingResult)->depth(0.3)->play();
+                    }
+                    if(mClassificationResult == 1) {
+                        soda.set("scale-1")->shift(mTrackingResult)->pan(0.2)->play();
+                    }
+                    if(mClassificationResult == 2) {
+                        soda.set("scale-2")->shift(mTrackingResult)->pan(0.3)->play();
+                    }
+                    if(mClassificationResult == 3) {
+                        soda.set("scale-3")->shift(mTrackingResult)->play();
+                    }
+                } else {
+                    if(mClassificationResult == 0) {
+                        //
+                    }
+                    if(mClassificationResult == 1) {
+                        //
+                    }
+                    if(mClassificationResult == 2) {
+                        //
+                    }
+                    if(mClassificationResult == 3) {
+                        //
+                    }
+
                 }
                 cout << "received class is: " << receiveString << endl;
             }

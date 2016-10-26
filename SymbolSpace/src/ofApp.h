@@ -5,6 +5,7 @@
 #include "ofxSodaLib.h"
 #include "ofxOsc.h"
 #include "Button.h"
+#include "Speech.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -50,8 +51,10 @@ public:
     
     // received from wekinator
     float mTrackingResult = 0;
-    
     int mClassificationResult = 0;
+    
+    bool mPlaySpeech = true;
+    vector < Speech *> speeches;
     
     // sent to wekinator
     vector< float > features;
