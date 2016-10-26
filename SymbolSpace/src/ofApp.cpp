@@ -11,7 +11,10 @@ void ofApp::setup(){
     string absPath = dir.getAbsolutePath();
     
     soda.init();
-    soda.createSampler("s1",absPath + "/s1.wav",10);
+    soda.createFreezer("scale-0",absPath + "/cycle3.wav");
+    soda.createFreezer("scale-1",absPath + "/e.wav");
+    soda.createFreezer("scale-2",absPath + "/g.wav");
+    soda.createFreezer("scale-3",absPath + "/a.wav");
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
@@ -131,6 +134,8 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
+    
+    soda.set("scale-0")->pan(ofGetMouseX() / float(ofGetWidth()))->shift(ofGetMouseX() / float(ofGetWidth()))->play();
     ofBackgroundGradient(ofColor(0), ofColor(30, 30, 30),  OF_GRADIENT_BAR);
     ofPushMatrix();
     ofSetRectMode( OF_RECTMODE_CENTER );
@@ -279,6 +284,19 @@ void ofApp::receiveOSC() {
             receiveString = ofToString(m.getArgAsInt(0));
             if(m.getArgAsInt(0) < 5) {
                 mClassificationResult = ofClamp(m.getArgAsInt(0) - 1,0,4);
+                
+                if(mClassificationResult == 0) {
+                    soda.set("scale-0")->shift(mTrackingResult)->depth(0.3)->play();
+                }
+                if(mClassificationResult == 1) {
+                    soda.set("scale-1")->shift(mTrackingResult)->pan(0.2)->play();
+                }
+                if(mClassificationResult == 2) {
+                    soda.set("scale-2")->shift(mTrackingResult)->pan(0.3)->play();
+                }
+                if(mClassificationResult == 3) {
+                    soda.set("scale-3")->shift(mTrackingResult)->play();
+                }
                 cout << "received class is: " << receiveString << endl;
             }
         } else{
