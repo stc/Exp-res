@@ -3,6 +3,7 @@
 void ofApp::setup(){
     int ticksPerBuffer = 8; // 8 * 64 = buffer len of 512
     ofSoundStreamSetup(2, 2, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+    ofSetCircleResolution(120);
     
     // give absolute paths to soundfiles
     string path = "sounds";
@@ -14,7 +15,10 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-	//ofSetLogLevel(OF_LOG_VERBOSE);
+	
+    // we have 15 features from leap
+    for(int i=0; i<15; i++) features.push_back(0);
+    
     
 	leap.open();
     
@@ -44,10 +48,41 @@ void ofApp::setup(){
     videoPixels.allocate(camWidth, camHeight, OF_PIXELS_RGB);
     videoTexture.allocate(videoPixels);
     
-    mTextFont.setup("Quicksand-Bold.ttf", 1.0, 1024, false, 8, 2.0f);
+    ofImage img;
+    img.load("assets/symbol_001.png");
+    imgClasses.push_back(img);
+    img.clear();
+    img.load("assets/symbol_002.png");
+    imgClasses.push_back(img);
+    img.clear();
+    img.load("assets/symbol_003.png");
+    imgClasses.push_back(img);
+    img.clear();
+    img.load("assets/symbol_004.png");
+    imgClasses.push_back(img);
+    img.clear();
+    img.load("assets/symbol_005.png");
+    imgClasses.push_back(img);
     
-    bTrain = new Button("TRAIN", ofVec2f(ofGetWidth()/2,ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFont);
+    mTextFontSmall.load("assets/Quicksand-Bold.ttf", 10);
+    mTextFontLarge.load("assets/Quicksand-Regular.ttf", 12);
+    bRun = new Button("RUN", ofVec2f(ofGetWidth()/2 - 2 * ofGetHeight()/10,ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFontLarge);
+    bTrain = new Button("TRAIN", ofVec2f(ofGetWidth()/2 - ofGetHeight()/20,ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFontLarge);
+    bRecord = new Button("RECORD", ofVec2f(ofGetWidth()-ofGetWidth()/3, ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFontLarge);
+    bStopRecord = new Button("STOP", ofVec2f(ofGetWidth()-ofGetWidth()/3 + ofGetHeight()/10 + ofGetHeight()/8, ofGetHeight()-ofGetHeight()/5), ofGetHeight()/10, mTextFontLarge);
     
+    oscSendingPort = 6448;
+    oscInputAddress = "/wek/inputs";
+    oscStartRecording = "/wekinator/control/startRecording";
+    oscStopRecording = "/wekinator/control/stopRecording";
+    oscStartRunning = "/wekinator/control/startRunning";
+    oscStopRunning = "/wekinator/control/stopRunning";
+    oscStartTraining = "/wekinator/control/train";
+    
+    oscHost = "localhost";
+    sender.setup(oscHost, oscSendingPort);
+    oscReceivingPort = 12000;
+    receiver.setup(oscReceivingPort);
 }
 
 void ofApp::update(){
@@ -61,9 +96,9 @@ void ofApp::update(){
     for (int i = 0; i < videoPixels.size(); i+=3){
         int r = videoPixels[i+0], g = videoPixels[i+1], b = videoPixels[i+2];
         unsigned char avg = (r + g + b) / 3;
-        videoPixels[i+0] = avg;
-        videoPixels[i+1] = avg;
-        videoPixels[i+2] = avg;
+        videoPixels[i+0] = avg * 0.5;
+        videoPixels[i+1] = avg * 0.5;
+        videoPixels[i+2] = avg * 0.5;
     }  
 
     videoTexture.loadData(videoPixels);
@@ -92,11 +127,11 @@ void ofApp::update(){
         }
     }
     leap.markFrameAsOld();
+    receiveOSC();
 }
 
 void ofApp::draw(){
     ofBackgroundGradient(ofColor(0), ofColor(30, 30, 30),  OF_GRADIENT_BAR);
-    
     ofPushMatrix();
     ofSetRectMode( OF_RECTMODE_CENTER );
     ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
@@ -105,12 +140,34 @@ void ofApp::draw(){
     ofSetRectMode( OF_RECTMODE_CORNER );
     ofPopMatrix();
     
-    ofSetColor(200);
-	mTextFont.draw("Leap connected: " + ofToString(leap.isConnected()), 12, 20, 20);
+    ofSetColor(255);
+	mTextFontSmall.drawString("Leap connected: " + ofToString(leap.isConnected()),20, 20);
+    mTextFontSmall.drawString("Current Symbol (classification):",20, 40);
+    mTextFontSmall.drawString("Current position (tracking):", ofGetWidth()/3, 40);
+    mTextFontSmall.drawString("States", ofGetWidth()/2 - 2 * ofGetHeight()/10, ofGetHeight()-ofGetHeight()/4);
+    mTextFontSmall.drawString("Record Features", ofGetWidth()-ofGetWidth()/3, ofGetHeight()-ofGetHeight()/4);
     
+    imgClasses[mClassificationResult].draw(20, 60, 200, 200);
+    
+    ofSetColor(255,100);
+    ofDrawLine(ofGetWidth()/3, 150, ofGetWidth()/3 + ofGetWidth()/3, 150);
+    ofSetColor(255);
+    ofDrawCircle(ofGetWidth()/3 + ofMap(mTrackingResult,0,1,0, ofGetWidth()/3), 150, 10);
+    
+    ofSetColor(255);
+    ofDrawLine(ofGetWidth()/2 - 2 * ofGetHeight()/10,ofGetHeight()-ofGetHeight()/4.5, ofGetWidth(), ofGetHeight()-ofGetHeight()/4.5);
+    ofDrawRectangle(19,ofGetHeight()-221,302,202);
+    ofSetColor(255);
     drawLeapView(20,ofGetHeight()-220);
     
     bTrain->draw();
+    bRun->draw();
+    bRecord->draw();
+    bStopRecord->draw();
+    
+    if(ofGetFrameNum()%3 ==0) {
+        sendOSC();
+    }
 }
 
 void ofApp::drawLeapView(int left, int top) {
@@ -147,6 +204,43 @@ void ofApp::drawLeapView(int left, int top) {
             ofDrawSphere(dip.x, dip.y, dip.z, 4);
             ofDrawSphere(tip.x, tip.y, tip.z, 4);
             
+            // extract feature from left hand only
+            if(simpleHands[i].isLeft) {
+                switch (f) {
+                    case 0:
+                        features[0] = tip.x;
+                        features[1] = tip.y;
+                        features[2] = tip.z;
+                        break;
+                    case 1:
+                        features[3] = tip.x;
+                        features[4] = tip.y;
+                        features[5] = tip.z;
+                        break;
+                    case 2:
+                        features[6] = tip.x;
+                        features[7] = tip.y;
+                        features[8] = tip.z;
+                        break;
+                    case 3:
+                        features[9] = tip.x;
+                        features[10] = tip.y;
+                        features[11] = tip.z;
+                        break;
+                    case 4:
+                        features[12] = tip.x;
+                        features[13] = tip.y;
+                        features[14] = tip.z;
+                        break;
+                }
+            }
+            if(!simpleHands[i].isLeft) {
+                // index finger
+                if(f == 1) {
+                    mTrackingResult = ofMap(tip.x,0,100,0,1,true);
+                }
+            }
+            
             ofSetColor(255,100);
             ofSetLineWidth(10);
             ofDrawLine(mcp.x, mcp.y, mcp.z, pip.x, pip.y, pip.z);
@@ -157,6 +251,61 @@ void ofApp::drawLeapView(int left, int top) {
     cam.end();
     leapView.end();
     leapView.draw(left, top);
+}
+
+void ofApp::sendOSC() {
+    if(fingersFound.size() > 0) {
+        msg.clear();
+        msg.setAddress(oscInputAddress);
+        for (int i=0; i<features.size(); i++) {
+            msg.addFloatArg(features[i]);
+        }
+        sender.sendMessage(msg);
+    } else {
+        msg.clear();
+        msg.setAddress(oscInputAddress);
+        for (int i=0; i<features.size(); i++) {
+            msg.addFloatArg(0.);
+        }
+        sender.sendMessage(msg);
+    }
+}
+
+void ofApp::receiveOSC() {
+    while(receiver.hasWaitingMessages()){
+        ofxOscMessage m;
+        receiver.getNextMessage(&m);
+        if(m.getAddress() == "/wek/outputs"){
+            receiveString = ofToString(m.getArgAsInt(0));
+            if(m.getArgAsInt(0) < 5) {
+                mClassificationResult = ofClamp(m.getArgAsInt(0) - 1,0,4);
+                cout << "received class is: " << receiveString << endl;
+            }
+        } else{
+            // unrecognized message: display on the bottom of the screen
+            receiveString = m.getAddress();
+            receiveString += ": ";
+            for(int i = 0; i < m.getNumArgs(); i++){
+                // get the argument type
+                receiveString += m.getArgTypeName(i);
+                receiveString += ":";
+                // display the argument - make sure we get the right type
+                if(m.getArgType(i) == OFXOSC_TYPE_INT32){
+                    receiveString += ofToString(m.getArgAsInt32(i));
+                }
+                else if(m.getArgType(i) == OFXOSC_TYPE_FLOAT){
+                    receiveString += ofToString(m.getArgAsFloat(i));
+                }
+                else if(m.getArgType(i) == OFXOSC_TYPE_STRING){
+                    receiveString += m.getArgAsString(i);
+                }
+                else{
+                    receiveString += "unknown";
+                }
+            }
+            cout << receiveString << endl;
+        }
+    }
 }
 
 void ofApp::keyPressed(int key){
@@ -171,7 +320,39 @@ void ofApp::mousePressed(int x, int y, int button){
     string btn = "";
     if(bTrain->over(ofVec2f(x,y)) != "" ) {
         btn = bTrain->over(ofVec2f(x,y));
+    }
+    if(bRun->over(ofVec2f(x,y)) != "" ) {
+        btn = bRun->over(ofVec2f(x,y));
+    }
+    if(bRecord->over(ofVec2f(x,y)) != "" ) {
+        btn = bRecord->over(ofVec2f(x,y));
+    }
+    if(bStopRecord->over(ofVec2f(x,y)) != "" ) {
+        btn = bStopRecord->over(ofVec2f(x,y));
+    }
+    
+    if(btn != "") {
         cout << btn << endl;
+        if(btn == "RUN") {
+            msg.clear();
+            msg.setAddress(oscStartRunning);
+            sender.sendMessage(msg);
+        }
+        if(btn == "TRAIN") {
+            msg.clear();
+            msg.setAddress(oscStartTraining);
+            sender.sendMessage(msg);
+        }
+        if(btn == "RECORD") {
+            msg.clear();
+            msg.setAddress(oscStartRecording);
+            sender.sendMessage(msg);
+        }
+        if(btn == "STOP") {
+            msg.clear();
+            msg.setAddress(oscStopRecording);
+            sender.sendMessage(msg);
+        }
     }
 }
 void ofApp::mouseReleased(int x, int y, int button){}
