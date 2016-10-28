@@ -33,12 +33,22 @@ void ofApp::setup(){
     speeches.push_back(new Speech(0.4));
     speeches.push_back(new Speech(0.6));
     speeches.push_back(new Speech(0.8));
-    
+
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
+
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
+
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
 	
-    // we have 15 features from leap
-    for(int i=0; i<15; i++) features.push_back(0);
+    // we have 18 features from leap
+    for(int i=0; i<36; i++) features.push_back(0);
     
 	leap.open();
     
@@ -151,24 +161,6 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
-    
-    // testing
-    //soda.set("scale-0")->pan(ofGetMouseX() / float(ofGetWidth()))->shift(ofGetMouseX() / float(ofGetWidth()))->play();
-    float v = mouseX / float(ofGetWidth());
-    
-    if(speeches[0]->play(v)) {
-        soda.set("speech0")->depth(0.01)->pan(0)->play();
-    }
-    if(speeches[1]->play(v)) {
-        soda.set("speech1")->depth(0.01)->pan(0.25)->play();
-    }
-    if(speeches[2]->play(v)) {
-        soda.set("speech3")->depth(0.01)->pan(0.75)->play();
-    }
-    if(speeches[3]->play(v)) {
-        soda.set("speech2")->depth(0.01)->pan(1)->play();
-    }
-
     ofBackgroundGradient(ofColor(0), ofColor(30, 30, 30),  OF_GRADIENT_BAR);
     ofPushMatrix();
     ofSetRectMode( OF_RECTMODE_CENTER );
@@ -243,39 +235,82 @@ void ofApp::drawLeapView(int left, int top) {
             ofDrawSphere(tip.x, tip.y, tip.z, 4);
             
             // extract feature from left hand only
+            // for now, extracting thumb, index & pinky, tip & metacarpal data only
+            // since they make more sense in our feature space
+            
             if(simpleHands[i].isLeft) {
                 switch (f) {
                     case 0:
                         features[0] = tip.x;
                         features[1] = tip.y;
                         features[2] = tip.z;
+                        features[3] = mcp.x;
+                        features[4] = mcp.y;
+                        features[5] = mcp.z;
                         break;
                     case 1:
-                        features[3] = tip.x;
-                        features[4] = tip.y;
-                        features[5] = tip.z;
+                        features[6]  = tip.x;
+                        features[7]  = tip.y;
+                        features[8]  = tip.z;
+                        features[9]  = mcp.x;
+                        features[10] = mcp.y;
+                        features[11] = mcp.z;
                         break;
                     case 2:
-                        features[6] = tip.x;
-                        features[7] = tip.y;
-                        features[8] = tip.z;
                         break;
                     case 3:
-                        features[9] = tip.x;
-                        features[10] = tip.y;
-                        features[11] = tip.z;
                         break;
                     case 4:
                         features[12] = tip.x;
                         features[13] = tip.y;
                         features[14] = tip.z;
+                        features[15] = mcp.x;
+                        features[16] = mcp.y;
+                        features[17] = mcp.z;
                         break;
                 }
             }
-            if(!simpleHands[i].isLeft) {
-                // index finger
-                if(f == 1) {
-                    mTrackingResult = ofMap(tip.x,0,100,0,1,true);
+            if(!mPlaySpeech) {
+                // use simple tracking, if in music mode
+                if(!simpleHands[i].isLeft) {
+                    // index finger
+                    if(f == 1) {
+                        mTrackingResult = ofMap(tip.x,0,100,0,1,true);
+                    }
+                }
+            } else {
+                // use classes from other hand, too if in speech mode
+                if(!simpleHands[i].isLeft) {
+                    switch (f) {
+                        case 0:
+                            features[18] = tip.x;
+                            features[19] = tip.y;
+                            features[20] = tip.z;
+                            features[21] = mcp.x;
+                            features[22] = mcp.y;
+                            features[23] = mcp.z;
+                            break;
+                        case 1:
+                            features[24]  = tip.x;
+                            features[25]  = tip.y;
+                            features[26]  = tip.z;
+                            features[27]  = mcp.x;
+                            features[28] = mcp.y;
+                            features[29] = mcp.z;
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            features[30] = tip.x;
+                            features[31] = tip.y;
+                            features[32] = tip.z;
+                            features[33] = mcp.x;
+                            features[34] = mcp.y;
+                            features[35] = mcp.z;
+                            break;
+                    }
                 }
             }
             
@@ -332,21 +367,56 @@ void ofApp::receiveOSC() {
                         soda.set("scale-3")->shift(mTrackingResult)->play();
                     }
                 } else {
+                    mTrackingResult = (m.getArgAsInt(1) - 1) / 4.;
                     if(mClassificationResult == 0) {
-                        //
+                        if(speeches[0]->play(mTrackingResult)) {
+                            soda.set("speech0")->depth(0.01)->pan(0.1)->play();
+                        }
+                        if(speeches[1]->play(mTrackingResult)) {
+                            soda.set("speech1")->depth(0.01)->pan(0.3)->play();
+                        }
+                        if(speeches[2]->play(mTrackingResult)) {
+                            soda.set("speech2")->depth(0.01)->pan(0.6)->play();
+                        }
+                        if(speeches[3]->play(mTrackingResult)) {
+                            soda.set("speech3")->depth(0.01)->pan(0.9)->play();
+                        }
                     }
                     if(mClassificationResult == 1) {
-                        //
+                        if(speeches[4]->play(mTrackingResult)) {
+                            soda.set("speech4")->depth(0.01)->pan(0.1)->play();
+                        }
+                        if(speeches[5]->play(mTrackingResult)) {
+                            soda.set("speech5")->depth(0.01)->pan(0.3)->play();
+                        }
+                        if(speeches[6]->play(mTrackingResult)) {
+                            soda.set("speech6")->depth(0.01)->pan(0.6)->play();
+                        }
+                        if(speeches[7]->play(mTrackingResult)) {
+                            soda.set("speech7")->depth(0.01)->pan(0.9)->play();
+                        }
+
                     }
                     if(mClassificationResult == 2) {
-                        //
+                        if(speeches[8]->play(mTrackingResult)) {
+                            soda.set("speech8")->depth(0.01)->pan(0.1)->play();
+                        }
+                        if(speeches[9]->play(mTrackingResult)) {
+                            soda.set("speech9")->depth(0.01)->pan(0.3)->play();
+                        }
+                        if(speeches[10]->play(mTrackingResult)) {
+                            soda.set("speech10")->depth(0.01)->pan(0.6)->play();
+                        }
+                        if(speeches[11]->play(mTrackingResult)) {
+                            soda.set("speech11")->depth(0.01)->pan(0.9)->play();
+                        }
                     }
                     if(mClassificationResult == 3) {
                         //
                     }
-
                 }
-                cout << "received class is: " << receiveString << endl;
+                //cout << "received class is: " << receiveString << endl;
+                cout << "right hand: " << mTrackingResult/4. << endl;
             }
         } else{
             // unrecognized message: display on the bottom of the screen
