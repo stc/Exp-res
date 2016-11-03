@@ -53,7 +53,7 @@ public:
     float mTrackingResult = 0;
     int mClassificationResult = 0;
     
-    bool mPlaySpeech = true;
+    bool mPlaySpeech = false;
     vector < Speech *> speeches;
     
     // sent to wekinator
