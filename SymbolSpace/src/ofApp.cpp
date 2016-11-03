@@ -11,10 +11,10 @@ void ofApp::setup(){
     string absPath = dir.getAbsolutePath();
     
     soda.init();
-    //soda.createFreezer("scale-0",absPath + "/flute_d.wav");
-    //soda.createFreezer("scale-1",absPath + "/flute_e.wav");
-    //soda.createFreezer("scale-2",absPath + "/flute_g.wav");
-    //soda.createFreezer("scale-3",absPath + "/flute_a.wav");
+    soda.createFreezer("scale-0",absPath + "/flute_d.wav");
+    soda.createFreezer("scale-1",absPath + "/flute_e.wav");
+    soda.createFreezer("scale-2",absPath + "/flute_g.wav");
+    soda.createFreezer("scale-3",absPath + "/flute_a.wav");
     
     if(mPlaySpeech) {
     soda.createSampler("speech0", absPath + "/toop_01.wav", 1);
