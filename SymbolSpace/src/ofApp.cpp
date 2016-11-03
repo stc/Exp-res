@@ -11,11 +11,12 @@ void ofApp::setup(){
     string absPath = dir.getAbsolutePath();
     
     soda.init();
-    soda.createFreezer("scale-0",absPath + "/flute_d.wav");
-    soda.createFreezer("scale-1",absPath + "/flute_e.wav");
-    soda.createFreezer("scale-2",absPath + "/flute_g.wav");
-    soda.createFreezer("scale-3",absPath + "/flute_a.wav");
+    //soda.createFreezer("scale-0",absPath + "/flute_d.wav");
+    //soda.createFreezer("scale-1",absPath + "/flute_e.wav");
+    //soda.createFreezer("scale-2",absPath + "/flute_g.wav");
+    //soda.createFreezer("scale-3",absPath + "/flute_a.wav");
     
+    if(mPlaySpeech) {
     soda.createSampler("speech0", absPath + "/toop_01.wav", 1);
     soda.createSampler("speech1", absPath + "/toop_02.wav", 1);
     soda.createSampler("speech2", absPath + "/toop_03.wav", 1);
@@ -28,17 +29,26 @@ void ofApp::setup(){
     soda.createSampler("speech9", absPath + "/toop_10.wav", 1);
     soda.createSampler("speech10", absPath + "/toop_11.wav", 1);
     soda.createSampler("speech11", absPath + "/toop_12.wav", 1);
+    soda.createSampler("speech12", absPath + "/toop_13.wav", 1);
+    soda.createSampler("speech13", absPath + "/toop_14.wav", 1);
+    soda.createSampler("speech14", absPath + "/toop_15.wav", 1);
+    soda.createSampler("speech15", absPath + "/toop_16.wav", 1);
+    }
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
+
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
+
+    speeches.push_back(new Speech(0.2));
+    speeches.push_back(new Speech(0.4));
+    speeches.push_back(new Speech(0.6));
+    speeches.push_back(new Speech(0.8));
     
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-
     speeches.push_back(new Speech(0.2));
     speeches.push_back(new Speech(0.4));
     speeches.push_back(new Speech(0.6));
@@ -173,11 +183,11 @@ void ofApp::draw(){
     ofSetColor(255);
 	mTextFontSmall.drawString("Leap connected: " + ofToString(leap.isConnected()),20, 20);
     mTextFontSmall.drawString("Current Symbol (classification):",20, 40);
-    mTextFontSmall.drawString("Current position (tracking):", ofGetWidth()/3, 40);
+    mTextFontSmall.drawString("Current position (classification):", ofGetWidth()/3, 40);
     mTextFontSmall.drawString("States", ofGetWidth()/2 - 2 * ofGetHeight()/10, ofGetHeight()-ofGetHeight()/4);
     mTextFontSmall.drawString("Record Features", ofGetWidth()-ofGetWidth()/3, ofGetHeight()-ofGetHeight()/4);
     
-    imgClasses[mClassificationResult].draw(20, 60, 200, 200);
+    imgClasses[mClassificationResult].draw(20, 60, 200, 100);
     
     ofSetColor(255,100);
     ofDrawLine(ofGetWidth()/3, 150, ofGetWidth()/3 + ofGetWidth()/3, 150);
@@ -350,24 +360,59 @@ void ofApp::receiveOSC() {
         receiver.getNextMessage(&m);
         if(m.getAddress() == "/wek/outputs"){
             receiveString = ofToString(m.getArgAsInt(0));
+            cout << m.getArgAsInt(1) << endl;
             if(m.getArgAsInt(0) < 5) {
                 mClassificationResult = ofClamp(m.getArgAsInt(0) - 1,0,4);
                 
                 if(!mPlaySpeech) {
-                    if(mClassificationResult == 0) {
-                        soda.set("scale-0")->shift(mTrackingResult)->depth(0.3)->play();
-                    }
                     if(mClassificationResult == 1) {
-                        soda.set("scale-1")->shift(mTrackingResult)->pan(0.2)->play();
+                        soda.set("scale-0")->volume(1)->shift(mTrackingResult)->depth(0.3)->play();
+                        soda.set("scale-1")->volume(0.2)->play();
+                        soda.set("scale-2")->volume(0.2)->play();
+                        soda.set("scale-3")->volume(0.2)->play();
                     }
                     if(mClassificationResult == 2) {
-                        soda.set("scale-2")->shift(mTrackingResult)->pan(0.3)->play();
+                        soda.set("scale-1")->volume(1)->shift(mTrackingResult)->pan(0.2)->play();
+                        soda.set("scale-0")->volume(0.2)->play();
+                        soda.set("scale-2")->volume(0.2)->play();
+                        soda.set("scale-3")->volume(0.2)->play();
                     }
                     if(mClassificationResult == 3) {
-                        soda.set("scale-3")->shift(mTrackingResult)->play();
+                        soda.set("scale-2")->volume(1)->shift(mTrackingResult)->pan(0.3)->play();
+                        soda.set("scale-0")->volume(0.2)->play();
+                        soda.set("scale-1")->volume(0.2)->play();
+                        soda.set("scale-3")->volume(0.2)->play();
+                    }
+                    if(mClassificationResult == 4) {
+                        soda.set("scale-3")->volume(1)->shift(mTrackingResult)->play();
+                        soda.set("scale-0")->volume(0.2)->play();
+                        soda.set("scale-1")->volume(0.2)->play();
+                        soda.set("scale-2")->volume(0.2)->play();
+                    }
+                    if(mClassificationResult == 0) {
+                        soda.set("scale-3")->volume(0)->play();
+                        soda.set("scale-0")->volume(0)->play();
+                        soda.set("scale-1")->volume(0)->play();
+                        soda.set("scale-2")->volume(0)->play();
                     }
                 } else {
-                    mTrackingResult = (m.getArgAsInt(1) - 1) / 4.;
+                    
+                    if(m.getArgAsInt(1) == 1) {
+                        mTrackingResult = 0.2;
+                    }
+                    if(m.getArgAsInt(1) == 2) {
+                        mTrackingResult = 0.4;
+                    }
+                    if(m.getArgAsInt(1) == 3) {
+                        mTrackingResult = 0.6;
+                    }
+                    if(m.getArgAsInt(1) == 4) {
+                        mTrackingResult = 0.8;
+                    }
+                    if(m.getArgAsInt(1) == 5) {
+                        mTrackingResult = 1;
+                    }
+                    
                     if(mClassificationResult == 0) {
                         if(speeches[0]->play(mTrackingResult)) {
                             soda.set("speech0")->depth(0.01)->pan(0.1)->play();
@@ -412,11 +457,23 @@ void ofApp::receiveOSC() {
                         }
                     }
                     if(mClassificationResult == 3) {
-                        //
+                        if(speeches[12]->play(mTrackingResult)) {
+                            soda.set("speech12")->depth(0.01)->pan(0.1)->play();
+                        }
+                        if(speeches[13]->play(mTrackingResult)) {
+                            soda.set("speech13")->depth(0.01)->pan(0.3)->play();
+                        }
+                        if(speeches[14]->play(mTrackingResult)) {
+                            soda.set("speech14")->depth(0.01)->pan(0.6)->play();
+                        }
+                        if(speeches[15]->play(mTrackingResult)) {
+                            soda.set("speech15")->depth(0.01)->pan(0.9)->play();
+                        }
+
                     }
                 }
                 //cout << "received class is: " << receiveString << endl;
-                cout << "right hand: " << mTrackingResult/4. << endl;
+                //cout << "right hand: " << mTrackingResult/4. << endl;
             }
         } else{
             // unrecognized message: display on the bottom of the screen
