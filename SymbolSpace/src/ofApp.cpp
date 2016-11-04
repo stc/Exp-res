@@ -16,44 +16,6 @@ void ofApp::setup(){
     soda.createFreezer("scale-2",absPath + "/flute_g.wav");
     soda.createFreezer("scale-3",absPath + "/flute_a.wav");
     
-    if(mPlaySpeech) {
-    soda.createSampler("speech0", absPath + "/toop_01.wav", 1);
-    soda.createSampler("speech1", absPath + "/toop_02.wav", 1);
-    soda.createSampler("speech2", absPath + "/toop_03.wav", 1);
-    soda.createSampler("speech3", absPath + "/toop_04.wav", 1);
-    soda.createSampler("speech4", absPath + "/toop_05.wav", 1);
-    soda.createSampler("speech5", absPath + "/toop_06.wav", 1);
-    soda.createSampler("speech6", absPath + "/toop_07.wav", 1);
-    soda.createSampler("speech7", absPath + "/toop_08.wav", 1);
-    soda.createSampler("speech8", absPath + "/toop_09.wav", 1);
-    soda.createSampler("speech9", absPath + "/toop_10.wav", 1);
-    soda.createSampler("speech10", absPath + "/toop_11.wav", 1);
-    soda.createSampler("speech11", absPath + "/toop_12.wav", 1);
-    soda.createSampler("speech12", absPath + "/toop_13.wav", 1);
-    soda.createSampler("speech13", absPath + "/toop_14.wav", 1);
-    soda.createSampler("speech14", absPath + "/toop_15.wav", 1);
-    soda.createSampler("speech15", absPath + "/toop_16.wav", 1);
-    }
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-    
-    speeches.push_back(new Speech(0.2));
-    speeches.push_back(new Speech(0.4));
-    speeches.push_back(new Speech(0.6));
-    speeches.push_back(new Speech(0.8));
-
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
 	
@@ -280,47 +242,10 @@ void ofApp::drawLeapView(int left, int top) {
                         break;
                 }
             }
-            if(!mPlaySpeech) {
-                // use simple tracking, if in music mode
-                if(!simpleHands[i].isLeft) {
-                    // index finger
-                    if(f == 1) {
-                        mTrackingResult = ofMap(tip.x,0,100,0,1,true);
-                    }
-                }
-            } else {
-                // use classes from other hand, too if in speech mode
-                if(!simpleHands[i].isLeft) {
-                    switch (f) {
-                        case 0:
-                            features[18] = tip.x;
-                            features[19] = tip.y;
-                            features[20] = tip.z;
-                            features[21] = mcp.x;
-                            features[22] = mcp.y;
-                            features[23] = mcp.z;
-                            break;
-                        case 1:
-                            features[24]  = tip.x;
-                            features[25]  = tip.y;
-                            features[26]  = tip.z;
-                            features[27]  = mcp.x;
-                            features[28] = mcp.y;
-                            features[29] = mcp.z;
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            break;
-                        case 4:
-                            features[30] = tip.x;
-                            features[31] = tip.y;
-                            features[32] = tip.z;
-                            features[33] = mcp.x;
-                            features[34] = mcp.y;
-                            features[35] = mcp.z;
-                            break;
-                    }
+            if(!simpleHands[i].isLeft) {
+                // index finger
+                if(f == 1) {
+                    mTrackingResult = ofMap(tip.x,0,100,0,1,true);
                 }
             }
             
@@ -364,7 +289,6 @@ void ofApp::receiveOSC() {
             if(m.getArgAsInt(0) < 5) {
                 mClassificationResult = ofClamp(m.getArgAsInt(0) - 1,0,4);
                 
-                if(!mPlaySpeech) {
                     if(mClassificationResult == 1) {
                         soda.set("scale-0")->volume(1)->shift(mTrackingResult)->depth(0.3)->play();
                         soda.set("scale-1")->volume(0.2)->play();
@@ -395,85 +319,6 @@ void ofApp::receiveOSC() {
                         soda.set("scale-1")->volume(0)->play();
                         soda.set("scale-2")->volume(0)->play();
                     }
-                } else {
-                    
-                    if(m.getArgAsInt(1) == 1) {
-                        mTrackingResult = 0.2;
-                    }
-                    if(m.getArgAsInt(1) == 2) {
-                        mTrackingResult = 0.4;
-                    }
-                    if(m.getArgAsInt(1) == 3) {
-                        mTrackingResult = 0.6;
-                    }
-                    if(m.getArgAsInt(1) == 4) {
-                        mTrackingResult = 0.8;
-                    }
-                    if(m.getArgAsInt(1) == 5) {
-                        mTrackingResult = 1;
-                    }
-                    
-                    if(mClassificationResult == 0) {
-                        if(speeches[0]->play(mTrackingResult)) {
-                            soda.set("speech0")->depth(0.01)->pan(0.1)->play();
-                        }
-                        if(speeches[1]->play(mTrackingResult)) {
-                            soda.set("speech1")->depth(0.01)->pan(0.3)->play();
-                        }
-                        if(speeches[2]->play(mTrackingResult)) {
-                            soda.set("speech2")->depth(0.01)->pan(0.6)->play();
-                        }
-                        if(speeches[3]->play(mTrackingResult)) {
-                            soda.set("speech3")->depth(0.01)->pan(0.9)->play();
-                        }
-                    }
-                    if(mClassificationResult == 1) {
-                        if(speeches[4]->play(mTrackingResult)) {
-                            soda.set("speech4")->depth(0.01)->pan(0.1)->play();
-                        }
-                        if(speeches[5]->play(mTrackingResult)) {
-                            soda.set("speech5")->depth(0.01)->pan(0.3)->play();
-                        }
-                        if(speeches[6]->play(mTrackingResult)) {
-                            soda.set("speech6")->depth(0.01)->pan(0.6)->play();
-                        }
-                        if(speeches[7]->play(mTrackingResult)) {
-                            soda.set("speech7")->depth(0.01)->pan(0.9)->play();
-                        }
-
-                    }
-                    if(mClassificationResult == 2) {
-                        if(speeches[8]->play(mTrackingResult)) {
-                            soda.set("speech8")->depth(0.01)->pan(0.1)->play();
-                        }
-                        if(speeches[9]->play(mTrackingResult)) {
-                            soda.set("speech9")->depth(0.01)->pan(0.3)->play();
-                        }
-                        if(speeches[10]->play(mTrackingResult)) {
-                            soda.set("speech10")->depth(0.01)->pan(0.6)->play();
-                        }
-                        if(speeches[11]->play(mTrackingResult)) {
-                            soda.set("speech11")->depth(0.01)->pan(0.9)->play();
-                        }
-                    }
-                    if(mClassificationResult == 3) {
-                        if(speeches[12]->play(mTrackingResult)) {
-                            soda.set("speech12")->depth(0.01)->pan(0.1)->play();
-                        }
-                        if(speeches[13]->play(mTrackingResult)) {
-                            soda.set("speech13")->depth(0.01)->pan(0.3)->play();
-                        }
-                        if(speeches[14]->play(mTrackingResult)) {
-                            soda.set("speech14")->depth(0.01)->pan(0.6)->play();
-                        }
-                        if(speeches[15]->play(mTrackingResult)) {
-                            soda.set("speech15")->depth(0.01)->pan(0.9)->play();
-                        }
-
-                    }
-                }
-                //cout << "received class is: " << receiveString << endl;
-                //cout << "right hand: " << mTrackingResult/4. << endl;
             }
         } else{
             // unrecognized message: display on the bottom of the screen
