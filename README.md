@@ -1,2 +1,2 @@
-# Machine-Learning-Courses
-Code & projects related to ML & Creativity courses. Work in progress, not well organized. Sorry
+# Experimental Research
+Code & projects related to Machine Learning, Interaction & Creativity Research. Work in progress, not well organized. Sorry
