@@ -1,0 +1,10 @@
+*/Makefile
+*.make
+*.plist
+*.xcconfig
+*.app
+*.pbxproj
+*.xcworkspacedata
+*.xcscheme
+*.xcodeproj
+**/node_modules/**
