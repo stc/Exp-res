@@ -1,5 +1,5 @@
 # Twitter Sentiment Visualization & Sonification
-This app fetches twitter streams based on a search query, and analyzing the mood of the extracted text using NLP (Sentiment analysis). Client app is made with Openframeworks, which communicating with NodeJS using Socket.io. Twitter Oauth and sentiment analysis is made within NodeJS.
+This app fetches twitter streams based on a search query, and analyzes the mood of the extracted text using NLP (Sentiment analysis). Client app is made with Openframeworks, which is communicating with NodeJS using Socket.io. Twitter Oauth and sentiment analysis is made within NodeJS.
 
 ... work in progress
 
