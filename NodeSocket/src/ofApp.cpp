@@ -5,7 +5,7 @@ void ofApp::setup(){
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "weekend";
+    searchPhrase = "work";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
@@ -13,6 +13,9 @@ void ofApp::setup(){
     
     ofAddListener(socketIO.notifyEvent, this, &ofApp::gotEvent);
     ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
+    
+    titleFont.load("lekton/Lekton-Italic.ttf", 36);
+    textFont.load("lekton/Lekton-Regular.ttf", 10);
 }
 
 void ofApp::onConnection() {
@@ -29,9 +32,11 @@ void ofApp::bindEvents() {
 void ofApp::update(){}
 
 void ofApp::draw(){
-    ofBackground(30);
-    ofSetColor(255);
-    ofDrawBitmapString(searchPhrase, 20, 20);
+    ofBackground(240);
+    
+    ofSetColor(30);
+    titleFont.drawString(searchPhrase,20,50);
+    ofSetColor(30,50);
     ofDrawLine(0,ofGetHeight()/2,ofGetWidth(),ofGetHeight()/2);
     
     float sum = 0;
@@ -40,20 +45,26 @@ void ofApp::draw(){
         sum+=dp->mMood;
     }
     avgMood = sum/datapoints.size();
-    ofSetColor(125,212,255, 100);
-    ofDrawLine(0,ofGetHeight() / 2 - avgMood * 20,ofGetWidth(), ofGetHeight() / 2 - avgMood * 20);
-    ofDrawBitmapString("Average mood: " + ofToString(avgMood), 20, 40);
     
     if(avgMood>0.5) {
-        ofDrawBitmapString("+", 20, 60);
+        ofSetColor(75,162,205,255);
+        titleFont.drawString("+", 20, 80);
     } else if(avgMood<-0.5) {
-        ofDrawBitmapString("-", 20, 60);
+        ofSetColor(205,90,6,255);
+        titleFont.drawString("-", 20, 80);
+    } else {
+        ofSetColor(30,100);
+        titleFont.drawString(".", 20, 80);
     }
+    textFont.drawString("Average mood: " + ofToString(avgMood), 60, 70);
+    ofDrawLine(0,ofGetHeight() / 2 - avgMood * 20,ofGetWidth(), ofGetHeight() / 2 - avgMood * 20);
+    
+
 }
 
 void ofApp::onServerEvent(ofxSocketIOData& data) {
     tCount++;
-    datapoints.push_back(new DataPoint(data.getStringValue("tText"), data.getStringValue("tDate"), data.getFloatValue("tMood"), ofVec2f(tCount * dSize, ofGetHeight() / 2), dSize));
+    datapoints.push_back(new DataPoint(data.getStringValue("tText"), data.getStringValue("tDate"), data.getFloatValue("tMood"), ofVec2f(tCount * dSize, ofGetHeight() / 2), dSize, textFont));
 }
 
 void ofApp::gotEvent(string& name) {

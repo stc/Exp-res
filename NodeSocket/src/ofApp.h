@@ -47,4 +47,7 @@ public:
     int tCount = 0;
     float avgMood = 0;
     int dSize = 5;
+    
+    ofTrueTypeFont titleFont;
+    ofTrueTypeFont textFont;
 };
