@@ -5,13 +5,12 @@ void ofApp::setup(){
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "oil";
+    searchPhrase = "weekend";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
     socketIO.setup(address, query);
     
-    //socketIO.setup(address);
     ofAddListener(socketIO.notifyEvent, this, &ofApp::gotEvent);
     ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
 }
@@ -59,6 +58,11 @@ void ofApp::onServerEvent(ofxSocketIOData& data) {
 
 void ofApp::gotEvent(string& name) {
     status = name;
+}
+
+void ofApp::exit() {
+    string s = "stopStream";
+    socketIO.emit(s);
 }
 
 void ofApp::keyPressed(int key){}

@@ -74,9 +74,15 @@ io.sockets.on('connection',
   				  socket.emit('tweet', datas);
   	      });
   	    }
-			});		
+			});	
+      tweeter.currentTwitStream = stream;	
 		});
 	});
+
+  socket.on('stopStream', function() {
+    tweeter.currentTwitStream.destroy();
+    console.log('Stopped twitter listener');
+  });  
 
 	socket.on('disconnect', function() {
   	console.log("Client has disconnected");
