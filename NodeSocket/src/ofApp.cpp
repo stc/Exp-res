@@ -5,7 +5,7 @@ void ofApp::setup(){
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "work";
+    searchPhrase = "time";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
