@@ -4,9 +4,12 @@
 #include "ofEvents.h"
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
+#include "ofxPd.h"
 #include "DataPoint.h"
 
-class ofApp : public ofBaseApp {
+using namespace pd;
+
+class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
 public:
     void setup();
     void update();
@@ -27,10 +30,9 @@ public:
     
     void gotEvent(string& name);
     void onServerEvent(ofxSocketIOData& data);
-    void onPingEvent(ofxSocketIOData& data);
-    void onNSPingEvent(ofxSocketIOData& data);
     
     ofxSocketIO socketIO;
+    void initSocketIO();
     
     bool isConnected;
     void onConnection();
@@ -45,9 +47,16 @@ public:
     vector< DataPoint * > datapoints;
     
     int tCount = 0;
+    int ptCount = 0;
     float avgMood = 0;
+    float cMood = 0;
     int dSize = 5;
     
     ofTrueTypeFont titleFont;
     ofTrueTypeFont textFont;
+    
+    ofxPd pd;
+    void print(const std::string& message);
+    void audioReceived(float * input, int bufferSize, int nChannels);
+    void audioRequested(float * output, int bufferSize, int nChannels);
 };

@@ -5,7 +5,7 @@ class DataPoint {
 public:
     string mText;
     string mDate;
-    float mMood;
+    float mMood = 0;
     ofVec2f mPos;
     int mSize;
     int mRange = 20;

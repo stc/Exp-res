@@ -1,19 +1,23 @@
 #include "ofApp.h"
 
 void ofApp::setup(){
-    isConnected = false;
-    address = "https://127.0.0.1:8080";
-    status = "not connected";
+    // sound
+    int ticksPerBuffer = 8;
+    int numInputs = 2;
+    ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
     
-    searchPhrase = "time";
+    if(!pd.init(2, numInputs, 44100, ticksPerBuffer, false)) {
+        OF_EXIT_APP(1);
+    }
     
-    std::map<std::string,std::string> query;
-    query["phrase"] = searchPhrase;
-    socketIO.setup(address, query);
+    pd.start();
+    pd.addReceiver(*this);
+    Patch patch = pd.openPatch("pd/main.pd");
+
+    // socket.io
+    //initSocketIO();
     
-    ofAddListener(socketIO.notifyEvent, this, &ofApp::gotEvent);
-    ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
-    
+    // gfx
     titleFont.load("lekton/Lekton-Italic.ttf", 36);
     textFont.load("lekton/Lekton-Regular.ttf", 10);
 }
@@ -27,6 +31,21 @@ void ofApp::bindEvents() {
     string serverEventName = "tweet";
     socketIO.bindEvent(serverEvent, serverEventName);
     ofAddListener(serverEvent, this, &ofApp::onServerEvent);
+}
+
+void ofApp::initSocketIO() {
+    isConnected = false;
+    address = "https://127.0.0.1:8080";
+    status = "not connected";
+    
+    searchPhrase = "war";
+    
+    std::map<std::string,std::string> query;
+    query["phrase"] = searchPhrase;
+    socketIO.setup(address, query);
+    
+    ofAddListener(socketIO.notifyEvent, this, &ofApp::gotEvent);
+    ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
 }
 
 void ofApp::update(){}
@@ -59,12 +78,18 @@ void ofApp::draw(){
     textFont.drawString("Average mood: " + ofToString(avgMood), 60, 70);
     ofDrawLine(0,ofGetHeight() / 2 - avgMood * 20,ofGetWidth(), ofGetHeight() / 2 - avgMood * 20);
     
-
+    if(ptCount!=tCount) {
+        pd.sendFloat("tweet-trigger",cMood);
+        pd.sendFloat("tweet-average",avgMood);
+    }
+    ptCount = tCount;
+    
 }
 
 void ofApp::onServerEvent(ofxSocketIOData& data) {
     tCount++;
     datapoints.push_back(new DataPoint(data.getStringValue("tText"), data.getStringValue("tDate"), data.getFloatValue("tMood"), ofVec2f(tCount * dSize, ofGetHeight() / 2), dSize, textFont));
+    cMood = data.getFloatValue("tMood");
 }
 
 void ofApp::gotEvent(string& name) {
@@ -76,7 +101,23 @@ void ofApp::exit() {
     socketIO.emit(s);
 }
 
-void ofApp::keyPressed(int key){}
+void ofApp::print(const std::string& message) {
+    cout << message << endl;
+}
+
+void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
+    pd.audioIn(input, bufferSize, nChannels);
+}
+
+void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
+    pd.audioOut(output, bufferSize, nChannels);
+}
+
+void ofApp::keyPressed(int key){
+    if(key == ' ') {
+        initSocketIO();
+    }
+}
 void ofApp::keyReleased(int key){}
 void ofApp::mouseMoved(int x, int y ){}
 void ofApp::mouseDragged(int x, int y, int button){}
