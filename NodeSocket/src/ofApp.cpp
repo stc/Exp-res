@@ -20,6 +20,8 @@ void ofApp::setup(){
     // gfx
     titleFont.load("lekton/Lekton-Italic.ttf", 36);
     textFont.load("lekton/Lekton-Regular.ttf", 10);
+    
+    startTime = ofGetElapsedTimeMillis();
 }
 
 void ofApp::onConnection() {
@@ -48,7 +50,9 @@ void ofApp::initSocketIO() {
     ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
 }
 
-void ofApp::update(){}
+void ofApp::update(){
+    metro(3000);
+}
 
 void ofApp::draw(){
     ofBackground(240);
@@ -96,9 +100,18 @@ void ofApp::gotEvent(string& name) {
     status = name;
 }
 
+void ofApp::metro(int maxTime) {
+    int elapsed = ofGetElapsedTimeMillis() - startTime;
+    if (elapsed > maxTime) {
+        startTime = ofGetElapsedTimeMillis();
+        // change displayed tweet here
+    }
+}
+
 void ofApp::exit() {
     string s = "stopStream";
     socketIO.emit(s);
+    pd.stop();
 }
 
 void ofApp::print(const std::string& message) {

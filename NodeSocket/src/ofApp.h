@@ -52,6 +52,9 @@ public:
     float cMood = 0;
     int dSize = 5;
     
+    int startTime;
+    void metro(int maxTime);
+    
     ofTrueTypeFont titleFont;
     ofTrueTypeFont textFont;
     
