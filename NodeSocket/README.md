@@ -13,6 +13,7 @@ NodeJS v 7.4.0
 ## Dependencies
 OpenFramework addons:
 - ofxSocketIO
+- ofxPd
 
 NodeJS (NPM) modules:
 - ntwitter

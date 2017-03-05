@@ -40,7 +40,7 @@ void ofApp::initSocketIO() {
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "pleasure";
+    searchPhrase = "learning";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
