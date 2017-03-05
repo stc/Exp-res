@@ -54,6 +54,7 @@ public:
     
     int startTime;
     void metro(int maxTime);
+    int cTweet = 0;
     
     ofTrueTypeFont titleFont;
     ofTrueTypeFont textFont;

@@ -40,7 +40,7 @@ void ofApp::initSocketIO() {
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "war";
+    searchPhrase = "pleasure";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
@@ -51,7 +51,7 @@ void ofApp::initSocketIO() {
 }
 
 void ofApp::update(){
-    metro(3000);
+    metro(5000);
 }
 
 void ofApp::draw(){
@@ -64,9 +64,14 @@ void ofApp::draw(){
     
     float sum = 0;
     for(auto dp : datapoints) {
-        dp->draw(ofVec2f(mouseX,mouseY));
+        dp->draw();
         sum+=dp->mMood;
     }
+    
+    if(cTweet<datapoints.size()) {
+        datapoints[cTweet]->drawContent();
+    }
+    
     avgMood = sum/datapoints.size();
     
     if(avgMood>0.5) {
@@ -104,7 +109,7 @@ void ofApp::metro(int maxTime) {
     int elapsed = ofGetElapsedTimeMillis() - startTime;
     if (elapsed > maxTime) {
         startTime = ofGetElapsedTimeMillis();
-        // change displayed tweet here
+        cTweet = int( ofClamp( ofRandom(datapoints.size() ),0,200) );
     }
 }
 

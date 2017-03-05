@@ -20,7 +20,7 @@ public:
         mFont = font;
     }
     
-    void draw( ofVec2f cursor ) {
+    void draw() {
         if(mMood>2) {
             ofSetColor(75,162,205,100);
         } else if(mMood < -2) {
@@ -32,12 +32,20 @@ public:
         
         ofSetColor(30);
         ofDrawCircle(mPos, mSize / 2);
-        if(over(cursor)) {
+    }
+    
+    void drawContent() {
             ofSetColor(240);
             ofDrawRectangle(0,80,ofGetWidth(),40);
             ofSetColor(30);
             mFont.drawString(ofSplitString(mText,"\n")[0], 20, 100);
-        }
+            ofNoFill();
+            ofSetColor(30,50);
+            ofDrawLine(mPos.x, 180,ofGetWidth()/2,140);
+            ofDrawLine(mPos.x, 180,mPos.x,mPos.y);
+            ofDrawLine(ofGetWidth()/2,110, ofGetWidth()/2,140);
+            ofDrawLine(0,110,ofGetWidth(),110);
+            ofDrawCircle(mPos, mSize * 2);
     }
     
     bool over( ofVec2f cursor ) {
