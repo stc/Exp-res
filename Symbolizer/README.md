@@ -1,4 +1,4 @@
-# Symbol Space
+# Symbolizer
 Gesture based communication language using classification models, combined with position tracking. Tracking is made with a Leap motion controller, the gestrue recognition is made with Wekinator. 
 
 # Installation
