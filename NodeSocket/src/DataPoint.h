@@ -5,25 +5,27 @@ class DataPoint {
 public:
     string mText;
     string mDate;
-    float mMood = 0;
+    float mScore = 0;
+    float mComp = 0;
     ofVec2f mPos;
     int mSize;
     int mRange = 20;
     ofTrueTypeFont mFont;
     
-    DataPoint( string text, string date, float mood, ofVec2f pos, int size, ofTrueTypeFont & font ) {
+    DataPoint( string text, string date, float score, float comp, ofVec2f pos, int size, ofTrueTypeFont & font ) {
         mText = text;
         mDate = date;
-        mMood = mood;
+        mScore = score;
+        mComp = comp;
         mSize = size;
-        mPos  = ofVec2f(pos.x,pos.y - ofClamp(mMood * 30,-200,200) );
+        mPos  = ofVec2f(pos.x,pos.y - ofClamp(mScore * 30,-200,200) );
         mFont = font;
     }
     
     void draw() {
-        if(mMood>2) {
+        if(mScore>2) {
             ofSetColor(75,162,205,100);
-        } else if(mMood < -2) {
+        } else if(mScore < -2) {
             ofSetColor(205,90,6,100);
         } else {
             ofSetColor(30,100);

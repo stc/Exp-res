@@ -67,7 +67,8 @@ io.sockets.on('connection',
   	       	const datas = {
   						tText: data.text,
   						tDate: data.created_at,
-  						tMood: result.score
+  						tScore: result.score,
+              tComp: result.comparative
 						}
 						tCount++;
 						console.log('found ' + tCount + ' tweets with ' + searchPhrase);

@@ -49,7 +49,8 @@ public:
     int tCount = 0;
     int ptCount = 0;
     float avgMood = 0;
-    float cMood = 0;
+    float cScore = 0;
+    float cComp = 0;
     int dSize = 5;
     
     int startTime;

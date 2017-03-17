@@ -40,7 +40,7 @@ void ofApp::initSocketIO() {
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "learning";
+    searchPhrase = "win";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
@@ -65,7 +65,7 @@ void ofApp::draw(){
     float sum = 0;
     for(auto dp : datapoints) {
         dp->draw();
-        sum+=dp->mMood;
+        sum+=dp->mScore;
     }
     
     if(cTweet<datapoints.size()) {
@@ -88,7 +88,7 @@ void ofApp::draw(){
     ofDrawLine(0,ofGetHeight() / 2 - avgMood * 20,ofGetWidth(), ofGetHeight() / 2 - avgMood * 20);
     
     if(ptCount!=tCount) {
-        pd.sendFloat("tweet-trigger",cMood);
+        pd.sendFloat("tweet-trigger",cScore);
         pd.sendFloat("tweet-average",avgMood);
     }
     ptCount = tCount;
@@ -97,8 +97,8 @@ void ofApp::draw(){
 
 void ofApp::onServerEvent(ofxSocketIOData& data) {
     tCount++;
-    datapoints.push_back(new DataPoint(data.getStringValue("tText"), data.getStringValue("tDate"), data.getFloatValue("tMood"), ofVec2f(tCount * dSize, ofGetHeight() / 2), dSize, textFont));
-    cMood = data.getFloatValue("tMood");
+    datapoints.push_back(new DataPoint(data.getStringValue("tText"), data.getStringValue("tDate"), data.getFloatValue("tScore"), data.getFloatValue("tComp"), ofVec2f(tCount * dSize, ofGetHeight() / 2), dSize, textFont));
+    cScore = data.getFloatValue("tScore");
 }
 
 void ofApp::gotEvent(string& name) {
@@ -134,6 +134,11 @@ void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     if(key == ' ') {
         initSocketIO();
+    }
+    if(key == 'x') {
+        // export json from data objects here
+        auto d = datapoints[0];
+        cout << d->mDate << " " << d->mScore << " " << d->mComp << " " << d->mText << endl;
     }
 }
 void ofApp::keyReleased(int key){}
