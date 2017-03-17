@@ -5,7 +5,7 @@ void ofApp::setup(){
     ofBackground(230);
     
     gui.setup();
-    gui.add(scale.set("scale", 0.01, 0.0, 0.1));
+    gui.add(scale.set("scale", 0.014, 0.0, 0.1));
 }
 
 void ofApp::update(){
@@ -27,7 +27,6 @@ void ofApp::draw(){
         }
     }
     ofPopMatrix();
-    
     gui.draw();
 }
 
@@ -62,8 +61,8 @@ void ofApp::calcTSNE() {
     }
     
     int dims = 2;
-    float perplexity = 5;
-    float theta = 0.7;
+    float perplexity = 35;
+    float theta = 0.95;
     bool normalize = false;
     
     tsnePoints = tsne.run(data, dims, perplexity, theta, normalize, true);
