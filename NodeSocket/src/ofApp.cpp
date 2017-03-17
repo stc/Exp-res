@@ -40,7 +40,7 @@ void ofApp::initSocketIO() {
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "win";
+    searchPhrase = "weekend";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
@@ -113,6 +113,25 @@ void ofApp::metro(int maxTime) {
     }
 }
 
+void ofApp::saveDataPoints() {
+    Json::Value mDatapoints(Json::arrayValue);
+    
+    for(int i=0; i<datapoints.size(); i++) {
+        Json::Value dp;
+        dp["date"]  = datapoints[i]->mDate;
+        dp["text"]  = datapoints[i]->mText;
+        dp["score"] = datapoints[i]->mScore;
+        dp["comp"]  = datapoints[i]->mComp;
+        mDatapoints.append(dp);
+    }
+    ofstream f;
+    f.open(ofToDataPath(searchPhrase + ".json"));
+    f << mDatapoints;
+    f.close();
+
+    cout << "datapoints saved" << endl;
+}
+
 void ofApp::exit() {
     string s = "stopStream";
     socketIO.emit(s);
@@ -137,8 +156,9 @@ void ofApp::keyPressed(int key){
     }
     if(key == 'x') {
         // export json from data objects here
-        auto d = datapoints[0];
-        cout << d->mDate << " " << d->mScore << " " << d->mComp << " " << d->mText << endl;
+        //auto d = datapoints[0];
+        //cout << d->mDate << " " << d->mScore << " " << d->mComp << " " << d->mText << endl;
+        saveDataPoints();
     }
 }
 void ofApp::keyReleased(int key){}

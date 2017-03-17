@@ -4,6 +4,7 @@
 #include "ofEvents.h"
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
+#include "ofxJSON.h"
 #include "ofxPd.h"
 #include "DataPoint.h"
 
@@ -45,6 +46,7 @@ public:
     
     string searchPhrase;
     vector< DataPoint * > datapoints;
+    void saveDataPoints();
     
     int tCount = 0;
     int ptCount = 0;
@@ -59,6 +61,8 @@ public:
     
     ofTrueTypeFont titleFont;
     ofTrueTypeFont textFont;
+    
+    ofxJSONElement mExport;
     
     ofxPd pd;
     void print(const std::string& message);
