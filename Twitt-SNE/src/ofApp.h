@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxJSON.h"
 #include "ofxTSNE.h"
+#include "ofxGui.h"
 #include "DataPoint.h"
 
 class ofApp : public ofBaseApp{
@@ -26,4 +27,19 @@ public:
     ofxJSONElement mJsonData;
     vector< DataPoint * > datapoints;
     void loadData();
+    
+    struct TestPoint {
+        vector<float> point;
+        ofPoint tsnePoint;
+    };
+
+    ofxTSNE tsne;
+    vector<TestPoint> testPoints;
+    vector<vector<double> > tsnePoints;
+    void calcTSNE();
+    
+    ofxPanel gui;
+    ofParameter<float> scale;
+    ofParameter<float> nodeSize;
+
 };
