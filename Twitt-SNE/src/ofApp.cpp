@@ -3,7 +3,7 @@
 void ofApp::setup(){
     //ofSetBackgroundAuto(false);
     ofBackground(230);
-    searchPhrase = "dead";
+    searchPhrase = "people";
     
     titleFont.load("lekton/Lekton-Italic.ttf", 60);
     headingFont.load("lekton/Lekton-Italic.ttf", 30);

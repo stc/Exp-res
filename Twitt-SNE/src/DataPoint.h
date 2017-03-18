@@ -32,9 +32,9 @@ public:
     void drawBg() {
         ofSetColor(c,10);
         ofDrawLine(0,0,mPos.x,mPos.y);
-        ofSetColor(c,1);
-        ofSetCircleResolution(100);
-        ofDrawCircle(mPos,400);
+        //ofSetColor(c,1);
+        //ofSetCircleResolution(100);
+        //ofDrawCircle(mPos,400);
     }
     void draw() {
         //ofSetColor(255,20);
