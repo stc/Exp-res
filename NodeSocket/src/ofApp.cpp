@@ -4,8 +4,9 @@ void ofApp::setup(){
     // sound
     int ticksPerBuffer = 8;
     int numInputs = 2;
-    ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
+    //ofSoundStreamSetup(2, numInputs, this, 44100, ofxPd::blockSize()*ticksPerBuffer, 3);
     
+    /*
     if(!pd.init(2, numInputs, 44100, ticksPerBuffer, false)) {
         OF_EXIT_APP(1);
     }
@@ -13,7 +14,7 @@ void ofApp::setup(){
     pd.start();
     pd.addReceiver(*this);
     Patch patch = pd.openPatch("pd/main.pd");
-
+     */
     // socket.io
     //initSocketIO();
     
@@ -40,7 +41,7 @@ void ofApp::initSocketIO() {
     address = "https://127.0.0.1:8080";
     status = "not connected";
     
-    searchPhrase = "world";
+    searchPhrase = "war";
     
     std::map<std::string,std::string> query;
     query["phrase"] = searchPhrase;
@@ -88,8 +89,8 @@ void ofApp::draw(){
     ofDrawLine(0,ofGetHeight() / 2 - avgMood * 20,ofGetWidth(), ofGetHeight() / 2 - avgMood * 20);
     
     if(ptCount!=tCount) {
-        pd.sendFloat("tweet-trigger",cScore);
-        pd.sendFloat("tweet-average",avgMood);
+        //pd.sendFloat("tweet-trigger",cScore);
+        //pd.sendFloat("tweet-average",avgMood);
     }
     ptCount = tCount;
     
@@ -135,7 +136,7 @@ void ofApp::saveDataPoints() {
 void ofApp::exit() {
     string s = "stopStream";
     socketIO.emit(s);
-    pd.stop();
+    //pd.stop();
 }
 
 void ofApp::print(const std::string& message) {
@@ -143,11 +144,11 @@ void ofApp::print(const std::string& message) {
 }
 
 void ofApp::audioReceived(float * input, int bufferSize, int nChannels) {
-    pd.audioIn(input, bufferSize, nChannels);
+    //pd.audioIn(input, bufferSize, nChannels);
 }
 
 void ofApp::audioRequested(float * output, int bufferSize, int nChannels) {
-    pd.audioOut(output, bufferSize, nChannels);
+    //pd.audioOut(output, bufferSize, nChannels);
 }
 
 void ofApp::keyPressed(int key){

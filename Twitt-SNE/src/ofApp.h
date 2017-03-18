@@ -41,5 +41,10 @@ public:
     ofxPanel gui;
     ofParameter<float> scale;
     ofParameter<float> nodeSize;
-
+    
+    string searchPhrase;
+    float avgMood;
+    ofTrueTypeFont titleFont;
+    ofTrueTypeFont headingFont;
+    ofTrueTypeFont textFont;
 };

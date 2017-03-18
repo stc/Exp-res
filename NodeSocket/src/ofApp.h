@@ -5,12 +5,13 @@
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
 #include "ofxJSON.h"
-#include "ofxPd.h"
+//#include "ofxPd.h"
 #include "DataPoint.h"
 
-using namespace pd;
+//using namespace pd;
 
-class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
+//class ofApp : public ofBaseApp, public PdReceiver, public PdMidiReceiver {
+class ofApp : public ofBaseApp {
 public:
     void setup();
     void update();
@@ -64,7 +65,7 @@ public:
     
     ofxJSONElement mExport;
     
-    ofxPd pd;
+    //ofxPd pd;
     void print(const std::string& message);
     void audioReceived(float * input, int bufferSize, int nChannels);
     void audioRequested(float * output, int bufferSize, int nChannels);

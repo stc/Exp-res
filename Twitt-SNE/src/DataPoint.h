@@ -13,8 +13,9 @@ public:
     DataPoint(string date, string text, int score, float comp) {
         mDate = date;
         mText = text;
-        mScore = score;
+        mScore = score + ofRandom(10000) / 10000.0;
         mComp = comp;
+        
         
         if(mScore>2) {
             c = ofColor(75,162,205);
@@ -28,12 +29,18 @@ public:
             c = ofColor(100);
         }
     }
-    
+    void drawBg() {
+        ofSetColor(c,10);
+        ofDrawLine(0,0,mPos.x,mPos.y);
+        ofSetColor(c,1);
+        ofSetCircleResolution(100);
+        ofDrawCircle(mPos,400);
+    }
     void draw() {
-        ofSetColor(200,5);
-        ofDrawCircle(mPos,8);
-        ofSetColor(c,mAge);
-        ofDrawCircle(mPos,3);
+        //ofSetColor(255,20);
+        //ofDrawCircle(mPos,20);
+        ofSetColor(c,255);
+        ofDrawCircle(mPos,2);
         mAge+=0.1;
     }
 };
