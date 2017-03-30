@@ -1,6 +1,12 @@
 var randf = function(lo,hi) { return Math.random() * (hi-lo) + lo; }
 var randi = function(lo,hi) { return Math.floor(randf(lo,hi)); }
 
+var lastAppleY = 0;
+var stringnum = 24.0; // two octaves made of semitones
+
+var pitchrates = [];
+var activestrings = [];
+
 // A 2D vector utility
 var Vec = function(x, y) {
   this.x = x;
@@ -75,7 +81,15 @@ var util_add_box = function(lst, x, y, w, h) {
 // item is circle thing on the floor that agent can interact with (see or eat, etc)
 var Item = function(x, y, type) {
   this.p = new Vec(x, y); // position
-  this.v = new Vec(Math.random()*5-2.5, Math.random()*5-2.5);
+  this.v = new Vec((Math.random()-0.5)*2, 0);
+  //var rnddir = int(random(2));
+  //if(rnddir==0) {
+  //  this.v = new Vec(- (Math.random()+0.5)*1, 0);
+  //  this.p.x = this.W;
+  //} else {
+  //  this.v = new Vec( (Math.random()+0.5)*1, 0);
+  //  this.p.x = 0;
+  //}
   this.type = type;
   this.rad = 10; // default radius
   this.age = 0;
@@ -103,12 +117,23 @@ var World = function(w,h) {
   
   // set up food and poison
   this.items = []
+  /*
   for(var k=0;k<150;k++) {
     var x = randf(20, this.W-20);
     var y = randf(20, this.H-20);
     var t = randi(1, 3); // food or poison (1 and 2)
     var it = new Item(x, y, t);
     this.items.push(it);
+  }
+  */
+  for(var i=0; i<stringnum; i++) {
+    if(i%5==0) {
+      activestrings.push(1);
+    } else if(i%3 == 0){
+      activestrings.push(1);
+    } else {
+      activestrings.push(0);
+    }
   }
 }
 
@@ -201,7 +226,7 @@ World.prototype = {
       a.oangle = a.angle; // and angle
       
       // execute agent's desired action
-      var speed = 1;
+      var speed = 0.3;
       if(a.action === 0) {
         a.v.x += -speed;
       }
@@ -214,6 +239,9 @@ World.prototype = {
       if(a.action === 3) {
         a.v.y += speed;
       }
+
+      var tmpv = createVector(a.v.x,a.v.y);
+      a.heading = tmpv.heading();
 
       // forward the agent by velocity
       a.v.x *= 0.95; a.v.y *= 0.95;
@@ -255,6 +283,7 @@ World.prototype = {
             if(it.type === 1) {
               a.digestion_signal += 1.0; // mmm delicious apple
               a.apples++;
+              lastAppleY = a.p.y / this.H;
             }
             if(it.type === 2) {
               a.digestion_signal += -1.0; // ewww poison
@@ -268,12 +297,21 @@ World.prototype = {
       }
         
       // move the items
-      it.p.x += it.v.x;
-      it.p.y += it.v.y;
-      if(it.p.x < 1) { it.p.x = 1; it.v.x *= -1; }
-      if(it.p.x > this.W-1) { it.p.x = this.W-1; it.v.x *= -1; }
-      if(it.p.y < 1) { it.p.y = 1; it.v.y *= -1; }
-      if(it.p.y > this.H-1) { it.p.y = this.H-1; it.v.y *= -1; }
+       it.p.x += it.v.x;
+      //it.p.y += it.v.y;
+      if(it.p.x <= 1) { 
+        //it.p.x = 1; it.v.x *= -1; }
+      //if(it.p.x > this.W-1) { it.p.x = this.W-1; it.v.x *= -1; }
+      //if(it.p.y < 1) { it.p.y = 1; it.v.y *= -1; }
+      //if(it.p.y > this.H-1) { 
+        //it.p.y = this.H-1; it.v.y *= -1; 
+        it.cleanup_ = true; 
+        update_items = true;
+      }
+      if(it.p.x > this.W-1) {
+        it.cleanup_ = true; 
+        update_items = true; 
+      }
 
       if(it.age > 5000 && this.clock % 100 === 0 && randf(0,1)<0.1) {
         it.cleanup_ = true; // replace this one, has been around too long
@@ -288,10 +326,16 @@ World.prototype = {
       }
       this.items = nt; // swap
     }
-    if(this.items.length < 150 && this.clock % 2 === 0 && randf(0,1)<0.25) {
-      var newitx = randf(20, this.W-20);
-      var newity = randf(20, this.H-20);
-      var newitt = randi(1, 3); // food or poison (1 and 2)
+    if(this.items.length < 300 && this.clock % 2 === 0 && randf(0,1)<0.5) {
+      var rnd = int(random(stringnum));
+      var newitx = random(this.W);
+      var newity = rnd * this.H/stringnum + this.H / stringnum * 2;//randf(20, this.H-20);
+      var newitt; // food or poison (1 and 2)
+      if(activestrings[rnd] == 1) { 
+        newitt = 1; 
+      } else {
+        newitt = 2;
+      } 
       var newit = new Item(newitx, newity, newitt);
       this.items.push(newit);
     }
@@ -321,6 +365,7 @@ var Agent = function() {
   this.v = new Vec(0,0);
   this.op = this.p; // old position
   this.angle = 0; // direction facing
+  this.heading = 0;
   
   this.actions = [];
   this.actions.push(0);
