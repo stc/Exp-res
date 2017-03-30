@@ -4,7 +4,6 @@ var randi = function(lo,hi) { return Math.floor(randf(lo,hi)); }
 var lastAppleY = 0;
 var stringnum = 24.0; // two octaves made of semitones
 
-var pitchrates = [];
 var activestrings = [];
 
 // A 2D vector utility
@@ -79,9 +78,10 @@ var util_add_box = function(lst, x, y, w, h) {
 }
 
 // item is circle thing on the floor that agent can interact with (see or eat, etc)
-var Item = function(x, y, type) {
+var Item = function(x, y, type, index) {
   this.p = new Vec(x, y); // position
   this.v = new Vec((Math.random()-0.5)*2, 0);
+  this.index = index;
   //var rnddir = int(random(2));
   //if(rnddir==0) {
   //  this.v = new Vec(- (Math.random()+0.5)*1, 0);
@@ -126,15 +126,31 @@ var World = function(w,h) {
     this.items.push(it);
   }
   */
-  for(var i=0; i<stringnum; i++) {
-    if(i%5==0) {
-      activestrings.push(1);
-    } else if(i%3 == 0){
-      activestrings.push(1);
-    } else {
-      activestrings.push(0);
-    }
-  }
+   
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(1);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(1);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(0);
+  activestrings.push(0);
+  activestrings.push(1);
+  activestrings.push(1);
 }
 
 World.prototype = {      
@@ -283,7 +299,7 @@ World.prototype = {
             if(it.type === 1) {
               a.digestion_signal += 1.0; // mmm delicious apple
               a.apples++;
-              lastAppleY = a.p.y / this.H;
+              lastAppleY = it.index;
             }
             if(it.type === 2) {
               a.digestion_signal += -1.0; // ewww poison
@@ -336,7 +352,7 @@ World.prototype = {
       } else {
         newitt = 2;
       } 
-      var newit = new Item(newitx, newity, newitt);
+      var newit = new Item(newitx, newity, newitt, rnd);
       this.items.push(newit);
     }
     

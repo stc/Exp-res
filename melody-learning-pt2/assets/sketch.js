@@ -16,7 +16,8 @@ var stats = {};
 
 // sounds
 var s1, s2;
-var reverb;
+var reverb1, reverb2;
+var delay;
 var pApples = [0,0,0]; 
 var pPoison = [0,0,0];
 
@@ -30,7 +31,7 @@ function preload() {
 }
 
 function setup() {
-	var canvas = createCanvas(window.innerWidth,window.innerHeight / 1.5);
+	var canvas = createCanvas(window.innerWidth,window.innerHeight / 1.1);
 	
 	spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
@@ -55,9 +56,19 @@ function setup() {
     w.agents.push(a);
     smooth_reward_history.push([]);
   }
+  s1.disconnect();
+  s2.disconnect();
+  
+  reverb1 = new p5.Reverb();
+  //reverb1.process(s1,3,2);
+  reverb2 = new p5.Reverb();
+  reverb2.process(s2,1,2);
+  reverb1.amp(4); 
+  reverb2.amp(4); 
 
-  reverb = new p5.Reverb();
-  reverb.process(s1,3,2);
+  delay = new p5.Delay();
+  delay.process(s1, .4, .7, 4300);
+  delay.setType('pingPong'); // a stereo effect
 
   p1 = createVector((width-ww) / 2.0,height-100);
   p2 = createVector((width-ww) / 2.0,height-80);
@@ -198,7 +209,17 @@ function draw() {
   for(var i=0; i<w.agents.length; i++) {
     if(w.agents[i].apples!=pApples[i]) {
       if(s1.isLoaded()) {
-        s1.rate((1-lastAppleY) * 4);
+        
+        var p = pow( 2, (lastAppleY / 12) -1 ); 
+
+        var filterFreq = random(60, 5000);
+        var filterRes = random(0.01, 3);
+        delay.filter(filterFreq, filterRes);
+        var delTime = random(.01, .1);
+        delay.delayTime(delTime);
+
+        s1.setVolume(random(0.4)+0.6);
+        s1.rate(p);
       }
       s1.play();
     }
