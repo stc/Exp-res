@@ -342,7 +342,7 @@ var Agent = function(id) {
   this.id = id;
 
   // positional information
-  this.p = new Vec(random(this.W), random(this.H));
+  this.p = new Vec(0,0);
   this.v = new Vec(0,0);
   this.op = this.p; // old position
   this.angle = 0; // direction facing

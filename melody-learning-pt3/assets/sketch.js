@@ -22,6 +22,7 @@ var pPoison = [0,0];
 // interact
 var myCursor;
 var down = false;
+var agentarea = 100;
 
 // game states
 var GAME_STATE = ["intro","play","outro"];
@@ -78,6 +79,7 @@ function draw() {
 	background(0,114,138);
   myCursor = createVector(mouseX,mouseY);
   
+
   if(GAME_STATE == "intro") {
     fill(255,180);
     textFont(font);
@@ -88,11 +90,22 @@ function draw() {
   }
 
   if(GAME_STATE == "play") {
+    var v = createVector(w.agents[0].p.x,w.agents[0].p.y);
+    var mappedCursor = createVector(myCursor.x - (width-ww) / 2.0, myCursor.y - (height-wh) / 3);
     if(down) {
-      addItem(myCursor);
-      fill(255,20);
-      noStroke();
-      ellipse(myCursor.x,myCursor.y,100,100);
+      if(mappedCursor.dist(v) < agentarea / 2) {
+        noFill();
+        stroke(255,150,150,100);
+        ellipse(v.x + (width-ww) / 2.0, v.y + (height-wh) / 3, agentarea, agentarea);
+        noStroke();
+        fill(255,150,150,100);
+        ellipse(myCursor.x,myCursor.y,100,100);
+      } else {
+        addItem(myCursor);
+        fill(255,20);
+        noStroke();
+        ellipse(myCursor.x,myCursor.y,100,100);
+      }
     }
 
 	 var agents = w.agents;
@@ -268,25 +281,6 @@ function resetAgents() {
   }
 }
 
-function addAgent() {
-  if(w.agents.length<3) {
-    var a = new Agent();
-    env = a;
-    a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
-    a.epsilon = 0.15;
-    agentEps = a.epsilon.toFixed(2);
-    w.agents.push(a);
-    smooth_reward_history.push([]);
-  }
-  loadAgents();
-}
-
-function removeAgent() {
-  if(w.agents.length>0) {
-    w.agents.pop();
-  }
-}
-
 function loadAgents() {
   w.agents = [];
 
@@ -295,6 +289,7 @@ function loadAgents() {
     env = a;
     a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
     a.epsilon = 0.15;
+    a.p = new Vec(random(ww),random(wh));
     w.agents.push(a);
     smooth_reward_history.push([]);
   }
