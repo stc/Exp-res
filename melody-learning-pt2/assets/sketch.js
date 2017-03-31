@@ -74,6 +74,8 @@ function setup() {
   p2 = createVector((width-ww) / 2.0,height-80);
   p3 = createVector((width-ww) / 2.0,height-60);
   p4 = createVector((width-ww) / 2.0,height-40);
+
+  loadAgents();
 }
 
 function draw() {
@@ -275,6 +277,7 @@ function addAgent() {
     w.agents.push(a);
     smooth_reward_history.push([]);
   }
+  loadAgents();
 }
 
 function removeAgent() {

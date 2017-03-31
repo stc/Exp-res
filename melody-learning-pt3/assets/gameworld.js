@@ -82,14 +82,6 @@ var Item = function(x, y, type, index) {
   this.p = new Vec(x, y); // position
   this.v = new Vec((Math.random()-0.5)*2, 0);
   this.index = index;
-  //var rnddir = int(random(2));
-  //if(rnddir==0) {
-  //  this.v = new Vec(- (Math.random()+0.5)*1, 0);
-  //  this.p.x = this.W;
-  //} else {
-  //  this.v = new Vec( (Math.random()+0.5)*1, 0);
-  //  this.p.x = 0;
-  //}
   this.type = type;
   this.rad = 10; // default radius
   this.age = 0;
@@ -108,24 +100,8 @@ var World = function(w,h) {
   var pad = 0;
   util_add_box(this.walls, pad, pad, this.W-pad*2-1, this.H-pad*2-1);
   
-  /*
-  util_add_box(this.walls, 100, 100, 200, 300); // inner walls
-  this.walls.pop();
-  util_add_box(this.walls, 400, 100, 200, 300);
-  this.walls.pop();
-  */
-  
   // set up food and poison
-  this.items = []
-  /*
-  for(var k=0;k<150;k++) {
-    var x = randf(20, this.W-20);
-    var y = randf(20, this.H-20);
-    var t = randi(1, 3); // food or poison (1 and 2)
-    var it = new Item(x, y, t);
-    this.items.push(it);
-  }
-  */
+  this.items = [];
    
   activestrings.push(1);
   activestrings.push(0);
@@ -242,7 +218,7 @@ World.prototype = {
       a.oangle = a.angle; // and angle
       
       // execute agent's desired action
-      var speed = 0.6;
+      var speed = 0.1;
       if(a.action === 0) {
         a.v.x += -speed;
       }
@@ -262,13 +238,7 @@ World.prototype = {
       // forward the agent by velocity
       a.v.x *= 0.95; a.v.y *= 0.95;
       a.p.x += a.v.x; a.p.y += a.v.y;
-
-      // agent is trying to move from p to op. Check walls
-      //var res = this.stuff_collide_(a.op, a.p, true, false);
-      //if(res) {
-        // wall collision...
-      //}
-      
+ 
       // handle boundary conditions.. bounce agent
       if(a.p.x<1) { a.p.x=1; a.v.x=0; a.v.y=0;}
       if(a.p.x>this.W-1) { a.p.x=this.W-1; a.v.x=0; a.v.y=0;}
@@ -313,14 +283,8 @@ World.prototype = {
       }
         
       // move the items
-       it.p.x += it.v.x;
-      //it.p.y += it.v.y;
+      it.p.x += it.v.x;
       if(it.p.x <= 1) { 
-        //it.p.x = 1; it.v.x *= -1; }
-      //if(it.p.x > this.W-1) { it.p.x = this.W-1; it.v.x *= -1; }
-      //if(it.p.y < 1) { it.p.y = 1; it.v.y *= -1; }
-      //if(it.p.y > this.H-1) { 
-        //it.p.y = this.H-1; it.v.y *= -1; 
         it.cleanup_ = true; 
         update_items = true;
       }
@@ -342,18 +306,18 @@ World.prototype = {
       }
       this.items = nt; // swap
     }
-    if(this.items.length < 300 && this.clock % 2 === 0 && randf(0,1)<0.5) {
+    if(this.items.length < 60 && this.clock % 4 === 0 && randf(0,1)<0.5) {
       var rnd = int(random(stringnum));
       var newitx = random(this.W);
       var newity = rnd * this.H/stringnum + this.H / stringnum * 2;//randf(20, this.H-20);
       var newitt; // food or poison (1 and 2)
       if(activestrings[rnd] == 1) { 
-        newitt = 1; 
+        // do not add active note in itemlist
       } else {
         newitt = 2;
-      } 
-      var newit = new Item(newitx, newity, newitt, rnd);
-      this.items.push(newit);
+        var newit = new Item(newitx, newity, newitt, rnd);
+        this.items.push(newit);
+      }
     }
     
     // agents are given the opportunity to learn based on feedback of their action on environment
@@ -374,10 +338,11 @@ var Eye = function(angle) {
 }
 
 // A single agent
-var Agent = function() {
+var Agent = function(id) {
+  this.id = id;
 
   // positional information
-  this.p = new Vec(300, 300);
+  this.p = new Vec(random(this.W), random(this.H));
   this.v = new Vec(0,0);
   this.op = this.p; // old position
   this.angle = 0; // direction facing
