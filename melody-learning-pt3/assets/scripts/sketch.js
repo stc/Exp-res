@@ -29,9 +29,9 @@ var GAME_STATE = ["intro","play","outro"];
 var maxScore = 150;
 
 function preload() {
-  font = loadFont("assets/Lekton-Italic.ttf");
-  s1 = loadSound("assets/food.wav");
-  s2 = loadSound("assets/poison.wav");
+  font = loadFont("assets/data/Lekton-Italic.ttf");
+  s1 = loadSound("assets/data/food.wav");
+  s2 = loadSound("assets/data/poison.wav");
 }
 
 function setup() {
@@ -294,7 +294,7 @@ function loadAgents() {
     smooth_reward_history.push([]);
   }
 
-  loadJSON( "assets/gameagent.json", function( data ) {
+  loadJSON( "assets/data/gameagent.json", function( data ) {
     for(var i=0; i<w.agents.length; i++) {
       var agent = w.agents[i].brain;
       agent.fromJSON(data); // corss your fingers...
