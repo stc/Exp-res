@@ -4,8 +4,6 @@ var randi = function(lo,hi) { return Math.floor(randf(lo,hi)); }
 var lastAppleY = 0;
 var stringnum = 24.0; // two octaves made of semitones
 
-var activestrings = [];
-
 // A 2D vector utility
 var Vec = function(x, y) {
   this.x = x;
@@ -102,31 +100,6 @@ var World = function(w,h) {
   
   // set up food and poison
   this.items = [];
-   
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(1);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(1);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(0);
-  activestrings.push(0);
-  activestrings.push(1);
-  activestrings.push(1);
 }
 
 World.prototype = {      
@@ -218,7 +191,7 @@ World.prototype = {
       a.oangle = a.angle; // and angle
       
       // execute agent's desired action
-      var speed = 0.1;
+      var speed = 0.2;
       if(a.action === 0) {
         a.v.x += -speed;
       }

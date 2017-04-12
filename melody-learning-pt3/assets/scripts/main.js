@@ -12,6 +12,8 @@ var font;
 var stats = {};
 var colora, colorb;
 
+var activestrings = [];
+
 // sounds
 var s1, s2;
 var reverb1, reverb2;
@@ -26,7 +28,7 @@ var agentarea = 100;
 
 // game states
 var GAME_STATE = ["intro","play","outro"];
-var maxScore = 150;
+var maxScore = 250;
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
@@ -54,6 +56,7 @@ function setup() {
   ww = canvas.height * 0.6;
   wh = canvas.height * 0.6;
   w = new World(ww,wh);
+  initStrings(0);
   
   colora = color(110,209,230);
   colorb = color(255,140,160);
@@ -79,14 +82,29 @@ function draw() {
 	background(0,114,138);
   myCursor = createVector(mouseX,mouseY);
   
-
   if(GAME_STATE == "intro") {
     fill(255,180);
     textFont(font);
-    textSize(48);
     textAlign(CENTER);
-    text("CLICK TO START", width/2,height/3);
+    textSize(48);
+    text("TOUCH TO START", width/2,height/3);
     textAlign(LEFT);
+
+    noStroke();
+    
+    push();
+    translate((width-ww) / 2.0,(height-wh) / 3);
+    fill(255,180);
+    textFont(font);
+    textAlign(LEFT);
+    textSize(20);
+    text("TRY TO FEED >>", ww/8, wh/9);
+    text("<< AVOID FEED", ww/1.8, wh/5.5);
+    fill(colora);
+    ellipse(ww/2,wh/9.5,20,20);
+    fill(colorb);
+    ellipse(ww/2,wh/6,20,20);
+    pop();
   }
 
   if(GAME_STATE == "play") {
@@ -180,19 +198,18 @@ function draw() {
 
     pop();
 
-    // draw info
+    // draw scores
     noStroke();
-    textFont(font);
-    textSize(34);
-    for(var i=0; i<w.agents.length; i++) {
-      if(i==0) {
-        fill(colora);
-      } else {
-        fill(colorb);
-      }
-      text(stats[i], (width-ww) / 2.0 + i * 250, (height-wh) / 3 - 5);
-    }
-  
+    fill(255,20);
+    rect((width-ww) / 2.0, (height-wh)/3 - 10, (width-ww)/ 10.0, 10);
+    fill(colora);
+    rect((width-ww) / 2.0, (height-wh)/3 - 10, map(w.agents[0].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
+    
+    fill(255,20);
+    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0, (height-wh)/3 - 10, (width-ww)/ 10.0, 10);
+    fill(colorb);
+    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0, (height-wh)/3 - 10, map(w.agents[1].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
+    
     // make sound
     for(var i=0; i<w.agents.length; i++) {
       if(w.agents[i].apples!=pApples[i]) {
@@ -222,17 +239,24 @@ function draw() {
     textSize(48);
     
     if(winnerID == 0) {
+      fill(255,180);
+      textFont(font);
+      textAlign(CENTER);
+      textSize(24);
+      text("YOU MADE IT! NICELY PLAYED MUSIC...",width/2, height/2);
       fill(colora);
+      textSize(18);
+      text("TOUCH TO PLAY AGAIN",width/2, height/2+height/8);
     } else {
+      fill(255,180);
+      textFont(font);
+      textAlign(CENTER);
+      textSize(24);
+      text("AWWW... NEEDS MORE TUNING.. TRY AGAIN?",width/2, height/2);
       fill(colorb);
+      textSize(18);
+      text("TOUCH TO PLAY AGAIN",width/2, height/2+height/8);
     }
-    ellipse(width/2 - 50,height/4-20,48,48);
-    fill(255,180);
-    textAlign(LEFT);
-    text("WON!", width/2, height/4);
-    textAlign(CENTER);
-    text("CLICK TO START", width/2,height/3);
-    textAlign(LEFT);
   }
 
   // check scores
