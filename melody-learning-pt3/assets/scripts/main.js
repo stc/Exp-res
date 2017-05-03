@@ -71,9 +71,9 @@ function setup() {
   reverb1.amp(4); 
   reverb2.amp(4); 
 
-  //delay = new p5.Delay();
-  //delay.process(s1, .4, .7, 4300);
-  //delay.setType('pingPong'); // a stereo effect
+  delay = new p5.Delay();
+  delay.process(s1, .4, .7, 4300);
+  delay.setType('pingPong'); // a stereo effect
   
   loadAgents();
 }
@@ -215,11 +215,11 @@ function draw() {
       if(w.agents[i].apples!=pApples[i]) {
         if(s1.isLoaded()) {
           var p = pow( 2, (lastAppleY / 12) -1 ); 
-          //var filterFreq = random(60, 5000);
-          //var filterRes = random(0.01, 3);
-          //delay.filter(filterFreq, filterRes);
-          //var delTime = random(.01, .1);
-          //delay.delayTime(delTime);
+          var filterFreq = random(60, 5000);
+          var filterRes = random(0.01, 3);
+          delay.filter(filterFreq, filterRes);
+          var delTime = random(.01, .1);
+          delay.delayTime(delTime);
 
           s1.setVolume(random(0.4)+0.6);
           s1.rate(p);
