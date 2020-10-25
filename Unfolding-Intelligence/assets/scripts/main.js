@@ -93,10 +93,18 @@ function draw() {
     text("TOUCH TO START", width/2,height/3);
     textAlign(LEFT);
 
-    noStroke();
+
+    
     
     push();
     translate((width-ww) / 2.0,(height-wh) / 3);
+    for(var i=0; i<w.walls.length; i++) {
+     var q = w.walls[i];
+     stroke(180,60);
+     line(q.p1.x,q.p1.y,q.p2.x,q.p2.y);
+    }
+
+    noStroke();
     fill(colors.type);
     textFont(font);
     textAlign(LEFT);
@@ -137,13 +145,7 @@ function draw() {
       
     push();
     translate((width-ww) / 2.0,(height-wh) / 3);
-    // draw walls
-    for(var i=0; i<w.walls.length; i++) {
-  	 var q = w.walls[i];
-  	 stroke(180);
-  	 //line(q.p1.x,q.p1.y,q.p2.x,q.p2.y);
-    }
-
+   
     // draw agents
     for(var i=0; i<agents.length; i++) {
       var a = agents[i];
