@@ -33,10 +33,10 @@ var maxScore = 250;
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
-  s1 = loadSound("assets/data/food.mp3");
-  s2 = loadSound("assets/data/sp.wav");
-  d1 = loadSound("assets/data/d1.mp3");
-  d2 = loadSound("assets/data/d2.mp3");
+  //s1 = loadSound("assets/data/food.mp3");
+  //s2 = loadSound("assets/data/sp.wav");
+  //d1 = loadSound("assets/data/d1.mp3");
+  //d2 = loadSound("assets/data/d2.mp3");
 }
 
 function setup() {
@@ -67,16 +67,16 @@ function setup() {
   //s1.disconnect();
   //s2.disconnect();
   
-  reverb1 = new p5.Reverb();
-  reverb2 = new p5.Reverb();
-  reverb1.process(s1,8,0.1);
-  reverb2.process(s2,4,0.01);
-  reverb1.amp(4); 
-  reverb2.amp(1); 
+  //reverb1 = new p5.Reverb();
+  //reverb2 = new p5.Reverb();
+  //reverb1.process(s1,8,0.1);
+  //reverb2.process(s2,4,0.01);
+  //reverb1.amp(4); 
+  //reverb2.amp(1); 
 
-  delay = new p5.Delay();
-  delay.process(s1, .2, .2, 2300);
-  delay.setType('pingPong'); // a stereo effect
+  //delay = new p5.Delay();
+  //delay.process(s1, .2, .2, 2300);
+  //delay.setType('pingPong'); // a stereo effect
   
   loadAgents();
 }
@@ -86,6 +86,7 @@ function draw() {
   myCursor = createVector(mouseX,mouseY);
   
   if(GAME_STATE == "intro") {
+    noStroke();
     fill(colors.type);
     textFont(font);
     textAlign(CENTER);
@@ -94,16 +95,13 @@ function draw() {
     textAlign(LEFT);
 
 
+    stroke(255,100);
+    line(width/4,height/2,width/2+width/4,height/2)
     
     
     push();
     translate((width-ww) / 2.0,(height-wh) / 3);
-    for(var i=0; i<w.walls.length; i++) {
-     var q = w.walls[i];
-     stroke(180,60);
-     line(q.p1.x,q.p1.y,q.p2.x,q.p2.y);
-    }
-
+    
     noStroke();
     fill(colors.type);
     textFont(font);
@@ -245,7 +243,7 @@ function draw() {
     // make sound
     for(var i=0; i<w.agents.length; i++) {
       if(w.agents[i].apples!=pApples[i]) {
-        if(s1.isLoaded()) {
+        /*if(s1.isLoaded()) {
           var p = pow( 2, ((36 - lastAppleY) / 12) -1 ); 
           var filterFreq = random(60, 5000);
           var filterRes = random(0.01, 3);
@@ -255,11 +253,11 @@ function draw() {
           s1.setVolume(random(0.4)+0.6);
           s1.rate(p);
         }
-        s1.play();
+        s1.play();*/
       }
       if(w.agents[i].poison!=pPoison[i]) {
-        if(s2.isLoaded())s2.rate(random(2)+1);
-        s2.play();
+        //if(s2.isLoaded())s2.rate(random(2)+1);
+        //s2.play();
       }
       pApples[i] = w.agents[i].apples;
       pPoison[i] = w.agents[i].poison;
@@ -303,16 +301,26 @@ function draw() {
   }
 }
 
+let firsttime = true;
+
 function mousePressed() {
+  if(firsttime) {
+    StartAudioContext(Tone.context).then(function(){});
+    firsttime = false;
+  }
+
+  // testing tonejs
+  fm.triggerAttackRelease(Tone.Midi(42).toFrequency(),"128n");
+
   down = true;
   if(GAME_STATE == "intro" || GAME_STATE == "outro") {
-    if(!d1.isLooping()) {
-      d1.loop();
-    }
+    //if(!d1.isLooping()) {
+    //  d1.loop();
+    //}
 
-    if(!d2.isLooping()) {
+    ///if(!d2.isLooping()) {
       //d2.loop();
-    }
+    //}
     GAME_STATE = "play";
   }
 }
@@ -374,3 +382,35 @@ function saveAgent() {
 	var brain = w.agents[0].brain;
   // write out to json here
 }
+
+// tonejs related
+
+let panner = new Tone.Panner(-1).toDestination();
+console.log(Tone.FMSynth);
+let fm = new Tone.FMSynth({
+    "harmonicity": 18,
+    "modulationIndex": 8,
+    "detune": 0,
+    "oscillator": {
+        "type": "square"
+    },
+    "envelope": {
+        "attack": 0.01,
+        "decay": 0.02,
+        "sustain": 0.15,
+        "release": 2
+    },
+    "modulation": {
+        "type": "square"
+    },
+    "modulationEnvelope": {
+        "attack": 0.01,
+        "decay": 0.02,
+        "sustain": 0.03,
+        "release": 0.3
+    },
+    
+}).toDestination();
+fm.connect(panner);
+fm.volume.value = -14;
+panner.pan.value = 0.5;
