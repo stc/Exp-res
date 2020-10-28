@@ -33,10 +33,6 @@ var maxScore = 250;
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
-  //s1 = loadSound("assets/data/food.mp3");
-  //s2 = loadSound("assets/data/sp.wav");
-  //d1 = loadSound("assets/data/d1.mp3");
-  //d2 = loadSound("assets/data/d2.mp3");
 }
 
 function setup() {
@@ -63,26 +59,12 @@ function setup() {
   
   colora = color(110,209,230);
   colorb = color(255,140,160);
-
-  //s1.disconnect();
-  //s2.disconnect();
-  
-  //reverb1 = new p5.Reverb();
-  //reverb2 = new p5.Reverb();
-  //reverb1.process(s1,8,0.1);
-  //reverb2.process(s2,4,0.01);
-  //reverb1.amp(4); 
-  //reverb2.amp(1); 
-
-  //delay = new p5.Delay();
-  //delay.process(s1, .2, .2, 2300);
-  //delay.setType('pingPong'); // a stereo effect
-  
   loadAgents();
 }
 
 function draw() {
-	background(0);
+	background(0,8,10);
+
   myCursor = createVector(mouseX,mouseY);
   
   if(GAME_STATE == "intro") {
@@ -94,10 +76,8 @@ function draw() {
     text("TOUCH TO START", width/2,height/3);
     textAlign(LEFT);
 
-
     stroke(255,100);
     line(width/4,height/2,width/2+width/4,height/2)
-    
     
     push();
     translate((width-ww) / 2.0,(height-wh) / 3);
@@ -130,7 +110,7 @@ function draw() {
         ellipse(myCursor.x,myCursor.y,100,100);
       } else {
         addItem(myCursor);
-        fill(0,20);
+        fill(255,20);
         noStroke();
         ellipse(myCursor.x,myCursor.y,100,100);
       }
@@ -184,11 +164,19 @@ function draw() {
   		  var e = a.eyes[j];
   		  var sr = e.sensed_proximity;
   		  if(e.sensed_type === -1 || e.sensed_type === 0) {
-  			 stroke(180,30); // wall or nothing
+  			 strokeWeight(1);
+         stroke(180,30); // wall or nothing
+         line(a.op.x,a.op.y,a.op.x + sr * sin(a.oangle + e.angle), a.op.y + sr * cos(a.oangle + e.angle));
   		  }
-  		  if(e.sensed_type === 1) { stroke(255, 50); } // food
-  		  if(e.sensed_type === 2) { stroke(0,50); } // poison
-  		  line(a.op.x,a.op.y,a.op.x + sr * sin(a.oangle + e.angle), a.op.y + sr * cos(a.oangle + e.angle));
+  		  if(e.sensed_type === 1) { // food
+          stroke(255, 100); 
+          linedash(a.op.x,a.op.y,a.op.x + sr * sin(a.oangle + e.angle), a.op.y + sr * cos(a.oangle + e.angle), 3, "-");
+
+        } 
+  		  if(e.sensed_type === 2) { // poison
+          stroke(255,50); 
+          line(a.op.x,a.op.y,a.op.x + sr * sin(a.oangle + e.angle), a.op.y + sr * cos(a.oangle + e.angle));
+        } 
       }
     }
 
@@ -229,35 +217,43 @@ function draw() {
     noStroke();
     fill(255,20);
     rect((width-ww) / 2.0 - width/4, (height-wh)/3 - 80, ww + width/2, 2);
-    rect((width-ww) / 2.0, (height-wh)/3 - 50, (width-ww)/ 10.0, 10);
+    rect((width-ww) / 2.0-20, (height-wh)/3 - 60, (width-ww)/ 10.0, 10);
     fill(colors.agent);
-    rect((width-ww) / 2.0, (height-wh)/3 - 50, map(w.agents[0].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
+    rect((width-ww) / 2.0-20, (height-wh)/3 - 60, map(w.agents[0].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
     
     fill(255,20);
     noStroke();
-    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0, (height-wh)/3 - 50, (width-ww)/ 10.0, 10);
+    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0 + 20, (height-wh)/3 - 60, (width-ww)/ 10.0, 10);
     stroke(colors.agent)
     fill(0);
-    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0, (height-wh)/3 - 50, map(w.agents[1].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
+    rect((width-ww) / 2.0 + ww - (width-ww)/ 10.0 + 20, (height-wh)/3 - 60, map(w.agents[1].apples,0,maxScore,0,(width-ww)/ 10.0), 10);
     
     // make sound
     for(var i=0; i<w.agents.length; i++) {
       if(w.agents[i].apples!=pApples[i]) {
-        /*if(s1.isLoaded()) {
-          var p = pow( 2, ((36 - lastAppleY) / 12) -1 ); 
-          var filterFreq = random(60, 5000);
-          var filterRes = random(0.01, 3);
-          delay.filter(filterFreq, filterRes);
-          var delTime = random(.01, .1);
-          delay.delayTime(delTime);
-          s1.setVolume(random(0.4)+0.6);
-          s1.rate(p);
+        //var p = pow( 2, ((36 - lastAppleY) / 12) -1 ); // used to trigger sample with relative pitch
+        if(i == 0) { // first agent
+          feedbackDelay1.set({
+            delayTime: random(0.01),
+            feedback: random(0.7,0.99)
+          });
+          fm1.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 50).toFrequency(),"128n");
+        } else if(i == 1) { // second agent
+          feedbackDelay2.set({
+            delayTime: random(0.3),
+            feedback: random(0.7,0.99)
+          });
+          fm2.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 48).toFrequency(),"128n");
         }
-        s1.play();*/
+
+        let pitches = [0.6, 0.8, 1, 1.2];
+        let rnd = floor( random(4) );
+        drone.set({
+          playbackRate: pitches[rnd]
+        });
       }
       if(w.agents[i].poison!=pPoison[i]) {
-        //if(s2.isLoaded())s2.rate(random(2)+1);
-        //s2.play();
+        // play poison sound here
       }
       pApples[i] = w.agents[i].apples;
       pPoison[i] = w.agents[i].poison;
@@ -309,18 +305,9 @@ function mousePressed() {
     firsttime = false;
   }
 
-  // testing tonejs
-  fm.triggerAttackRelease(Tone.Midi(42).toFrequency(),"128n");
-
   down = true;
   if(GAME_STATE == "intro" || GAME_STATE == "outro") {
-    //if(!d1.isLooping()) {
-    //  d1.loop();
-    //}
-
-    ///if(!d2.isLooping()) {
-      //d2.loop();
-    //}
+    drone.start();
     GAME_STATE = "play";
   }
 }
@@ -337,7 +324,7 @@ function updateStats() {
 
 function addItem(p) {
   var newitx = p.x - (width-ww) / 2.0;
-  var newity = p.y - (height-wh) / 3.0;//tmpy * this.H/stringnum + this.H / stringnum * 2;//randf(20, this.H-20);
+  var newity = p.y - (height-wh) / 3.0;
   var index = floor(newity/wh*stringnum) - 2;
   var newitt = 1; // food or poison (1 and 2)
   if(activestrings[index]==1) {
@@ -380,37 +367,24 @@ function loadAgents() {
 
 function saveAgent() {
 	var brain = w.agents[0].brain;
-  // write out to json here
+  // write out agent state to json here
 }
 
-// tonejs related
+function linedash(x1, y1, x2, y2, delta, style = '-') {
+  // delta is both the length of a dash, the distance between 2 dots/dashes, and the diameter of a round
+  let distance = dist(x1,y1,x2,y2);
+  let dashNumber = distance/delta;
+  let xDelta = (x2-x1)/dashNumber;
+  let yDelta = (y2-y1)/dashNumber;
 
-let panner = new Tone.Panner(-1).toDestination();
-console.log(Tone.FMSynth);
-let fm = new Tone.FMSynth({
-    "harmonicity": 18,
-    "modulationIndex": 8,
-    "detune": 0,
-    "oscillator": {
-        "type": "square"
-    },
-    "envelope": {
-        "attack": 0.01,
-        "decay": 0.02,
-        "sustain": 0.15,
-        "release": 2
-    },
-    "modulation": {
-        "type": "square"
-    },
-    "modulationEnvelope": {
-        "attack": 0.01,
-        "decay": 0.02,
-        "sustain": 0.03,
-        "release": 0.3
-    },
-    
-}).toDestination();
-fm.connect(panner);
-fm.volume.value = -14;
-panner.pan.value = 0.5;
+  for (let i = 0; i < dashNumber; i+= 2) {
+    let xi1 = i*xDelta + x1;
+    let yi1 = i*yDelta + y1;
+    let xi2 = (i+1)*xDelta + x1;
+    let yi2 = (i+1)*yDelta + y1;
+
+    if (style == '-') { line(xi1, yi1, xi2, yi2); }
+    else if (style == '.') { point(xi1, yi1); }
+    else if (style == 'o') { ellipse(xi1, yi1, delta/2); }
+  }
+}

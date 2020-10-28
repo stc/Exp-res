@@ -10,25 +10,18 @@ var Vec = function(x, y) {
   this.y = y;
 }
 Vec.prototype = {
-  
-  // utilities
   dist_from: function(v) { return Math.sqrt(Math.pow(this.x-v.x,2) + Math.pow(this.y-v.y,2)); },
   length: function() { return Math.sqrt(Math.pow(this.x,2) + Math.pow(this.y,2)); },
-  
-  // new vector returning operations
   add: function(v) { return new Vec(this.x + v.x, this.y + v.y); },
   sub: function(v) { return new Vec(this.x - v.x, this.y - v.y); },
   rotate: function(a) {  // CLOCKWISE
     return new Vec(this.x * Math.cos(a) + this.y * Math.sin(a),
                    -this.x * Math.sin(a) + this.y * Math.cos(a));
   },
-  
-  // in place operations
   scale: function(s) { this.x *= s; this.y *= s; },
   normalize: function() { var d = this.length(); this.scale(1.0/d); }
 }
 
-// line intersection helper function: does line segment (p1,p2) intersect segment (p3,p4) ?
 var line_intersect = function(p1,p2,p3,p4) {
   var denom = (p4.y-p3.y)*(p2.x-p1.x)-(p4.x-p3.x)*(p2.y-p1.y);
   if(denom===0.0) { return false; } // parallel lines
@@ -61,13 +54,11 @@ var line_point_intersect = function(p1,p2,p0,rad) {
   return false;
 }
 
-// Wall is made up of two points
 var Wall = function(p1, p2) {
   this.p1 = p1;
   this.p2 = p2;
 }
 
-// World object contains many agents and walls and food and stuff
 var util_add_box = function(lst, x, y, w, h) {
   lst.push(new Wall(new Vec(x,y), new Vec(x+w,y)));
   lst.push(new Wall(new Vec(x+w,y), new Vec(x+w,y+h)));
@@ -75,7 +66,6 @@ var util_add_box = function(lst, x, y, w, h) {
   lst.push(new Wall(new Vec(x,y+h), new Vec(x,y)));
 }
 
-// item is circle thing on the floor that agent can interact with (see or eat, etc)
 var Item = function(x, y, type, index) {
   this.p = new Vec(x, y); // position
   this.v = new Vec((Math.random()-0.5)*2, 0);
@@ -90,24 +80,17 @@ var World = function(w,h) {
   this.agents = [];
   this.W = w;
   this.H = h;
-  
   this.clock = 0;
-  
-  // set up walls in the world
   this.walls = []; 
   var pad = 0;
   util_add_box(this.walls, pad, pad, this.W-pad*2-1, this.H-pad*2-1);
-  
-  // set up food and poison
   this.items = [];
 }
 
 World.prototype = {      
-  // helper function to get closest colliding walls/items
   stuff_collide_: function(p1, p2, check_walls, check_items) {
     var minres = false;
     
-    // collide with walls
     if(check_walls) {
       for(var i=0,n=this.walls.length;i<n;i++) {
         var wall = this.walls[i];
@@ -126,7 +109,6 @@ World.prototype = {
       }
     }
     
-    // collide with items
     if(check_items) {
       for(var i=0,n=this.items.length;i<n;i++) {
         var it = this.items[i];
@@ -148,7 +130,6 @@ World.prototype = {
     // tick the environment
     this.clock++;
     
-    // fix input to all agents based on environment
     // process eyes
     this.collpoints = [];
     for(var i=0,n=this.agents.length;i<n;i++) {
@@ -346,6 +327,7 @@ var Agent = function(id) {
   this.prevactionix = -1;
   this.num_states = this.eyes.length * 5 + 2;
 }
+
 Agent.prototype = {
   getNumStates: function() {
     return this.num_states;
