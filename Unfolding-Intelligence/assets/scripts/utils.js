@@ -42,7 +42,7 @@ function initStrings( which ) {
 }
 
 const colors = {
-  bg: [250],
+  bg: [0,8,10],
   wires: [0, 30],
   agent: [218,90,51],
   positive_food: [255,255,255],
@@ -50,13 +50,6 @@ const colors = {
   type: [64,80,85,220]
 }
 
-// URL Params
-
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-if(urlParams.has('frame')) {
-  console.log("generate frame");
-}
 
 // Tonejs components
 
@@ -100,7 +93,7 @@ let fm1 = new Tone.FMSynth({
     
 }).toDestination();
 fm1.connect(feedbackDelay1);
-fm1.volume.value = -14;
+fm1.volume.value = -8;
 
 var feedbackDelay2 = new Tone.FeedbackDelay(0.1, 0.98).connect(r2);
 let fm2 = new Tone.FMSynth({
@@ -128,4 +121,7 @@ let fm2 = new Tone.FMSynth({
     
 }).toDestination();
 fm2.connect(feedbackDelay2);
-fm2.volume.value = -14;
+fm2.volume.value = -8;
+
+let poisonSynth = new Tone.MembraneSynth().toDestination();
+poisonSynth.volume.value = -28;
