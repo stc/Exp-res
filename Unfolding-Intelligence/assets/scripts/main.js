@@ -423,14 +423,14 @@ function resetAgents() {
 }
 
 function touchMoved() {
-  down = true;
+  //down = true;
   myCursor.x = mouseX;
   myCursor.y = mouseY;
   return false;
 }
 
 function mouseMoved() {
-  down = true;
+  //down = true;
   myCursor.x = mouseX;
   myCursor.y = mouseY;
 }
