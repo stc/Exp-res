@@ -1,55 +1,25 @@
-function initStrings(which) {
+function initStrings(scaleSelect) {
   activestrings = [];
 
-  if (which == 0) {
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
-    activestrings.push(0);
-    activestrings.push(1);
-    activestrings.push(0);
+  let scales = [
+                [1,0,0,1,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  ]
+
+  for(let i=0; i<scales[scaleSelect].length; i++) {
+    activestrings.push(scales[scaleSelect][i]);
   }
 }
 
 const colors = {
   bg: [0, 8, 10],
-  wires: [0, 30],
+  wires: [255,20],
   agent: [218, 90, 51],
   positive_food: [255, 255, 255],
   negative_food: [46, 42, 21],
-  type: [64, 80, 85, 220]
+  type: [64, 80, 85, 220],
+  touch: [255, 150, 150, 100]
 }
-
 
 // Tonejs components
 

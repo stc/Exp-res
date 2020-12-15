@@ -14,13 +14,8 @@ var colora, colorb;
 
 var activestrings = [];
 
-// sounds
-var s1, s2;
-var reverb1, reverb2;
-var delay;
 var pApples = [0, 0];
 var pPoison = [0, 0];
-var d1, d2;
 
 // interact
 var myCursor;
@@ -39,15 +34,16 @@ var canLoop;
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
+  myCursor = createVector(0,0);
 }
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
-  myCursor = createVector();
+  
 
   spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
-  spec.epsilon = 0.2; // initial epsilon for epsilon-greedy policy, [0, 1)
+  spec.epsilon = 0.1; // initial epsilon for epsilon-greedy policy, [0, 1)
   spec.alpha = 0.005; // value function learning rate
   spec.experience_add_every = 5; // number of time steps before we add another experience to replay memory
   spec.experience_size = 10000; // size of experience
@@ -119,11 +115,11 @@ function draw() {
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
       if (mappedCursor.dist(v) < agentarea / 2) {
-        noFill();
-        stroke(255, 150, 150, 100);
-        ellipse(v.x + (width - ww) / 2.0, v.y + (height - wh) / 4, agentarea, agentarea);
+        //noFill();
+        //stroke(colors.touch);
+        //ellipse(v.x + (width - ww) / 2.0, v.y + (height - wh) / 4, agentarea, agentarea);
         noStroke();
-        fill(255, 150, 150, 100);
+        fill(colors.touch);
         ellipse(myCursor.x, myCursor.y, 100, 100);
       } else {
         addItem(myCursor);
@@ -238,13 +234,13 @@ function draw() {
 
     // draw scores
     noStroke();
-    fill(255, 20);
+    fill(colors.wires);
     rect((width - ww) / 2.0 - width / 4, (height - wh) / 3 - 80, ww + width / 2, 2);
     rect((width - ww) / 2.0 - 20, (height - wh) / 3 - 60, (width - ww) / 10.0, 10);
     fill(colors.agent);
     rect((width - ww) / 2.0 - 20, (height - wh) / 3 - 60 + 2, map(w.agents[0].apples, 0, maxScore, 0, (width - ww) / 10.0), 6);
 
-    fill(255, 20);
+    fill(colors.wires);
     noStroke();
     rect((width - ww) / 2.0 + ww - (width - ww) / 10.0 + 20, (height - wh) / 3 - 60, (width - ww) / 10.0, 10);
     stroke(colors.agent)
@@ -294,7 +290,7 @@ function draw() {
     // draw traces
     gfx0.stroke(30, 38, 40);
     gfx0.noFill();
-    gfx0.rect(0, 0, gfx0.width - 1, gfx0.height - 1);
+    gfx0.rect(1, 1, gfx0.width - 2, gfx0.height - 2);
     gfx0.noStroke();
     gfx0.fill(255, 20);
     gfx0.ellipse(trace0.x, trace0.y / 4, 2, 2);
@@ -366,7 +362,11 @@ function mousePressed() {
   down = true;
   myCursor = createVector(mouseX, mouseY);
   if (firsttime) {
-    StartAudioContext(Tone.context).then(function() {});
+    // old version of starting audio on user gesture
+    //StartAudioContext(Tone.context).then(function() {});
+    // updated version of starting audio on user gesture
+    //Tone.context.resume();
+
     firsttime = false;
   }
 
@@ -377,6 +377,9 @@ function mousePressed() {
   }
   if (GAME_STATE == "outro") {
     gfx0.clear();
+    pApples = [0, 0];
+    pPoison = [0, 0];
+    loadAgents();
     GAME_STATE = "play";
   }
   return false;
@@ -412,7 +415,7 @@ function resetAgents() {
 }
 
 function keyPressed() {
-    saveAgent();
+    // saveAgent();
 }
 
 function touchMoved() {
@@ -448,7 +451,7 @@ function loadAgents() {
       var agent = w.agents[i].brain;
       agent.fromJSON(data); 
       // set epsilon to be much lower for more optimal behavior
-      agent.epsilon = 0.05;
+      agent.epsilon = 0.1;
     }
   });
 }
