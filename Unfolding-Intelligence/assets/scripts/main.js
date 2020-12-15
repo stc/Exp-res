@@ -362,11 +362,7 @@ function mousePressed() {
   down = true;
   myCursor = createVector(mouseX, mouseY);
   if (firsttime) {
-    // old version of starting audio on user gesture
-    //StartAudioContext(Tone.context).then(function() {});
-    // updated version of starting audio on user gesture
-    //Tone.context.resume();
-
+    Tone.context.resume();
     firsttime = false;
   }
 
