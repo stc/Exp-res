@@ -115,9 +115,6 @@ function draw() {
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
       if (mappedCursor.dist(v) < agentarea / 2) {
-        //noFill();
-        //stroke(colors.touch);
-        //ellipse(v.x + (width - ww) / 2.0, v.y + (height - wh) / 4, agentarea, agentarea);
         noStroke();
         fill(colors.touch);
         ellipse(myCursor.x, myCursor.y, 100, 100);
