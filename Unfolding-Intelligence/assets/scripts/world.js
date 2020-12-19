@@ -9,6 +9,7 @@ var Vec = function(x, y) {
   this.x = x;
   this.y = y;
 }
+
 Vec.prototype = {
   dist_from: function(v) { return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2)); },
   length: function() { return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)); },

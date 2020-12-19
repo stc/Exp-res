@@ -21,6 +21,7 @@ var pPoison = [0, 0];
 var myCursor;
 var down = false;
 var agentarea = 100;
+let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
@@ -60,6 +61,9 @@ function setup() {
   colora = color(110, 209, 230);
   colorb = color(255, 140, 160);
   loadAgents();
+
+  t1 = new Triangulum(width/2 - width/4, height/2, 100, 0);
+  t2 = new Triangulum(width/2 + width/4, height/2, 100, 1);
 
   gfx0 = createGraphics(ww, wh / 4);
 
@@ -244,6 +248,11 @@ function draw() {
     noFill();
     rect((width - ww) / 2.0 + ww - (width - ww) / 10.0 + 20, (height - wh) / 3 - 60 + 2, map(w.agents[1].apples, 0, maxScore, 0, (width - ww) / 10.0), 6);
 
+
+    // draw triangulums
+    t1.draw();
+    t2.draw();
+
     // make sound
     for (var i = 0; i < w.agents.length; i++) {
       if (w.agents[i].apples != pApples[i]) {
@@ -375,12 +384,23 @@ function mousePressed() {
     loadAgents();
     GAME_STATE = "play";
   }
+
+  if(GAME_STATE == "play") {
+    t1.press();
+    t2.press();
+  }
+
   return false;
 }
 
 function mouseReleased() {
   myCursor = createVector(mouseX, mouseY);
   down = false;
+
+  if(GAME_STATE == "play") {
+    t1.release();
+    t2.release();
+  }
 }
 
 function updateStats() {
