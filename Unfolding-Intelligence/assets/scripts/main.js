@@ -101,36 +101,26 @@ function draw() {
     noStroke();
     fill(colors.type);
     textFont(font);
-    textAlign(LEFT);
+    textAlign(CENTER);
     textSize(20);
-    text("TRY TO FEED >>", ww / 8, wh / 9);
-    text("<< AVOID FEED", ww / 1.8, wh / 5.5);
+    text("Feed the agents & listen to their Songlines unfold", ww/2, wh/2.5);
     fill(colors.agent);
     ellipse(ww / 2, wh / 9.5, 20, 20);
     noFill();
     stroke(colors.agent);
     ellipse(ww / 2, wh / 6, 20, 20);
-
-
     pop();
   }
 
   if (GAME_STATE == "play") {
-    //var v = createVector(w.agents[0].p.x, w.agents[0].p.y);
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
-      /*if (mappedCursor.dist(v) < agentarea / 2) {
-        noStroke();
-        fill(colors.touch);
-        ellipse(myCursor.x, myCursor.y, 100, 100);
-      } else {*/
-        if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
-          addItem(myCursor);
-        }
-        fill(255, 20);
-        noStroke();
-        ellipse(myCursor.x, myCursor.y, 100, 100);
-      //}
+      if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
+        addItem(myCursor);
+      }
+      fill(255, 20);
+      noStroke();
+      ellipse(myCursor.x, myCursor.y, 100, 100);
     }
 
     var agents = w.agents;
