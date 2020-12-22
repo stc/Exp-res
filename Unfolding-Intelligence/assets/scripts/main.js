@@ -86,7 +86,9 @@ function draw() {
 
     fill(colors.type);
     textSize(26);
+    text("VISIT ON DESKTOP FOR FULL EXPERIENCE", width / 2, height / 2 - 50);
     text("TURN ON AUDIO", width / 2, height / 2 + 50);
+
 
     textAlign(LEFT);
 

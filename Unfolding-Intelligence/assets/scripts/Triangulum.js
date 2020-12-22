@@ -31,7 +31,7 @@ class Triangulum {
     noStroke();
     fill(255);
     text(`reward: ${w.agents[this.mode].apples} / ${maxScore}`, this.xp, this.yp + this.s);
-    
+
     if(this.mode == 0) {
       if(dist(mouseX,mouseY,this.xp,this.yp) < this.s) {
         fill(218, 90, 51, 255);
@@ -50,7 +50,6 @@ class Triangulum {
       }
     }
     
-
     push();
     translate(this.xp,this.yp+this.s/48);
     scale(0.5);
@@ -131,5 +130,13 @@ class Control {
   
   getValue() {
     return this.res;
+  }
+
+  setControls() {
+    // update control UI based on agent props here
+  }
+
+  getControls() {
+    // update & map agent properties here
   }
 }
