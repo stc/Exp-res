@@ -41,11 +41,10 @@ function preload() {
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   
-
   spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
-  spec.epsilon = 0.1; // initial epsilon for epsilon-greedy policy, [0, 1)
-  spec.alpha = 0.005; // value function learning rate
+  spec.epsilon = 0.01; // initial epsilon for epsilon-greedy policy, [0, 1)
+  spec.alpha = 0.000005; // value function learning rate
   spec.experience_add_every = 5; // number of time steps before we add another experience to replay memory
   spec.experience_size = 10000; // size of experience
   spec.learning_steps_per_iteration = 5;
@@ -53,17 +52,17 @@ function setup() {
   spec.num_hidden_units = 300 // number of neurons in hidden layer
 
   //ww = canvas.width * 0.8;
-  ww = canvas.height * 0.6;
-  wh = canvas.height * 0.6;
+  ww = canvas.height * 0.7;
+  wh = canvas.height * 0.7;
   w = new World(ww, wh);
-  initStrings(0);
+  initStrings(3);
 
   colora = color(110, 209, 230);
   colorb = color(255, 140, 160);
   loadAgents();
 
-  t1 = new Triangulum(width/2 - width/4, height/2, 100, 0);
-  t2 = new Triangulum(width/2 + width/4, height/2, 100, 1);
+  t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
+  t2 = new Triangulum(width/2 + ww/2 + 200, height/3, 100, 1);
 
   gfx0 = createGraphics(ww, wh / 4);
 
@@ -115,19 +114,21 @@ function draw() {
   }
 
   if (GAME_STATE == "play") {
-    var v = createVector(w.agents[0].p.x, w.agents[0].p.y);
+    //var v = createVector(w.agents[0].p.x, w.agents[0].p.y);
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
-      if (mappedCursor.dist(v) < agentarea / 2) {
+      /*if (mappedCursor.dist(v) < agentarea / 2) {
         noStroke();
         fill(colors.touch);
         ellipse(myCursor.x, myCursor.y, 100, 100);
-      } else {
-        addItem(myCursor);
+      } else {*/
+        if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
+          addItem(myCursor);
+        }
         fill(255, 20);
         noStroke();
         ellipse(myCursor.x, myCursor.y, 100, 100);
-      }
+      //}
     }
 
     var agents = w.agents;
@@ -136,7 +137,7 @@ function draw() {
     updateStats();
 
     push();
-    translate((width - ww) / 2.0, (height - wh) / 4);
+    translate((width - ww) / 2.0, wh/20);
 
     // draw agents
     for (var i = 0; i < agents.length; i++) {
@@ -233,22 +234,6 @@ function draw() {
 
     pop();
 
-    // draw scores
-    noStroke();
-    fill(colors.wires);
-    rect((width - ww) / 2.0 - width / 4, (height - wh) / 3 - 80, ww + width / 2, 2);
-    rect((width - ww) / 2.0 - 20, (height - wh) / 3 - 60, (width - ww) / 10.0, 10);
-    fill(colors.agent);
-    rect((width - ww) / 2.0 - 20, (height - wh) / 3 - 60 + 2, map(w.agents[0].apples, 0, maxScore, 0, (width - ww) / 10.0), 6);
-
-    fill(colors.wires);
-    noStroke();
-    rect((width - ww) / 2.0 + ww - (width - ww) / 10.0 + 20, (height - wh) / 3 - 60, (width - ww) / 10.0, 10);
-    stroke(colors.agent)
-    noFill();
-    rect((width - ww) / 2.0 + ww - (width - ww) / 10.0 + 20, (height - wh) / 3 - 60 + 2, map(w.agents[1].apples, 0, maxScore, 0, (width - ww) / 10.0), 6);
-
-
     // draw triangulums
     t1.draw();
     t2.draw();
@@ -302,7 +287,7 @@ function draw() {
     gfx0.ellipse(trace0.x, trace0.y / 4, 2, 2);
     gfx0.fill(218, 90, 51, 20);
     gfx0.ellipse(trace1.x, trace1.y / 4, 2, 2);
-    image(gfx0, width / 2 - ww / 2, wh + (height - wh) / 4 + 50);
+    //image(gfx0, width / 2 - ww / 2, wh + (height - wh) / 4 + 50);
   }
 
   if (GAME_STATE == "outro") {
@@ -412,7 +397,7 @@ function updateStats() {
 function addItem(p) {
   var newitx = p.x - (width - ww) / 2.0;
   var newity = p.y - (height - wh) / 3.0;
-  var index = floor(newity / wh * stringnum) - 2;
+  var index = floor(newity / wh * stringnum + 1);
   var newitt = 1; // food or poison (1 and 2)
   if (activestrings[index] == 1) {
     var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
@@ -453,8 +438,12 @@ function loadAgents() {
     var a = new Agent(k);
     env = a;
     a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
-    a.epsilon = 0.15;
-    a.p = new Vec(random(ww), random(wh));
+    //a.epsilon = 0.05;
+    if(k==0) {
+      a.p = new Vec(0, wh);
+    } else {
+      a.p = new Vec(ww,wh);
+    }
     w.agents.push(a);
     smooth_reward_history.push([]);
   }
@@ -464,7 +453,7 @@ function loadAgents() {
       var agent = w.agents[i].brain;
       agent.fromJSON(data); 
       // set epsilon to be much lower for more optimal behavior
-      agent.epsilon = 0.1;
+      agent.epsilon = 0.0005;
     }
   });
 }

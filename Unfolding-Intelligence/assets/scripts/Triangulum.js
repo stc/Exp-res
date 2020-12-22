@@ -27,15 +27,12 @@ class Triangulum {
     fill(colors.bg);
     triangle(this.p1.x,this.p1.y,this.p2.x,this.p2.y,this.p3.x,this.p3.y);
     
+    // scores
+    noStroke();
+    fill(255);
+    text(`reward: ${w.agents[this.mode].apples} / ${maxScore}`, this.xp, this.yp + this.s);
+    
     if(this.mode == 0) {
-      if(dist(mouseX,mouseY,this.xp,this.yp) < this.s) {
-        noFill();
-        stroke(218, 90, 51, 255);
-      } else {
-        noFill();
-        stroke(218, 90, 51, 100);
-      }
-    } else {
       if(dist(mouseX,mouseY,this.xp,this.yp) < this.s) {
         fill(218, 90, 51, 255);
         noStroke();
@@ -43,7 +40,17 @@ class Triangulum {
         fill(218, 90, 51, 100);
         noStroke();
       }
+    } else {
+      if(dist(mouseX,mouseY,this.xp,this.yp) < this.s) {
+        noFill();
+        stroke(218, 90, 51, 255);
+      } else {
+        noFill();
+        stroke(218, 90, 51, 100);
+      }
     }
+    
+
     push();
     translate(this.xp,this.yp+this.s/48);
     scale(0.5);
