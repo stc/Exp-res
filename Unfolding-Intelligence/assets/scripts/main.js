@@ -20,7 +20,7 @@ var pPoison = [0, 0];
 // interact
 var myCursor;
 var down = false;
-var agentarea = 100;
+//var agentarea = 100;
 let t1, t2;
 
 // game states
@@ -57,12 +57,12 @@ function setup() {
   w = new World(ww, wh);
   initStrings(3);
 
+  t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
+  t2 = new Triangulum(width/2 + ww/2 + 200, height/3, 100, 1);
+
   colora = color(110, 209, 230);
   colorb = color(255, 140, 160);
   loadAgents();
-
-  t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
-  t2 = new Triangulum(width/2 + ww/2 + 200, height/3, 100, 1);
 
   gfx0 = createGraphics(ww, wh / 4);
 
@@ -126,7 +126,7 @@ function draw() {
     var agents = w.agents;
 
     w.tick();
-    updateStats();
+    //updateStats();
 
     push();
     translate((width - ww) / 2.0, wh/20);
@@ -380,30 +380,6 @@ function mouseReleased() {
   }
 }
 
-function updateStats() {
-  for (var i = 0; i < w.agents.length; i++) {
-    stats[i] = "+: " + w.agents[i].apples + " -: " + w.agents[i].poison;
-  }
-}
-
-function addItem(p) {
-  var newitx = p.x - (width - ww) / 2.0;
-  var newity = p.y - (height - wh) / 3.0;
-  var index = floor(newity / wh * stringnum + 1);
-  var newitt = 1; // food or poison (1 and 2)
-  if (activestrings[index] == 1) {
-    var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
-    w.items.push(newit);
-  }
-}
-
-function resetAgents() {
-  var brain = new RL.DQNAgent(env, spec);
-  for (var i = 0; i < w.agents.length; i++) {
-    w.agents[i].brain = brain;
-  }
-}
-
 function keyPressed() {
     // saveAgent();
 }
@@ -423,6 +399,34 @@ document.addEventListener('gesturestart', function(e) {
   e.preventDefault();
 });
 
+/*
+function updateStats() {
+  for (var i = 0; i < w.agents.length; i++) {
+    stats[i] = "+: " + w.agents[i].apples + " -: " + w.agents[i].poison;
+  }
+}
+*/
+
+function addItem(p) {
+  var newitx = p.x - (width - ww) / 2.0;
+  var newity = p.y - (height - wh) / 3.0;
+  var index = floor(newity / wh * stringnum + 1);
+  var newitt = 1; // food or poison (1 and 2)
+  if (activestrings[index] == 1) {
+    var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
+    w.items.push(newit);
+  }
+}
+
+function resetAgents() {
+  var brain = new RL.DQNAgent(env, spec);
+  for (var i = 0; i < w.agents.length; i++) {
+    w.agents[i].brain = brain;
+  }
+}
+
+
+
 function loadAgents() {
   w.agents = [];
 
@@ -433,8 +437,10 @@ function loadAgents() {
     //a.epsilon = 0.05;
     if(k==0) {
       a.p = new Vec(0, wh);
+      t1.setPerception(a.eyes[0].max_range);
     } else {
       a.p = new Vec(ww,wh);
+      t2.setPerception(a.eyes[0].max_range);
     }
     w.agents.push(a);
     smooth_reward_history.push([]);

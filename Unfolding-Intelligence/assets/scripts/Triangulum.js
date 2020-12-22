@@ -66,6 +66,17 @@ class Triangulum {
     text("experience", this.p1.x,this.p1.y + this.s/3); // pre-trained agent states
     text("reflex", this.p3.x,this.p3.y + this.s/3); // speed & exploration value
     text("perception", this.p2.x,this.p2.y - this.s/3); // area of sensing
+
+    // sync agents with triangulums 
+    if(down) {
+      for(let i=0; i<w.agents[0].eyes.length; i++) {
+        if(this.mode==0) {
+          w.agents[0].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 300);
+        } else {
+          w.agents[1].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 300);
+        }
+      }
+    }
   }
   
   press() {
@@ -78,6 +89,14 @@ class Triangulum {
     this.c1.canMove = false;
     this.c2.canMove = false;
     this.c3.canMove = false;
+  }
+
+  setPerception(range) {
+    // update control UI based on agent props here
+
+    // sensing range, between 100 - 300
+    this.c2.val = map(range, 20, 300, 0, 100);
+    this.c2.res = map(range, 20, 300, 0, 100);
   }
 }
 
@@ -130,13 +149,5 @@ class Control {
   
   getValue() {
     return this.res;
-  }
-
-  setControls() {
-    // update control UI based on agent props here
-  }
-
-  getControls() {
-    // update & map agent properties here
   }
 }
