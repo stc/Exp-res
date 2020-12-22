@@ -44,11 +44,11 @@ function setup() {
   spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
   spec.epsilon = 0.01; // initial epsilon for epsilon-greedy policy, [0, 1)
-  spec.alpha = 0.000005; // value function learning rate
+  spec.alpha = 0.0001; // value function learning rate
   spec.experience_add_every = 5; // number of time steps before we add another experience to replay memory
   spec.experience_size = 10000; // size of experience
   spec.learning_steps_per_iteration = 5;
-  spec.tderror_clamp = 1.0; // for robustness
+  spec.tderror_clamp = 0.5; // for robustness
   spec.num_hidden_units = 300 // number of neurons in hidden layer
 
   //ww = canvas.width * 0.8;
@@ -438,9 +438,11 @@ function loadAgents() {
     if(k==0) {
       a.p = new Vec(0, wh);
       t1.setPerception(a.eyes[0].max_range);
+      t1.setReflex(a.speed);
     } else {
       a.p = new Vec(ww,wh);
       t2.setPerception(a.eyes[0].max_range);
+      t2.setReflex(a.speed);
     }
     w.agents.push(a);
     smooth_reward_history.push([]);

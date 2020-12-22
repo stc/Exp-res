@@ -197,8 +197,8 @@ World.prototype = {
       a.heading = tmpv.heading();
 
       // forward the agent by velocity
-      a.v.x *= 0.95;
-      a.v.y *= 0.95;
+      a.v.x *= a.speed;
+      a.v.y *= a.speed;
       a.p.x += a.v.x;
       a.p.y += a.v.y;
 
@@ -323,6 +323,7 @@ var Agent = function(id) {
   // positional information
   this.p = new Vec(0, 0);
   this.v = new Vec(0, 0);
+  this.speed = 0.999;
   this.op = this.p; // old position
   this.angle = 0; // direction facing
   this.heading = 0;

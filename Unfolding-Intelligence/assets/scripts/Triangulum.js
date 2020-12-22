@@ -69,6 +69,15 @@ class Triangulum {
 
     // sync agents with triangulums 
     if(down) {
+      // reflex
+      if(this.mode==0) {
+          w.agents[0].speed = map(this.c3.res, 0, 100, 0.5, 1.5);
+        } else {
+          w.agents[1].speed = map(this.c3.res, 0, 100, 0.5, 1.5);
+        }
+      // experience
+
+      // perception
       for(let i=0; i<w.agents[0].eyes.length; i++) {
         if(this.mode==0) {
           w.agents[0].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 300);
@@ -92,11 +101,14 @@ class Triangulum {
   }
 
   setPerception(range) {
-    // update control UI based on agent props here
-
     // sensing range, between 100 - 300
     this.c2.val = map(range, 20, 300, 0, 100);
     this.c2.res = map(range, 20, 300, 0, 100);
+  }
+
+  setReflex(range) {
+    this.c3.val = map(range,0.5,1.5,0,100);
+    this.c3.res = map(range,0.5,1.5,0,100);
   }
 }
 
