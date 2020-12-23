@@ -325,7 +325,7 @@ function draw() {
       textFont(font);
       textAlign(CENTER);
       textSize(24);
-      text("Nice memories paths in both lines", width / 2, height / 4);
+      text("Nice memory paths in both lines", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
