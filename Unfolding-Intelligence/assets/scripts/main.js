@@ -25,11 +25,13 @@ let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
-var maxScore = 250;
+var maxScore = 100;
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
-var gfx0;
+var ptrace0 = { x: 0, y: 0 };
+var ptrace1 = { x: 0, y: 0 };
+var gfx1, gfx2;
 
 var canLoop;
 
@@ -43,7 +45,7 @@ function setup() {
   
   spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
-  spec.epsilon = 0.01; // initial epsilon for epsilon-greedy policy, [0, 1)
+  spec.epsilon = 0.2; // initial epsilon for epsilon-greedy policy, [0, 1)
   spec.alpha = 0.0001; // value function learning rate
   spec.experience_add_every = 5; // number of time steps before we add another experience to replay memory
   spec.experience_size = 10000; // size of experience
@@ -64,7 +66,11 @@ function setup() {
   colorb = color(255, 140, 160);
   loadAgents();
 
-  gfx0 = createGraphics(ww, wh / 4);
+  gfx1 = createGraphics(ww / 4, wh / 4);
+  gfx2 = createGraphics(ww / 4, wh / 4);
+
+  gfx1.background(colors.bg);
+  gfx2.background(colors.bg);
 
   if (!canLoop) {
     noLoop();
@@ -226,6 +232,10 @@ function draw() {
 
     pop();
 
+    noStroke();
+    fill(255,30);
+    rect(t1.xp,0,1,height/2);
+    rect(t2.xp,0,1,height/2);
     // draw triangulums
     t1.draw();
     t2.draw();
@@ -270,16 +280,29 @@ function draw() {
       pPoison[i] = w.agents[i].poison;
     }
 
-    // draw traces
-    gfx0.stroke(30, 38, 40);
-    gfx0.noFill();
-    gfx0.rect(1, 1, gfx0.width - 2, gfx0.height - 2);
-    gfx0.noStroke();
-    gfx0.fill(255, 20);
-    gfx0.ellipse(trace0.x, trace0.y / 4, 2, 2);
-    gfx0.fill(218, 90, 51, 20);
-    gfx0.ellipse(trace1.x, trace1.y / 4, 2, 2);
-    //image(gfx0, width / 2 - ww / 2, wh + (height - wh) / 4 + 50);
+    // draw songlines
+    gfx1.strokeWeight(2);
+    gfx1.stroke(30, 38, 40);
+    gfx1.noFill();
+    gfx1.rect(1, 1, gfx1.width - 2, gfx1.height - 2);
+    gfx1.strokeWeight(2);
+    gfx1.stroke(255, 20);
+    gfx1.line(ptrace0.x / 4, ptrace0.y / 4, trace0.x / 4, trace0.y / 4);
+    image(gfx1, t1.xp - gfx1.width/2, t1.yp + gfx1.height/1.5);
+
+    gfx2.strokeWeight(2);
+    gfx2.stroke(30, 38, 40);
+    gfx2.noFill();
+    gfx2.rect(1, 1, gfx2.width - 2, gfx2.height - 2);
+    gfx2.strokeWeight(2);
+    gfx2.stroke(218, 90, 51, 20);
+    gfx2.line(ptrace1.x / 4, ptrace1.y / 4, trace1.x / 4, trace1.y / 4);
+    image(gfx2, t2.xp - gfx2.width/2, t2.yp + gfx2.height/1.5);
+
+    ptrace0.x = trace0.x;
+    ptrace0.y = trace0.y;
+    ptrace1.x = trace1.x;
+    ptrace1.y = trace1.y;
   }
 
   if (GAME_STATE == "outro") {
@@ -292,23 +315,23 @@ function draw() {
       textFont(font);
       textAlign(CENTER);
       textSize(24);
-      text("YOU MADE IT! NICE MUSIC...", width / 2, height / 2);
+      text("Great choreography, nice one", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height / 2 + height / 8);
+      text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
     } else {
       fill(colors.type);
       noStroke();
       textFont(font);
       textAlign(CENTER);
       textSize(24);
-      text("AWWW... NEEDS MORE TUNING.. TRY AGAIN?", width / 2, height / 2);
+      text("Nice memories paths in both lines", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height / 2 + height / 8);
+      text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
     }
-
-
+    image(gfx1, width/2 - gfx1.width*2, t1.yp, gfx1.width*2,gfx1.height*2);
+    image(gfx2, width/2, t2.yp, gfx2.width*2,gfx2.height*2);
   }
 
   // check scores
@@ -328,7 +351,6 @@ function draw() {
 }
 
 // URL Params
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 if (urlParams.has('frame')) {
@@ -355,7 +377,8 @@ function mousePressed() {
     GAME_STATE = "play";
   }
   if (GAME_STATE == "outro") {
-    gfx0.clear();
+    gfx1.background(colors.bg);
+    gfx2.background(colors.bg);
     pApples = [0, 0];
     pPoison = [0, 0];
     loadAgents();
@@ -380,9 +403,7 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {
-    // saveAgent();
-}
+function keyPressed() {}
 
 function touchMoved() {
   myCursor.x = mouseX;
@@ -398,14 +419,6 @@ function mouseMoved() {
 document.addEventListener('gesturestart', function(e) {
   e.preventDefault();
 });
-
-/*
-function updateStats() {
-  for (var i = 0; i < w.agents.length; i++) {
-    stats[i] = "+: " + w.agents[i].apples + " -: " + w.agents[i].poison;
-  }
-}
-*/
 
 function addItem(p) {
   var newitx = p.x - (width - ww) / 2.0;
@@ -425,8 +438,6 @@ function resetAgents() {
   }
 }
 
-
-
 function loadAgents() {
   w.agents = [];
 
@@ -434,26 +445,33 @@ function loadAgents() {
     var a = new Agent(k);
     env = a;
     a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
-    //a.epsilon = 0.05;
+    a.epsilon = 0.0002;
     if(k==0) {
       a.p = new Vec(0, wh);
       t1.setPerception(a.eyes[0].max_range);
       t1.setReflex(a.speed);
+      //t1.setExplore(a.alpha);
     } else {
       a.p = new Vec(ww,wh);
+      ptrace0.x = 0;
+      ptrace1.x = ww;
       t2.setPerception(a.eyes[0].max_range);
       t2.setReflex(a.speed);
+      //t2.setExplore(a.alpha);
     }
     w.agents.push(a);
+    
+    smooth_reward_history = []; // [][];
+    smooth_reward = [];
     smooth_reward_history.push([]);
   }
 
-  loadJSON("assets/data/gameagent.json", function(data) {
+  loadJSON("assets/data/agent_trained.json", function(data) {
     for (var i = 0; i < w.agents.length; i++) {
       var agent = w.agents[i].brain;
       agent.fromJSON(data); 
       // set epsilon to be much lower for more optimal behavior
-      agent.epsilon = 0.0005;
+      //agent.epsilon = 0.002;
     }
   });
 }
@@ -461,8 +479,8 @@ function loadAgents() {
 function saveAgent() {
   var brain = w.agents[0].brain;
   // write out agent state to json here
-  let s = JSON.stringify(brain);
-  download(s, 'agent-state.json', 'text/plain');
+  //let s = JSON.stringify(brain);
+  //download(s, 'agent-state.json', 'text/plain');
 }
 
 function download(content, fileName, contentType) {

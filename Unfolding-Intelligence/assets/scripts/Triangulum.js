@@ -19,7 +19,7 @@ class Triangulum {
   
   draw() { 
     noStroke();
-    this.c1.draw();
+    //this.c1.draw();
     this.c2.draw();
     this.c3.draw();
     
@@ -27,10 +27,25 @@ class Triangulum {
     fill(colors.bg);
     triangle(this.p1.x,this.p1.y,this.p2.x,this.p2.y,this.p3.x,this.p3.y);
     
-    // scores
+    // rewards
     noStroke();
-    fill(255);
-    text(`reward: ${w.agents[this.mode].apples} / ${maxScore}`, this.xp, this.yp + this.s);
+    fill(60);
+    ellipse(this.p1.x, this.p1.y, this.s/3, this.s/3);
+    if(this.mode == 0) {
+      fill(255,200);
+    } else {
+      fill(218,90,51,200);
+    }
+
+    push();
+    translate(this.p1.x, this.p1.y);
+    rotate(PI/2);
+    translate(-this.p1.x, -this.p1.y);
+    arc(this.p1.x, this.p1.y, this.s/3, this.s/3,0,map(w.agents[this.mode].apples/ maxScore, 0, 1, 0, TWO_PI, PIE ));
+    pop();
+
+    fill(colors.bg);
+    ellipse(this.p1.x, this.p1.y, this.s/6, this.s/6);
 
     if(this.mode == 0) {
       if(dist(mouseX,mouseY,this.xp,this.yp) < this.s) {
@@ -63,7 +78,7 @@ class Triangulum {
     textAlign(CENTER);
     textFont(font);
     textSize(this.s/6);
-    text("experience", this.p1.x,this.p1.y + this.s/3); // pre-trained agent states
+    text("rewards", this.p1.x,this.p1.y + this.s/3); // pre-trained agent states
     text("reflex", this.p3.x,this.p3.y + this.s/3); // speed & exploration value
     text("perception", this.p2.x,this.p2.y - this.s/3); // area of sensing
 
@@ -71,21 +86,27 @@ class Triangulum {
     if(down) {
       // reflex
       if(this.mode==0) {
-          w.agents[0].speed = map(this.c3.res, 0, 100, 0.5, 1.5);
+          w.agents[0].speed = map(this.c3.res, 0, 100, 0.001, 0.5);
         } else {
-          w.agents[1].speed = map(this.c3.res, 0, 100, 0.5, 1.5);
+          w.agents[1].speed = map(this.c3.res, 0, 100, 0.001, 0.5);
         }
-      // experience
-
+      // explore
+      if(this.mode==0) {
+          //w.agents[0].alpha = map(this.c1.res, 0, 100, 5, 0.0000001);
+        } else {
+          //w.agents[1].alpha = map(this.c1.res, 0, 100, 5, 0.0000001);
+        }
       // perception
       for(let i=0; i<w.agents[0].eyes.length; i++) {
         if(this.mode==0) {
-          w.agents[0].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 300);
+          w.agents[0].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 500);
         } else {
-          w.agents[1].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 300);
+          w.agents[1].eyes[i].max_range = map(this.c2.res, 0, 100, 20, 500);
         }
       }
     }
+
+    //console.log(w.agents[0].alpha);
   }
   
   press() {
@@ -99,16 +120,20 @@ class Triangulum {
     this.c2.canMove = false;
     this.c3.canMove = false;
   }
+  setExplore(range) {
+    this.c1.val = map(range, 0.0000001, 5, 0, 100);
+    this.c1.res = map(range, 0.0000001, 5, 0, 100);
+  }
 
   setPerception(range) {
     // sensing range, between 100 - 300
-    this.c2.val = map(range, 20, 300, 0, 100);
-    this.c2.res = map(range, 20, 300, 0, 100);
+    this.c2.val = map(range, 20, 500, 0, 100);
+    this.c2.res = map(range, 20, 500, 0, 100);
   }
 
   setReflex(range) {
-    this.c3.val = map(range,0.5,1.5,0,100);
-    this.c3.res = map(range,0.5,1.5,0,100);
+    this.c3.val = map(range,0.001,0.5,0,100);
+    this.c3.res = map(range,0.001,0.5,0,100);
   }
 }
 
@@ -134,6 +159,10 @@ class Control {
       this.res = constrain(this.val,0,100);
     }
     
+    noStroke();
+    fill(colors.bg);
+    ellipse(this.x,this.y,this.s/3, this.s/3);
+
     if(dist(mouseX,mouseY,this.x,this.y) < this.s/3/2) {
       stroke(255,100);
       fill(255,50);

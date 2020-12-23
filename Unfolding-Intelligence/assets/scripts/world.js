@@ -179,26 +179,25 @@ World.prototype = {
       a.oangle = a.angle; // and angle
 
       // execute agent's desired action
-      var speed = 0.1;
       if (a.action === 0) {
-        a.v.x += -speed;
+        a.v.x += -a.speed;
       }
       if (a.action === 1) {
-        a.v.x += speed;
+        a.v.x += a.speed;
       }
       if (a.action === 2) {
-        a.v.y += -speed;
+        a.v.y += -a.speed;
       }
       if (a.action === 3) {
-        a.v.y += speed;
+        a.v.y += a.speed;
       }
 
       var tmpv = createVector(a.v.x, a.v.y);
       a.heading = tmpv.heading();
 
       // forward the agent by velocity
-      a.v.x *= a.speed;
-      a.v.y *= a.speed;
+      a.v.x *= 0.95; //a.speed;
+      a.v.y *= 0.95; //a.speed;
       a.p.x += a.v.x;
       a.p.y += a.v.y;
 
@@ -323,7 +322,7 @@ var Agent = function(id) {
   // positional information
   this.p = new Vec(0, 0);
   this.v = new Vec(0, 0);
-  this.speed = 0.999;
+  this.speed = 0.1;
   this.op = this.p; // old position
   this.angle = 0; // direction facing
   this.heading = 0;
