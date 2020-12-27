@@ -25,7 +25,7 @@ let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
-var maxScore = 100;
+var maxScore = 30;
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
@@ -34,6 +34,9 @@ var ptrace1 = { x: 0, y: 0 };
 var gfx1, gfx2;
 
 var canLoop;
+
+let gfxAlpha = 0;
+let pSec = 0;
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
@@ -119,15 +122,33 @@ function draw() {
   }
 
   if (GAME_STATE == "play") {
+    noStroke();
+    fill(255,30);
+    rect(t1.xp,0,1,height/2);
+    rect(t2.xp,0,1,height/2);
+    // draw triangulums
+    t1.draw();
+    t2.draw();
+    
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
       if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
         addItem(myCursor);
       }
+      
       fill(255, 20);
       noStroke();
       ellipse(myCursor.x, myCursor.y, 100, 100);
     }
+
+
+    if(second()!=pSec) {
+      if(second()%3==0) {
+        let v = createVector(random(width), random(height));
+        addItem(v);
+      }
+    }
+    pSec = second();
 
     var agents = w.agents;
 
@@ -232,13 +253,7 @@ function draw() {
 
     pop();
 
-    noStroke();
-    fill(255,30);
-    rect(t1.xp,0,1,height/2);
-    rect(t2.xp,0,1,height/2);
-    // draw triangulums
-    t1.draw();
-    t2.draw();
+    
 
     // make sound
     for (var i = 0; i < w.agents.length; i++) {
@@ -281,6 +296,7 @@ function draw() {
     }
 
     // draw songlines
+    tint(255);
     gfx1.strokeWeight(2);
     gfx1.stroke(30, 38, 40);
     gfx1.noFill();
@@ -303,6 +319,8 @@ function draw() {
     ptrace0.y = trace0.y;
     ptrace1.x = trace1.x;
     ptrace1.y = trace1.y;
+
+    gfxAlpha = 0;
   }
 
   if (GAME_STATE == "outro") {
@@ -330,8 +348,12 @@ function draw() {
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
     }
+    tint(255,gfxAlpha);
     image(gfx1, width/2 - gfx1.width*2, t1.yp, gfx1.width*2,gfx1.height*2);
     image(gfx2, width/2, t2.yp, gfx2.width*2,gfx2.height*2);
+    if(gfxAlpha<255) {
+      gfxAlpha++;
+    }
   }
 
   // check scores
@@ -341,6 +363,7 @@ function draw() {
       loadAgents();
       w.items = [];
       GAME_STATE = "outro";
+
     }
   }
 
@@ -382,6 +405,7 @@ function mousePressed() {
     pApples = [0, 0];
     pPoison = [0, 0];
     loadAgents();
+    initStrings(floor(random(4)));
     GAME_STATE = "play";
   }
 
