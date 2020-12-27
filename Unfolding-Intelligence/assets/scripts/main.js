@@ -72,8 +72,11 @@ function setup() {
   gfx1 = createGraphics(ww / 4, wh / 4);
   gfx2 = createGraphics(ww / 4, wh / 4);
 
-  gfx1.background(colors.bg);
-  gfx2.background(colors.bg);
+  //gfx1.background(colors.bg);
+  //gfx2.background(colors.bg);
+
+  gfx1.clear();
+  gfx2.clear();
 
   if (!canLoop) {
     noLoop();
@@ -83,6 +86,7 @@ function setup() {
 function draw() {
   background(colors.bg);
   frameRate(60);
+  console.log(frameRate());
 
   if (GAME_STATE == "intro") {
     noStroke();
@@ -124,8 +128,8 @@ function draw() {
   if (GAME_STATE == "play") {
     noStroke();
     fill(255,30);
-    rect(t1.xp,0,1,height/2);
-    rect(t2.xp,0,1,height/2);
+    rect(t1.xp,0,1,t1.yp + gfx1.height/1.5);
+    rect(t2.xp,0,1,t2.yp + gfx2.height/1.5);
     // draw triangulums
     t1.draw();
     t2.draw();
@@ -260,13 +264,13 @@ function draw() {
             delayTime: random(0.01),
             feedback: random(0.7, 0.99)
           });
-          fm1.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 50).toFrequency(), "128n");
+          fm1.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 50).toFrequency(), "8n");
         } else if (i == 1) { // second agent
           feedbackDelay2.set({
             delayTime: random(0.3),
             feedback: random(0.7, 0.99)
           });
-          fm2.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 48).toFrequency(), "128n");
+          fm2.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 48).toFrequency(), "8n");
         }
 
         let pitches = [0.6, 0.8, 1, 1.2];
@@ -293,23 +297,34 @@ function draw() {
 
     // draw songlines
     tint(255);
-    gfx1.strokeWeight(2);
-    gfx1.stroke(30, 38, 40);
-    gfx1.noFill();
-    gfx1.rect(1, 1, gfx1.width - 2, gfx1.height - 2);
+    //gfx1.strokeWeight(2);
+    //gfx1.stroke(30, 38, 40);
+    //gfx1.noFill();
+    //gfx1.rect(1, 1, gfx1.width - 2, gfx1.height - 2);
     gfx1.strokeWeight(2);
     gfx1.stroke(255, 20);
     gfx1.line(ptrace0.x / 4, ptrace0.y / 4, trace0.x / 4, trace0.y / 4);
     image(gfx1, t1.xp - gfx1.width/2, t1.yp + gfx1.height/1.5);
 
-    gfx2.strokeWeight(2);
-    gfx2.stroke(30, 38, 40);
-    gfx2.noFill();
-    gfx2.rect(1, 1, gfx2.width - 2, gfx2.height - 2);
+    strokeWeight(2);
+    stroke(30, 38, 40);
+    noFill();
+    rect(t1.xp - gfx1.width/2, t1.yp + gfx1.height/1.5, gfx1.width - 1, gfx1.height - 1);
+
+
+    //gfx2.strokeWeight(2);
+    //gfx2.stroke(30, 38, 40);
+    //gfx2.noFill();
+    //gfx2.rect(1, 1, gfx2.width - 2, gfx2.height - 2);
     gfx2.strokeWeight(2);
     gfx2.stroke(218, 90, 51, 20);
     gfx2.line(ptrace1.x / 4, ptrace1.y / 4, trace1.x / 4, trace1.y / 4);
     image(gfx2, t2.xp - gfx2.width/2, t2.yp + gfx2.height/1.5);
+
+    strokeWeight(2);
+    stroke(30, 38, 40);
+    noFill();
+    rect(t2.xp - gfx2.width/2, t2.yp + gfx2.height/1.5, gfx2.width - 1, gfx2.height - 1);
 
     ptrace0.x = trace0.x;
     ptrace0.y = trace0.y;
@@ -320,6 +335,15 @@ function draw() {
   }
 
   if (GAME_STATE == "outro") {
+    /*noStroke();
+    fill(255,30);
+    rect(t1.xp,0,1,height/3);
+    rect(t2.xp,0,1,height/3);
+
+    t1.draw();
+    t2.draw();
+    */
+
     textFont(font);
     textSize(48);
 
@@ -344,9 +368,13 @@ function draw() {
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
     }
+
+    fill(255,gfxAlpha/20);
+    ellipse(width/2,height/2,gfx1.width*2,gfx1.width*2);
     tint(255,gfxAlpha);
-    image(gfx1, width/2 - gfx1.width*2, t1.yp, gfx1.width*2,gfx1.height*2);
-    image(gfx2, width/2, t2.yp, gfx2.width*2,gfx2.height*2);
+    image(gfx1, width/2 - gfx1.width, t1.yp, gfx1.width*2,gfx1.height*2);
+    image(gfx2, width/2 - gfx2.width, t2.yp, gfx2.width*2,gfx2.height*2);
+
     if(gfxAlpha<255) {
       gfxAlpha++;
     }
@@ -359,9 +387,23 @@ function draw() {
       loadAgents();
       w.items = [];
       GAME_STATE = "outro";
-      fm1.triggerAttackRelease(Tone.Midi(79).toFrequency(), "128n");
-      fm2.triggerAttackRelease(Tone.Midi(67).toFrequency(), "128n");
       drone.stop();
+      fm2.triggerAttackRelease(Tone.Midi((random(6)+12) * 2).toFrequency(), "36n");
+
+      
+      gfx1.strokeWeight(2);
+      gfx1.stroke(colors.bg);
+      gfx1.noFill();
+      gfx1.rect(0, 0, 1, gfx1.height);
+      gfx1.rect(gfx1.width-1, 0, 1, gfx1.height);
+
+      gfx2.strokeWeight(2);
+      gfx2.stroke(colors.bg);
+      gfx2.noFill();
+      gfx2.rect(0, 0, 1, gfx2.height);
+      gfx2.rect(gfx2.width-1, 0, 1, gfx2.height);
+      
+      
     }
   }
 
@@ -397,8 +439,10 @@ function mousePressed() {
     GAME_STATE = "play";
   }
   if (GAME_STATE == "outro") {
-    gfx1.background(colors.bg);
-    gfx2.background(colors.bg);
+    //gfx1.background(colors.bg);
+    //gfx2.background(colors.bg);
+    gfx1.clear();
+    gfx2.clear();
     pApples = [0, 0];
     pPoison = [0, 0];
     loadAgents();
@@ -429,7 +473,10 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {}
+function keyPressed() {
+  
+  
+}
 
 function touchMoved() {
   myCursor.x = mouseX;
@@ -474,11 +521,11 @@ function loadAgents() {
     a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
     a.epsilon = 0.0002;
     if(k==0) {
-      a.p = new Vec(0, wh);
+      a.p = new Vec(0, wh/2);
       t1.setPerception(a.eyes[0].max_range);
       t1.setReflex(a.speed);
     } else {
-      a.p = new Vec(ww,wh);
+      a.p = new Vec(ww,wh/2);
       ptrace0.x = 0;
       ptrace1.x = ww;
       t2.setPerception(a.eyes[0].max_range);

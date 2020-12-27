@@ -75,7 +75,7 @@ class Triangulum {
     noStroke();
 
     fill(colors.bg);
-    ellipse(this.p2.x,this.p2.y - this.s/3, this.s/4, this.s/4);
+    ellipse(this.p2.x,this.p2.y - this.s/3, this.s/3.4, this.s/3.4);
 
     fill(255,50);
     textAlign(CENTER);

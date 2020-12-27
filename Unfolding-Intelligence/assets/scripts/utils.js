@@ -44,6 +44,10 @@ const drone = new Tone.Player("assets/data/drone-bg.mp3").toDestination();
 drone.loop = true;
 drone.autostart = true;
 
+//const end = new Tone.Player("assets/data/drone-end.mp3").toDestination();
+//end.loop = true;
+
+
 
 var feedbackDelay1 = new Tone.FeedbackDelay(0.1, 0.98).connect(r1);
 let fm1 = new Tone.FMSynth({
