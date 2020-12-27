@@ -4,7 +4,7 @@ function initStrings(scaleSelect) {
   let scales = [
                 [1,0,0,1,0,1,0,1,0,0,1,0, 1,0,0,1,0,1,0,1,0,0,1,0, 1,0,0,1,0,1,0,1,0,0,1,0],
                 [1,0,1,1,0,0,0,1,0,0,1,0, 1,0,1,1,0,0,0,1,0,0,1,0, 1,0,1,1,0,0,0,1,0,0,1,0],
-                [1,0,1,0,1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0,1,0,1,0],
+                [1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0],
                 [1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0]
   ]
 
@@ -43,6 +43,10 @@ let r2 = new Tone.Reverb({
 const drone = new Tone.Player("assets/data/drone-bg.mp3").toDestination();
 drone.loop = true;
 drone.autostart = true;
+
+/*const drone2 = new Tone.Player("assets/data/drone-b-bg.mp3").toDestination();
+drone2.loop = true;
+drone2.autostart = true;*/
 
 //const end = new Tone.Player("assets/data/drone-end.mp3").toDestination();
 //end.loop = true;
@@ -103,7 +107,7 @@ let fm2 = new Tone.FMSynth({
 
 }).toDestination();
 fm2.connect(feedbackDelay2);
-fm2.volume.value = -8;
+fm2.volume.value = -16;
 
 let poisonSynth = new Tone.MembraneSynth().toDestination();
 poisonSynth.volume.value = -28;
