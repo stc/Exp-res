@@ -361,7 +361,6 @@ function draw() {
       GAME_STATE = "outro";
       fm1.triggerAttackRelease(Tone.Midi(79).toFrequency(), "128n");
       fm2.triggerAttackRelease(Tone.Midi(67).toFrequency(), "128n");
-      //gameOverSynth.triggerAttackRelease("C8","8n");
       drone.stop();
     }
   }
@@ -394,7 +393,7 @@ function mousePressed() {
   }
 
   if (GAME_STATE == "intro") {
-    drone.autostart = true;
+    
     GAME_STATE = "play";
   }
   if (GAME_STATE == "outro") {
@@ -430,9 +429,7 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {
-  //gameOverSynth.triggerAttackRelease("C8", "32n");
-}
+function keyPressed() {}
 
 function touchMoved() {
   myCursor.x = mouseX;

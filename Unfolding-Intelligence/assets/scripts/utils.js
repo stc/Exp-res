@@ -42,6 +42,7 @@ let r2 = new Tone.Reverb({
 */
 const drone = new Tone.Player("assets/data/drone-bg.mp3").toDestination();
 drone.loop = true;
+drone.autostart = true;
 
 
 var feedbackDelay1 = new Tone.FeedbackDelay(0.1, 0.98).connect(r1);
