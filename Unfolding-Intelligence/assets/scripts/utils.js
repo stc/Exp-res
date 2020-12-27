@@ -35,6 +35,11 @@ let r2 = new Tone.Reverb({
   preDelay: 0.01
 }).toDestination();
 
+/*let r3 = new Tone.Reverb({
+  decay: 10.5,
+  preDelay: 0.1
+}).toDestination();
+*/
 const drone = new Tone.Player("assets/data/drone-bg.mp3").toDestination();
 drone.loop = true;
 

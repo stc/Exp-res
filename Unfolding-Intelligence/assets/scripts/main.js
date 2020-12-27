@@ -112,7 +112,7 @@ function draw() {
     textFont(font);
     textAlign(CENTER);
     textSize(20);
-    text("Feed the agents & listen to their Songlines unfold", ww/2, wh/2.5);
+    text("Feed the agents & listen to their Songlines", ww/2, wh/2.5);
     fill(colors.agent);
     ellipse(ww / 2, wh / 9.5, 20, 20);
     noFill();
@@ -129,7 +129,7 @@ function draw() {
     // draw triangulums
     t1.draw();
     t2.draw();
-    
+
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
       if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
@@ -141,9 +141,8 @@ function draw() {
       ellipse(myCursor.x, myCursor.y, 100, 100);
     }
 
-
     if(second()!=pSec) {
-      if(second()%3==0) {
+      if(second()%2==0) {
         let v = createVector(random(width), random(height));
         addItem(v);
       }
@@ -153,7 +152,6 @@ function draw() {
     var agents = w.agents;
 
     w.tick();
-    //updateStats();
 
     push();
     translate((width - ww) / 2.0, wh/20);
@@ -253,8 +251,6 @@ function draw() {
 
     pop();
 
-    
-
     // make sound
     for (var i = 0; i < w.agents.length; i++) {
       if (w.agents[i].apples != pApples[i]) {
@@ -333,7 +329,7 @@ function draw() {
       textFont(font);
       textAlign(CENTER);
       textSize(24);
-      text("Great choreography, nice one", width / 2, height / 4);
+      text("Great lines, true dreaming track choreography!", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
@@ -343,7 +339,7 @@ function draw() {
       textFont(font);
       textAlign(CENTER);
       textSize(24);
-      text("Nice memory paths in both lines", width / 2, height / 4);
+      text("Nice songs, well crafted memory landmarks!", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
@@ -363,7 +359,10 @@ function draw() {
       loadAgents();
       w.items = [];
       GAME_STATE = "outro";
-
+      fm1.triggerAttackRelease(Tone.Midi(79).toFrequency(), "128n");
+      fm2.triggerAttackRelease(Tone.Midi(67).toFrequency(), "128n");
+      //gameOverSynth.triggerAttackRelease("C8","8n");
+      drone.stop();
     }
   }
 
@@ -394,9 +393,8 @@ function mousePressed() {
     firsttime = false;
   }
 
-
   if (GAME_STATE == "intro") {
-    drone.start();
+    drone.autostart = true;
     GAME_STATE = "play";
   }
   if (GAME_STATE == "outro") {
@@ -407,11 +405,16 @@ function mousePressed() {
     loadAgents();
     initStrings(floor(random(4)));
     GAME_STATE = "play";
+    drone.start();
   }
 
   if(GAME_STATE == "play") {
-    t1.press();
-    t2.press();
+    if (typeof(t1) != "undefined") {
+      t1.press();
+    }
+    if (typeof(t2) != "undefined") {
+      t2.press();
+    }
   }
 
   return false;
@@ -427,7 +430,9 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {}
+function keyPressed() {
+  //gameOverSynth.triggerAttackRelease("C8", "32n");
+}
 
 function touchMoved() {
   myCursor.x = mouseX;
@@ -452,6 +457,7 @@ function addItem(p) {
   if (activestrings[index] == 1) {
     var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
     w.items.push(newit);
+
   }
 }
 
@@ -474,14 +480,12 @@ function loadAgents() {
       a.p = new Vec(0, wh);
       t1.setPerception(a.eyes[0].max_range);
       t1.setReflex(a.speed);
-      //t1.setExplore(a.alpha);
     } else {
       a.p = new Vec(ww,wh);
       ptrace0.x = 0;
       ptrace1.x = ww;
       t2.setPerception(a.eyes[0].max_range);
       t2.setReflex(a.speed);
-      //t2.setExplore(a.alpha);
     }
     w.agents.push(a);
     
@@ -494,8 +498,6 @@ function loadAgents() {
     for (var i = 0; i < w.agents.length; i++) {
       var agent = w.agents[i].brain;
       agent.fromJSON(data); 
-      // set epsilon to be much lower for more optimal behavior
-      //agent.epsilon = 0.002;
     }
   });
 }
