@@ -42,7 +42,8 @@ var canLoop;
 let gfxAlpha = 0;
 let pSec = 0;
 
-let textSelect = 0; 
+let textSelect = 0;
+let titleSelect = 0; 
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
@@ -114,12 +115,12 @@ function draw() {
 
     fill(colors.type);
     textSize(26);
-    text("VISIT ON DESKTOP FOR FULL EXPERIENCE", width / 2, height / 2 - 50);
+    //text("VISIT ON DESKTOP FOR FULL EXPERIENCE", width / 2, height / 2 - 50);
     text("TURN ON AUDIO", width / 2, height / 2 + 50);
 
     textAlign(LEFT);
 
-    stroke(255, 100);
+    stroke(255, 20);
     line(width / 4, height / 2, width / 2 + width / 4, height / 2)
 
     push();
@@ -357,59 +358,43 @@ function draw() {
     textFont(font);
     textSize(48);
 
-    if (winnerID == 0) {
-      fill(colors.type);
-      noStroke();
-      textFont(font);
-      textAlign(CENTER);
-      textSize(24);
-      text("Great lines, true dreaming track choreography!", width / 2, height / 4);
-      fill(colors.agent);
-      textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height - 30);
-
-      fill(colors.type);
-      textAlign(LEFT);
-      textSize(14);
-      text(texts[textSelect], width/2-width/8,height-height/4,width/4);
-    } else {
-      fill(colors.type);
-      noStroke();
-      textFont(font);
-      textAlign(CENTER);
-      textSize(24);
-      text("Nice songs, well crafted memory landmarks!", width / 2, height / 4);
-      fill(colors.agent);
-      textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height - 30);
-
-      fill(colors.type);
-      textAlign(LEFT);
-      textSize(14);
-      text(texts[textSelect], width/2-width/8,height-height/4,width/4);
-    }
-
+    
+    fill(colors.type_contrast);
     noStroke();
-    fill(0,40);
-    rect(0,height/3,width,height/6+height/1.5);
+    textFont(font);
+    textAlign(CENTER);
+    textSize(24);
+    text(titles[titleSelect], width / 2 - width/8, height / 8, width/4);
+    fill(colors.agent);
+    textSize(18);
+    text("TOUCH TO PLAY AGAIN", width / 2, height - height/12)
+    fill(colors.type);
+    textSize(16);
+    text(texts[textSelect], width/2-width/8,height-height/3.5,width/4);
+    
+    noStroke();
     fill(255,gfxAlpha/40);
-    triangle(width/3,height-height/3,width/2,height/6+height/3-gfx1.width/2,width/3+width/3,height-height/3);
+    triangle(width/3,height-height/3,width/2,height/5,width/3+width/3,height-height/3);
 
-    fill(255,gfxAlpha/80);
+    fill(255,gfxAlpha/60);
     noStroke();
     rect(width/3,0,width/3,height);
 
-    fill(255,gfxAlpha/20);
-    ellipse(width/2,height/2,gfx1.width*2,gfx1.width*2);
+    arc(width/2,height-height/3,width/3,width/3,PI,0);
+    stroke(255,10);
+    strokeWeight(1);
+    line(0,height-height/3,width,height-height/3);
+
     tint(255,gfxAlpha);
-
     image(gfx1, width/2 - gfx2.width, t1.yp, gfx1.width*2,gfx1.height*2);
-
     image(gfx2, width/2 - gfx2.width, t2.yp, gfx2.width*2,gfx2.height*2);
 
     if(gfxAlpha<255) {
       gfxAlpha+=4;
     }
+
+    // indicate winner ..?
+    if (winnerID == 0) {} else {}
   }
   
   // check scores
@@ -423,6 +408,7 @@ function draw() {
       fm2.triggerAttackRelease(Tone.Midi((random(6)+12) * 2).toFrequency(), "36n");
 
       textSelect = floor(random(texts.length));
+      titleSelect = floor(random(titles.length));
     }
   }
 
@@ -475,8 +461,6 @@ function mousePressed() {
       t2.press();
     }
   }
-
-  return false;
 }
 
 function mouseReleased() {
@@ -489,22 +473,17 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {}
-
-function touchMoved() {
-  myCursor.x = mouseX;
-  myCursor.y = mouseY;
-  return false;
-}
-
 function mouseMoved() {
   myCursor.x = mouseX;
   myCursor.y = mouseY;
 }
 
-document.addEventListener('gesturestart', function(e) {
-  e.preventDefault();
-});
+function mouseDragged() {
+  myCursor.x = mouseX;
+  myCursor.y = mouseY;
+}
+
+function keyPressed() {}
 
 function linedash(x1, y1, x2, y2, delta, style = '-') {
   // delta is both the length of a dash, the distance between 2 dots/dashes, and the diameter of a round

@@ -20,6 +20,7 @@ const colors = {
   positive_food: [255, 255, 255],
   negative_food: [46, 42, 21],
   type: [64, 80, 85, 220],
+  type_contrast: [164,180,185,220],
   touch: [255, 150, 150, 100]
 }
 
