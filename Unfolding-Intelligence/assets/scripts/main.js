@@ -25,7 +25,7 @@ let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
-var maxScore = 30;
+var maxScore = 10;
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
@@ -37,15 +37,10 @@ let x = 1;
 let y = 1;
 let easing = 0.1;
 
-
 var canLoop;
 
 let gfxAlpha = 0;
 let pSec = 0;
-
-let xoff1 = 0.0; 
-
-let xoff2 = 0.0; 
 
 let textSelect = 0; 
 
@@ -122,7 +117,6 @@ function draw() {
     text("VISIT ON DESKTOP FOR FULL EXPERIENCE", width / 2, height / 2 - 50);
     text("TURN ON AUDIO", width / 2, height / 2 + 50);
 
-
     textAlign(LEFT);
 
     stroke(255, 100);
@@ -150,7 +144,6 @@ function draw() {
     fill(255,30);
     rect(t1.xp,0,1,t1.yp + gfx1.height/1.5);
     rect(t2.xp,0,1,t2.yp + gfx2.height/1.5);
-    // draw triangulums
     t1.draw();
     t2.draw();
 
@@ -278,7 +271,7 @@ function draw() {
     // make sound
     for (var i = 0; i < w.agents.length; i++) {
       if (w.agents[i].apples != pApples[i]) {
-        //var p = pow( 2, ((36 - lastAppleY) / 12) -1 ); // used to trigger sample with relative pitch
+        
         if (i == 0) { // first agent
           feedbackDelay1.set({
             delayTime: random(0.01, 0.1),
@@ -325,11 +318,6 @@ function draw() {
 
     // draw songlines
     tint(255);
-    //gfx1.strokeWeight(2);
-    //gfx1.stroke(30, 38, 40);
-    //gfx1.noFill();
-    //gfx1.rect(1, 1, gfx1.width - 2, gfx1.height - 2);
-
     let targetX = map(dist(ptrace0.x / 4, ptrace0.y / 4, trace0.x / 4, trace0.y / 4),1,0.1,0.1,1);
     let dx = targetX - x;
     x += dx * easing;
@@ -343,12 +331,6 @@ function draw() {
     stroke(30, 38, 40);
     noFill();
     rect(t1.xp - gfx1.width/2, t1.yp + gfx1.height/1.5, gfx1.width - 1, gfx1.height - 1);
-
-
-    //gfx2.strokeWeight(2);
-    //gfx2.stroke(30, 38, 40);
-    //gfx2.noFill();
-    //gfx2.rect(1, 1, gfx2.width - 2, gfx2.height - 2);
 
     let targetY = map(dist(ptrace1.x / 4, ptrace1.y / 4, trace1.x / 4, trace1.y / 4),1,0.1,0.1,1);
     let dy = targetY - y;
@@ -372,15 +354,6 @@ function draw() {
   }
 
   if (GAME_STATE == "outro") {
-    /*noStroke();
-    fill(255,30);
-    rect(t1.xp,0,1,height/3);
-    rect(t2.xp,0,1,height/3);
-
-    t1.draw();
-    t2.draw();
-    */
-
     textFont(font);
     textSize(48);
 
@@ -393,7 +366,7 @@ function draw() {
       text("Great lines, true dreaming track choreography!", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
+      text("TOUCH TO PLAY AGAIN", width / 2, height - 30);
 
       fill(colors.type);
       textAlign(LEFT);
@@ -408,18 +381,13 @@ function draw() {
       text("Nice songs, well crafted memory landmarks!", width / 2, height / 4);
       fill(colors.agent);
       textSize(18);
-      text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
+      text("TOUCH TO PLAY AGAIN", width / 2, height - 30);
 
       fill(colors.type);
       textAlign(LEFT);
       textSize(14);
       text(texts[textSelect], width/2-width/8,height-height/4,width/4);
     }
-
-
-    noStroke();
-    fill(255,gfxAlpha/40);
-    //rect(width/4,height/6,width/2,height/1.5);
 
     noStroke();
     fill(0,40);
@@ -435,12 +403,8 @@ function draw() {
     ellipse(width/2,height/2,gfx1.width*2,gfx1.width*2);
     tint(255,gfxAlpha);
 
-    //xoff1 = xoff1 + 0.001;
-    //let n1 = noise(xoff1) * width/20 - width/40;
     image(gfx1, width/2 - gfx2.width, t1.yp, gfx1.width*2,gfx1.height*2);
 
-    //xoff2 = xoff2 + 0.0012;
-    //let n2 = noise(xoff2) * width/20 - width/40;
     image(gfx2, width/2 - gfx2.width, t2.yp, gfx2.width*2,gfx2.height*2);
 
     if(gfxAlpha<255) {
@@ -448,7 +412,6 @@ function draw() {
     }
   }
   
-
   // check scores
   for (var i = 0; i < w.agents.length; i++) {
     if (w.agents[i].apples >= maxScore) {
@@ -460,21 +423,6 @@ function draw() {
       fm2.triggerAttackRelease(Tone.Midi((random(6)+12) * 2).toFrequency(), "36n");
 
       textSelect = floor(random(texts.length));
-      /*
-      gfx1.strokeWeight(2);
-      gfx1.stroke(colors.bg);
-      gfx1.noFill();
-      gfx1.rect(0, 0, 1, gfx1.height);
-      gfx1.rect(gfx1.width-1, 0, 1, gfx1.height);
-
-      gfx2.strokeWeight(2);
-      gfx2.stroke(colors.bg);
-      gfx2.noFill();
-      gfx2.rect(0, 0, 1, gfx2.height);
-      gfx2.rect(gfx2.width-1, 0, 1, gfx2.height);
-      
-      */
-      
     }
   }
 
@@ -503,16 +451,12 @@ function mousePressed() {
   if (firsttime) {
     Tone.context.resume();
     firsttime = false;
-    //drone.start();
   }
 
   if (GAME_STATE == "intro") {
-    
     GAME_STATE = "play";
   }
   if (GAME_STATE == "outro") {
-    //gfx1.background(colors.bg);
-    //gfx2.background(colors.bg);
     gfx1.clear();
     gfx2.clear();
     pApples = [0, 0];
@@ -545,10 +489,7 @@ function mouseReleased() {
   }
 }
 
-function keyPressed() {
-  
-  
-}
+function keyPressed() {}
 
 function touchMoved() {
   myCursor.x = mouseX;
@@ -564,75 +505,6 @@ function mouseMoved() {
 document.addEventListener('gesturestart', function(e) {
   e.preventDefault();
 });
-
-function addItem(p) {
-  var newitx = p.x - (width - ww) / 2.0;
-  var newity = p.y - (height - wh) / 3.0;
-  var index = floor(newity / wh * stringnum + 1);
-  var newitt = 1; // food or poison (1 and 2)
-  if (activestrings[index] == 1) {
-    var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
-    w.items.push(newit);
-
-  }
-}
-
-function resetAgents() {
-  var brain = new RL.DQNAgent(env, spec);
-  for (var i = 0; i < w.agents.length; i++) {
-    w.agents[i].brain = brain;
-  }
-}
-
-function loadAgents() {
-  w.agents = [];
-
-  for (var k = 0; k < 2; k++) {
-    var a = new Agent(k);
-    env = a;
-    a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
-    a.epsilon = 0.0002;
-    if(k==0) {
-      a.p = new Vec(0, wh/2);
-      t1.setPerception(a.eyes[0].max_range);
-      t1.setReflex(a.speed);
-    } else {
-      a.p = new Vec(ww,wh/2);
-      ptrace0.x = 0;
-      ptrace1.x = ww;
-      t2.setPerception(a.eyes[0].max_range);
-      t2.setReflex(a.speed);
-    }
-    w.agents.push(a);
-    
-    smooth_reward_history = []; // [][];
-    smooth_reward = [];
-    smooth_reward_history.push([]);
-  }
-
-  loadJSON("assets/data/agent_trained.json", function(data) {
-    for (var i = 0; i < w.agents.length; i++) {
-      var agent = w.agents[i].brain;
-      agent.fromJSON(data); 
-    }
-  });
-}
-
-function saveAgent() {
-  var brain = w.agents[0].brain;
-  // write out agent state to json here
-  //let s = JSON.stringify(brain);
-  //download(s, 'agent-state.json', 'text/plain');
-}
-
-function download(content, fileName, contentType) {
-    var a = document.createElement("a");
-    var file = new Blob([content], {type: contentType});
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.click();
-    URL.revokeObjectURL(a.href);
-}
 
 function linedash(x1, y1, x2, y2, delta, style = '-') {
   // delta is both the length of a dash, the distance between 2 dots/dashes, and the diameter of a round

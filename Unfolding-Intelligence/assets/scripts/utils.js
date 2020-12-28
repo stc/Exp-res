@@ -98,3 +98,73 @@ fm2.volume.value = -20;
 
 let poisonSynth = new Tone.MembraneSynth().toDestination();
 poisonSynth.volume.value = -28;
+
+
+// app utilities
+function addItem(p) {
+  var newitx = p.x - (width - ww) / 2.0;
+  var newity = p.y - (height - wh) / 3.0;
+  var index = floor(newity / wh * stringnum + 1);
+  var newitt = 1; // food or poison (1 and 2)
+  if (activestrings[index] == 1) {
+    var newit = new Item(newitx, index * wh / stringnum + wh / stringnum * 2, newitt, index);
+    w.items.push(newit);
+  }
+}
+
+function resetAgents() {
+  var brain = new RL.DQNAgent(env, spec);
+  for (var i = 0; i < w.agents.length; i++) {
+    w.agents[i].brain = brain;
+  }
+}
+
+function loadAgents() {
+  w.agents = [];
+
+  for (var k = 0; k < 2; k++) {
+    var a = new Agent(k);
+    env = a;
+    a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
+    a.epsilon = 0.0002;
+    if(k==0) {
+      a.p = new Vec(0, wh/2);
+      t1.setPerception(a.eyes[0].max_range);
+      t1.setReflex(a.speed);
+    } else {
+      a.p = new Vec(ww,wh/2);
+      ptrace0.x = 0;
+      ptrace1.x = ww;
+      t2.setPerception(a.eyes[0].max_range);
+      t2.setReflex(a.speed);
+    }
+    w.agents.push(a);
+    
+    smooth_reward_history = []; // [][];
+    smooth_reward = [];
+    smooth_reward_history.push([]);
+  }
+
+  loadJSON("assets/data/agent_trained.json", function(data) {
+    for (var i = 0; i < w.agents.length; i++) {
+      var agent = w.agents[i].brain;
+      agent.fromJSON(data); 
+    }
+  });
+}
+
+function saveAgent() {
+  var brain = w.agents[0].brain;
+  // write out agent state to json here
+  //let s = JSON.stringify(brain);
+  //download(s, 'agent-state.json', 'text/plain');
+}
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
