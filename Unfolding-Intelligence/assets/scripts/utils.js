@@ -31,18 +31,23 @@ let r1 = new Tone.Reverb({
 }).toDestination();
 
 let r2 = new Tone.Reverb({
-  decay: 2.5,
+  decay: 10.5,
   preDelay: 0.01
 }).toDestination();
+
+
 
 /*let r3 = new Tone.Reverb({
   decay: 10.5,
   preDelay: 0.1
 }).toDestination();
 */
-const drone = new Tone.Player("assets/data/drone-bg.mp3").toDestination();
+const drone = new Tone.Player("assets/data/drone-bg-constant-bit.mp3").toDestination();
 drone.loop = true;
 drone.autostart = true;
+drone.fadeOut = 1;
+
+
 
 /*const drone2 = new Tone.Player("assets/data/drone-b-bg.mp3").toDestination();
 drone2.loop = true;
@@ -51,9 +56,9 @@ drone2.autostart = true;*/
 //const end = new Tone.Player("assets/data/drone-end.mp3").toDestination();
 //end.loop = true;
 
+//const comp = new Tone.Compressor(-30, 3).toDestination();
 
-
-var feedbackDelay1 = new Tone.FeedbackDelay(0.1, 0.98).connect(r1);
+var feedbackDelay1 = new Tone.FeedbackDelay(0.2, 0.8).connect(r1);
 let fm1 = new Tone.FMSynth({
   "harmonicity": 8,
   "modulationIndex": 30,
@@ -65,7 +70,7 @@ let fm1 = new Tone.FMSynth({
     "attack": 0.01,
     "decay": 0.02,
     "sustain": 0.05,
-    "release": 2
+    "release": 1
   },
   "modulation": {
     "type": "sine"
@@ -81,7 +86,7 @@ let fm1 = new Tone.FMSynth({
 fm1.connect(feedbackDelay1);
 fm1.volume.value = -8;
 
-var feedbackDelay2 = new Tone.FeedbackDelay(0.1, 0.98).connect(r2);
+var feedbackDelay2 = new Tone.FeedbackDelay(0.2, 0.8).connect(r2);
 let fm2 = new Tone.FMSynth({
   "harmonicity": 8,
   "modulationIndex": 30,
@@ -91,23 +96,23 @@ let fm2 = new Tone.FMSynth({
   },
   "envelope": {
     "attack": 0.1,
-    "decay": 2,
+    "decay": 0.2,
     "sustain": 0.4,
-    "release": 6
+    "release": 1
   },
   "modulation": {
     "type": "square"
   },
   "modulationEnvelope": {
     "attack": 0.01,
-    "decay": 1,
+    "decay": 0.1,
     "sustain": 0.2,
-    "release": 10
+    "release": 1
   },
 
 }).toDestination();
 fm2.connect(feedbackDelay2);
-fm2.volume.value = -16;
+fm2.volume.value = -20;
 
 let poisonSynth = new Tone.MembraneSynth().toDestination();
 poisonSynth.volume.value = -28;

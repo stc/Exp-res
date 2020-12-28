@@ -33,10 +33,21 @@ var ptrace0 = { x: 0, y: 0 };
 var ptrace1 = { x: 0, y: 0 };
 var gfx1, gfx2;
 
+let x = 1;
+let y = 1;
+let easing = 0.1;
+
+
 var canLoop;
 
 let gfxAlpha = 0;
 let pSec = 0;
+
+let xoff1 = 0.0; 
+
+let xoff2 = 0.0; 
+
+let textSelect = 0; 
 
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
@@ -60,6 +71,17 @@ function setup() {
   ww = canvas.height * 0.7;
   wh = canvas.height * 0.7;
   w = new World(ww, wh);
+
+  trace0.x = 0;
+  ptrace0.x = 0;
+  trace1.x = ww;
+  ptrace1.x = ww;
+  
+  trace0.y = wh/2;
+  ptrace0.y = wh/2;
+  trace1.y = wh/2;
+  ptrace1.y = wh/2;
+
   initStrings(3);
 
   t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
@@ -71,9 +93,8 @@ function setup() {
 
   gfx1 = createGraphics(ww / 4, wh / 4);
   gfx2 = createGraphics(ww / 4, wh / 4);
-
-  //gfx1.background(colors.bg);
-  //gfx2.background(colors.bg);
+  gfx1.pixelDensity(2);
+  gfx2.pixelDensity(2);
 
   gfx1.clear();
   gfx2.clear();
@@ -86,8 +107,7 @@ function setup() {
 function draw() {
   background(colors.bg);
   frameRate(60);
-  console.log(frameRate());
-
+  
   if (GAME_STATE == "intro") {
     noStroke();
 
@@ -136,7 +156,7 @@ function draw() {
 
     var mappedCursor = createVector(myCursor.x - (width - ww) / 2.0, myCursor.y - (height - wh) / 4);
     if (down) {
-      if(dist(mouseX,mouseY,pmouseX,pmouseY)>2) {
+      if(dist(mouseX,mouseY,pmouseX,pmouseY)>4) {
         addItem(myCursor);
       }
       
@@ -261,16 +281,23 @@ function draw() {
         //var p = pow( 2, ((36 - lastAppleY) / 12) -1 ); // used to trigger sample with relative pitch
         if (i == 0) { // first agent
           feedbackDelay1.set({
-            delayTime: random(0.01),
-            feedback: random(0.7, 0.99)
+            delayTime: random(0.01, 0.1),
+            feedback: random(0.1, 0.96)
           });
           fm1.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 50).toFrequency(), "8n");
+          
+          gfx1.noStroke();
+          gfx1.fill(255);
+          gfx1.ellipse(trace0.x / 4, trace0.y / 4,5,5);
         } else if (i == 1) { // second agent
           feedbackDelay2.set({
-            delayTime: random(0.3),
-            feedback: random(0.7, 0.99)
+            delayTime: random(0.1, 0.5),
+            feedback: random(0.1, 0.96)
           });
           fm2.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 48).toFrequency(), "8n");
+          gfx2.fill(255);
+          gfx2.noStroke();
+          gfx2.ellipse(trace1.x / 4, trace1.y / 4,5,5);
         }
 
         let pitches = [0.6, 0.8, 1, 1.2];
@@ -278,6 +305,7 @@ function draw() {
         drone.set({
           playbackRate: pitches[rnd]
         });
+        
       }
       if (w.agents[i].poison != pPoison[i]) {
         let rnd = floor(random(3));
@@ -301,8 +329,13 @@ function draw() {
     //gfx1.stroke(30, 38, 40);
     //gfx1.noFill();
     //gfx1.rect(1, 1, gfx1.width - 2, gfx1.height - 2);
-    gfx1.strokeWeight(2);
-    gfx1.stroke(255, 20);
+
+    let targetX = map(dist(ptrace0.x / 4, ptrace0.y / 4, trace0.x / 4, trace0.y / 4),1,0.1,0.1,1);
+    let dx = targetX - x;
+    x += dx * easing;
+
+    gfx1.strokeWeight(x);
+    gfx1.stroke(150,100);
     gfx1.line(ptrace0.x / 4, ptrace0.y / 4, trace0.x / 4, trace0.y / 4);
     image(gfx1, t1.xp - gfx1.width/2, t1.yp + gfx1.height/1.5);
 
@@ -316,8 +349,12 @@ function draw() {
     //gfx2.stroke(30, 38, 40);
     //gfx2.noFill();
     //gfx2.rect(1, 1, gfx2.width - 2, gfx2.height - 2);
-    gfx2.strokeWeight(2);
-    gfx2.stroke(218, 90, 51, 20);
+
+    let targetY = map(dist(ptrace1.x / 4, ptrace1.y / 4, trace1.x / 4, trace1.y / 4),1,0.1,0.1,1);
+    let dy = targetY - y;
+    y += dy * easing;
+    gfx2.strokeWeight(y);
+    gfx2.stroke(218, 90, 51,100);
     gfx2.line(ptrace1.x / 4, ptrace1.y / 4, trace1.x / 4, trace1.y / 4);
     image(gfx2, t2.xp - gfx2.width/2, t2.yp + gfx2.height/1.5);
 
@@ -357,6 +394,11 @@ function draw() {
       fill(colors.agent);
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
+
+      fill(colors.type);
+      textAlign(LEFT);
+      textSize(14);
+      text(texts[textSelect], width/2-width/8,height-height/4,width/4);
     } else {
       fill(colors.type);
       noStroke();
@@ -367,18 +409,45 @@ function draw() {
       fill(colors.agent);
       textSize(18);
       text("TOUCH TO PLAY AGAIN", width / 2, height / 4 + 30);
+
+      fill(colors.type);
+      textAlign(LEFT);
+      textSize(14);
+      text(texts[textSelect], width/2-width/8,height-height/4,width/4);
     }
+
+
+    noStroke();
+    fill(255,gfxAlpha/40);
+    //rect(width/4,height/6,width/2,height/1.5);
+
+    noStroke();
+    fill(0,40);
+    rect(0,height/3,width,height/6+height/1.5);
+    fill(255,gfxAlpha/40);
+    triangle(width/3,height-height/3,width/2,height/6+height/3-gfx1.width/2,width/3+width/3,height-height/3);
+
+    fill(255,gfxAlpha/80);
+    noStroke();
+    rect(width/3,0,width/3,height);
 
     fill(255,gfxAlpha/20);
     ellipse(width/2,height/2,gfx1.width*2,gfx1.width*2);
     tint(255,gfxAlpha);
-    image(gfx1, width/2 - gfx1.width, t1.yp, gfx1.width*2,gfx1.height*2);
+
+    //xoff1 = xoff1 + 0.001;
+    //let n1 = noise(xoff1) * width/20 - width/40;
+    image(gfx1, width/2 - gfx2.width, t1.yp, gfx1.width*2,gfx1.height*2);
+
+    //xoff2 = xoff2 + 0.0012;
+    //let n2 = noise(xoff2) * width/20 - width/40;
     image(gfx2, width/2 - gfx2.width, t2.yp, gfx2.width*2,gfx2.height*2);
 
     if(gfxAlpha<255) {
-      gfxAlpha++;
+      gfxAlpha+=4;
     }
   }
+  
 
   // check scores
   for (var i = 0; i < w.agents.length; i++) {
@@ -390,7 +459,8 @@ function draw() {
       drone.stop();
       fm2.triggerAttackRelease(Tone.Midi((random(6)+12) * 2).toFrequency(), "36n");
 
-      
+      textSelect = floor(random(texts.length));
+      /*
       gfx1.strokeWeight(2);
       gfx1.stroke(colors.bg);
       gfx1.noFill();
@@ -403,6 +473,7 @@ function draw() {
       gfx2.rect(0, 0, 1, gfx2.height);
       gfx2.rect(gfx2.width-1, 0, 1, gfx2.height);
       
+      */
       
     }
   }
@@ -432,6 +503,7 @@ function mousePressed() {
   if (firsttime) {
     Tone.context.resume();
     firsttime = false;
+    //drone.start();
   }
 
   if (GAME_STATE == "intro") {
