@@ -25,7 +25,7 @@ let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
-var maxScore = 10;
+var maxScore = 80;
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
@@ -52,7 +52,7 @@ function preload() {
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
-  
+
   spec.update = 'qlearn'; // qlearn | sarsa
   spec.gamma = 0.9; // discount factor, [0, 1)
   spec.epsilon = 0.2; // initial epsilon for epsilon-greedy policy, [0, 1)
@@ -64,8 +64,8 @@ function setup() {
   spec.num_hidden_units = 300 // number of neurons in hidden layer
 
   //ww = canvas.width * 0.8;
-  ww = canvas.height * 0.7;
-  wh = canvas.height * 0.7;
+  ww = floor(canvas.height * 0.7);
+  wh = floor(canvas.height * 0.7);
   w = new World(ww, wh);
 
   trace0.x = 0;
@@ -79,6 +79,7 @@ function setup() {
   ptrace1.y = wh/2;
 
   initStrings(3);
+  generatePoisons();
 
   t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
   t2 = new Triangulum(width/2 + ww/2 + 200, height/3, 100, 1);
@@ -215,7 +216,7 @@ function draw() {
       endShape()
 
       pop();
-      
+     
       // sight
       for (var j = 0; j < a.eyes.length; j++) {
         var e = a.eyes[j];
@@ -316,6 +317,7 @@ function draw() {
       pApples[i] = w.agents[i].apples;
       pPoison[i] = w.agents[i].poison;
     }
+
 
     // draw songlines
     tint(255);
@@ -451,6 +453,8 @@ function mousePressed() {
     initStrings(floor(random(4)));
     GAME_STATE = "play";
     drone.start();
+    w.items = [];
+    generatePoisons();
   }
 
   if(GAME_STATE == "play") {

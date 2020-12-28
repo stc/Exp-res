@@ -113,6 +113,44 @@ function addItem(p) {
   }
 }
 
+function generatePoisons() {
+  let sel = floor(random(4));
+  if(sel == 0) {
+    for(let i=0; i<stringnum; i++) {
+      let p = width/2;
+      var nx = p - (width - ww) / 2.0;
+      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+      newit.v = new Vec(0, 0);
+      w.items.push(newit);    
+    }
+  } else if(sel == 1) {
+    for(let i=0; i<stringnum; i++) {
+      let p = width/2 + sin(i*0.1) * ww/2.5;
+      var nx = p - (width - ww) / 2.0;
+      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+      newit.v = new Vec(0, 0);
+      w.items.push(newit); 
+    }   
+  } else if(sel == 2){
+    for(let i=0; i<stringnum; i++) {
+      let p = width/2 + sin(i*0.1) * ww/4;
+      var nx = p - (width - ww) / 2.0;
+      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+      newit.v = new Vec(0, 0);
+      w.items.push(newit);   
+    } 
+    for(let i=0; i<stringnum; i++) {
+      let p = width/2 + cos(i*0.1) * ww/4;
+      var nx = p - (width - ww) / 2.0;
+      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+      newit.v = new Vec(0, 0);
+      w.items.push(newit);   
+    } 
+  } else {
+      // add no items
+  }
+}
+
 function resetAgents() {
   var brain = new RL.DQNAgent(env, spec);
   for (var i = 0; i < w.agents.length; i++) {
