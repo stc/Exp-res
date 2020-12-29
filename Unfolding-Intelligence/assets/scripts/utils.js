@@ -4,8 +4,11 @@ function initStrings(scaleSelect) {
   let scales = [
                 [1,0,0,1,0,1,0,1,0,0,1,0, 1,0,0,1,0,1,0,1,0,0,1,0, 1,0,0,1,0,1,0,1,0,0,1,0],
                 [1,0,1,1,0,0,0,1,0,0,1,0, 1,0,1,1,0,0,0,1,0,0,1,0, 1,0,1,1,0,0,0,1,0,0,1,0],
+                [1,0,0,0,0,0,1,0,0,0,0,0, 1,0,0,1,0,1,0,1,0,0,1,0, 1,1,1,1,1,1,1,1,1,1,1,1],
                 [1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0],
-                [1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0, 1,0,1,1,0,1,0,1,0,0,1,0]
+                [0,0,1,0,0,1,0,0,1,0,0,1, 0,0,1,0,0,1,0,0,1,0,0,1, 0,0,1,0,0,1,0,0,1,0,0,1],
+                [0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,1,0,1,0,1,0,0,1,0, 0,0,0,0,0,0,0,0,0,0,0,0],
+                [1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1],
   ]
 
   for(let i=0; i<scales[scaleSelect].length; i++) {
@@ -39,11 +42,12 @@ let r2 = new Tone.Reverb({
 const drone = new Tone.Player("assets/data/drone-bg-constant-bit.mp3").toDestination();
 drone.loop = true;
 drone.autostart = true;
-drone.fadeOut = 1;
+drone.fadeOut = 3;
+
 
 var feedbackDelay1 = new Tone.FeedbackDelay(0.2, 0.8).connect(r1);
 let fm1 = new Tone.FMSynth({
-  "harmonicity": 8,
+  "harmonicity": 2,
   "modulationIndex": 30,
   "detune": 0,
   "oscillator": {
@@ -71,7 +75,7 @@ fm1.volume.value = -8;
 
 var feedbackDelay2 = new Tone.FeedbackDelay(0.2, 0.8).connect(r2);
 let fm2 = new Tone.FMSynth({
-  "harmonicity": 8,
+  "harmonicity": 2,
   "modulationIndex": 30,
   "detune": 0,
   "oscillator": {
@@ -114,13 +118,15 @@ function addItem(p) {
 }
 
 function generatePoisons() {
-  let sel = floor(random(4));
+  let sel = 3;//floor(random(4));
+
   if(sel == 0) {
     for(let i=0; i<stringnum; i++) {
       let p = width/2;
       var nx = p - (width - ww) / 2.0;
       var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
       newit.v = new Vec(0, 0);
+      newit.rad = 5;
       w.items.push(newit);    
     }
   } else if(sel == 1) {
@@ -129,6 +135,7 @@ function generatePoisons() {
       var nx = p - (width - ww) / 2.0;
       var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
       newit.v = new Vec(0, 0);
+      newit.rad = 5;
       w.items.push(newit); 
     }   
   } else if(sel == 2){
@@ -137,6 +144,7 @@ function generatePoisons() {
       var nx = p - (width - ww) / 2.0;
       var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
       newit.v = new Vec(0, 0);
+      newit.rad = 5;
       w.items.push(newit);   
     } 
     for(let i=0; i<stringnum; i++) {
@@ -144,6 +152,7 @@ function generatePoisons() {
       var nx = p - (width - ww) / 2.0;
       var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
       newit.v = new Vec(0, 0);
+      newit.rad = 5;
       w.items.push(newit);   
     } 
   } else {

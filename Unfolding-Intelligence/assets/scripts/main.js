@@ -45,6 +45,8 @@ let pSec = 0;
 let textSelect = 0;
 let titleSelect = 0; 
 
+let pitchSelect = 0;
+
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
   myCursor = createVector(0,0);
@@ -78,7 +80,11 @@ function setup() {
   trace1.y = wh/2;
   ptrace1.y = wh/2;
 
-  initStrings(3);
+  initStrings(4);
+  pitchSelect = floor(random(pitches.length));
+  drone.set({
+          playbackRate: pitches[pitchSelect][floor(random(4))]
+  });
   generatePoisons();
 
   t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
@@ -247,6 +253,7 @@ function draw() {
         stroke(255, 20);
         strokeWeight(4);
       } else {
+        stroke(255, 20);
         strokeWeight(1);
       }
       line(0, i * (wh / stringnum) + wh / stringnum * 2.0, ww, i * (wh / stringnum) + wh / stringnum * 2);
@@ -295,10 +302,9 @@ function draw() {
           gfx2.ellipse(trace1.x / 4, trace1.y / 4,5,5);
         }
 
-        let pitches = [0.6, 0.8, 1, 1.2];
         let rnd = floor(random(4));
         drone.set({
-          playbackRate: pitches[rnd]
+          playbackRate: pitches[pitchSelect][rnd]
         });
         
       }
