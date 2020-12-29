@@ -20,12 +20,12 @@ var pPoison = [0, 0];
 // interact
 var myCursor;
 var down = false;
-//var agentarea = 100;
 let t1, t2;
 
 // game states
 var GAME_STATE = ["intro", "play", "outro"];
-var maxScore = 80;
+
+var maxScore = 80; // 80 is ideal
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
@@ -47,6 +47,8 @@ let titleSelect = 0;
 
 let pitchSelect = 0;
 
+let yoff = 0.0;
+
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
   myCursor = createVector(0,0);
@@ -65,7 +67,6 @@ function setup() {
   spec.tderror_clamp = 0.5; // for robustness
   spec.num_hidden_units = 300 // number of neurons in hidden layer
 
-  //ww = canvas.width * 0.8;
   ww = floor(canvas.height * 0.7);
   wh = floor(canvas.height * 0.7);
   w = new World(ww, wh);
@@ -80,11 +81,14 @@ function setup() {
   trace1.y = wh/2;
   ptrace1.y = wh/2;
 
-  initStrings(4);
+  initStrings(floor(random(4)));
   pitchSelect = floor(random(pitches.length));
   drone.set({
           playbackRate: pitches[pitchSelect][floor(random(4))]
   });
+  fm1.set({"harmonicity": harmonicities[floor(random(harmonicities.length))]});
+  fm2.set({"harmonicity": harmonicities[floor(random(harmonicities.length))]});
+  
   generatePoisons();
 
   t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
@@ -122,7 +126,6 @@ function draw() {
 
     fill(colors.type);
     textSize(26);
-    //text("VISIT ON DESKTOP FOR FULL EXPERIENCE", width / 2, height / 2 - 50);
     text("TURN ON AUDIO", width / 2, height / 2 + 50);
 
     textAlign(LEFT);
@@ -287,7 +290,7 @@ function draw() {
             feedback: random(0.1, 0.96)
           });
           fm1.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 50).toFrequency(), "8n");
-          
+
           gfx1.noStroke();
           gfx1.fill(255);
           gfx1.ellipse(trace0.x / 4, trace0.y / 4,5,5);
@@ -323,7 +326,6 @@ function draw() {
       pApples[i] = w.agents[i].apples;
       pPoison[i] = w.agents[i].poison;
     }
-
 
     // draw songlines
     tint(255);
@@ -366,7 +368,6 @@ function draw() {
     textFont(font);
     textSize(48);
 
-    
     fill(colors.type_contrast);
     noStroke();
     textFont(font);
@@ -381,21 +382,44 @@ function draw() {
     text(texts[textSelect], width/2-width/8,height-height/3.5,width/4);
     
     noStroke();
-    fill(255,gfxAlpha/40);
+    fill(255,gfxAlpha/20);
     triangle(width/3,height-height/3,width/2,height/5,width/3+width/3,height-height/3);
 
     fill(255,gfxAlpha/60);
     noStroke();
     rect(width/3,0,width/3,height);
 
+    fill(255,gfxAlpha/30);
     arc(width/2,height-height/3,width/3,width/3,PI,0);
     stroke(255,10);
     strokeWeight(1);
     line(0,height-height/3,width,height-height/3);
 
+
+    noFill();
+    stroke(255,50);
+    beginShape();
+    let xoff = 0; 
+    for (let x = 0; x <= width/3; x += 10) {
+      let y = map(noise(xoff, yoff), 0, 1, 200, 300);
+      vertex(x + width/3, y + height/2-gfx1.height);
+      xoff += 0.008;
+    }
+    yoff += 0.001;
+    endShape();
+
+    beginShape();
+    for (let x = 0; x <= width/3; x += 10) {
+      let y = map(noise(xoff, yoff), 0, 1, 200, 300);
+      vertex(x + width/3, y + height/2-gfx1.height);
+      //xoff += 0.001;
+    }
+    yoff += 0.001;
+    endShape();
+    
     tint(255,gfxAlpha);
-    image(gfx1, width/2 - gfx2.width, t1.yp, gfx1.width*2,gfx1.height*2);
-    image(gfx2, width/2 - gfx2.width, t2.yp, gfx2.width*2,gfx2.height*2);
+    image(gfx1, width/2 - gfx2.width, height/2-gfx1.height, gfx1.width*2,gfx1.height*2);
+    image(gfx2, width/2 - gfx2.width, height/2-gfx2.height, gfx2.width*2,gfx2.height*2);
 
     if(gfxAlpha<255) {
       gfxAlpha+=4;
@@ -413,6 +437,7 @@ function draw() {
       w.items = [];
       GAME_STATE = "outro";
       drone.stop();
+      
       fm2.triggerAttackRelease(Tone.Midi((random(6)+12) * 2).toFrequency(), "36n");
 
       textSelect = floor(random(texts.length));
@@ -461,6 +486,8 @@ function mousePressed() {
     drone.start();
     w.items = [];
     generatePoisons();
+    fm1.set({"harmonicity": harmonicities[floor(random(harmonicities.length))]});
+    fm2.set({"harmonicity": harmonicities[floor(random(harmonicities.length))]});
   }
 
   if(GAME_STATE == "play") {
@@ -471,6 +498,9 @@ function mousePressed() {
       t2.press();
     }
   }
+}
+
+async function asyncCall() {
 }
 
 function mouseReleased() {

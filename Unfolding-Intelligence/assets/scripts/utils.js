@@ -46,8 +46,8 @@ drone.fadeOut = 3;
 
 
 var feedbackDelay1 = new Tone.FeedbackDelay(0.2, 0.8).connect(r1);
-let fm1 = new Tone.FMSynth({
-  "harmonicity": 2,
+let fm1 = new Tone.PolySynth(Tone.FMSynth).toDestination();
+  fm1.set({"harmonicity": 10,
   "modulationIndex": 30,
   "detune": 0,
   "oscillator": {
@@ -67,15 +67,16 @@ let fm1 = new Tone.FMSynth({
     "decay": 0.02,
     "sustain": 0.03,
     "release": 0.6
-  },
+  }
 
 }).toDestination();
 fm1.connect(feedbackDelay1);
 fm1.volume.value = -8;
 
 var feedbackDelay2 = new Tone.FeedbackDelay(0.2, 0.8).connect(r2);
-let fm2 = new Tone.FMSynth({
-  "harmonicity": 2,
+let fm2 = new Tone.PolySynth(Tone.FMSynth).toDestination();
+fm2.set({
+  "harmonicity": 10,
   "modulationIndex": 30,
   "detune": 0,
   "oscillator": {
@@ -95,15 +96,12 @@ let fm2 = new Tone.FMSynth({
     "decay": 0.1,
     "sustain": 0.2,
     "release": 0.4
-  },
-
-}).toDestination();
+  }});
 fm2.connect(feedbackDelay2);
 fm2.volume.value = -20;
 
 let poisonSynth = new Tone.MembraneSynth().toDestination();
 poisonSynth.volume.value = -28;
-
 
 // app utilities
 function addItem(p) {
@@ -118,7 +116,7 @@ function addItem(p) {
 }
 
 function generatePoisons() {
-  let sel = 3;//floor(random(4));
+  let sel = floor(random(4));
 
   if(sel == 0) {
     for(let i=0; i<stringnum; i++) {
