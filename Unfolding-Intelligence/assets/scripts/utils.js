@@ -228,14 +228,18 @@ function loadAgents() {
     a.epsilon = 0.0002;
     if(k==0) {
       a.p = new Vec(0, wh/2);
-      t1.setPerception(a.eyes[0].max_range);
-      t1.setReflex(a.speed);
+      if(firsttime){
+        t1.setPerception(a.eyes[0].max_range);
+        t1.setReflex(a.speed);
+      }
     } else {
       a.p = new Vec(ww,wh/2);
       ptrace0.x = 0;
       ptrace1.x = ww;
-      t2.setPerception(a.eyes[0].max_range);
-      t2.setReflex(a.speed);
+      if(firsttime){
+        t2.setPerception(a.eyes[0].max_range);
+        t2.setReflex(a.speed);
+      }
     }
     w.agents.push(a);
     

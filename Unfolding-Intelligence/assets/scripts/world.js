@@ -308,7 +308,7 @@ World.prototype = {
 // Eye sensor has a maximum range and senses walls
 var Eye = function(angle) {
   this.angle = angle; // angle relative to agent its on
-  this.max_range = 120;
+  this.max_range = Math.random() * 100 + 80; // between 80-180
   this.sensed_proximity = 120; // what the eye is seeing. will be set in world.tick()
   this.sensed_type = -1; // what does the eye see?
   this.vx = 0; // sensed velocity
@@ -322,7 +322,7 @@ var Agent = function(id) {
   // positional information
   this.p = new Vec(0, 0);
   this.v = new Vec(0, 0);
-  this.speed = 0.1;
+  this.speed = Math.random() * 0.1 + 0.05; // between 0.1 - 0.15
   this.op = this.p; // old position
   this.angle = 0; // direction facing
   this.heading = 0;
