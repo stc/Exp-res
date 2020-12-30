@@ -25,6 +25,7 @@ let t1, t2;
 var GAME_STATE = ["intro", "play", "outro"];
 
 var maxScore = 80; // 80 is ideal
+let winnerID = 0;
 
 var trace0 = { x: 0, y: 0 };
 var trace1 = { x: 0, y: 0 };
@@ -36,7 +37,7 @@ let x = 1;
 let y = 1;
 let easing = 0.1;
 
-var canLoop;
+let pngSaved = false;
 
 let gfxAlpha = 0;
 let pSec = 0;
@@ -103,8 +104,19 @@ function setup() {
   gfx1.clear();
   gfx2.clear();
 
-  if (!canLoop) {
-    noLoop();
+  // select & generate events for saving page
+  if (page && seed) {
+    if(page == 1) {
+      GAME_STATE = "intro";
+    }
+    if(page == 2) {
+      GAME_STATE = "play";
+    }
+    if(page == 3) {
+      GAME_STATE = "outro";
+    }
+  } else {
+    GAME_STATE = "intro";
   }
 }
 
@@ -443,22 +455,25 @@ function draw() {
     }
   }
 
-  if (!canLoop) {
-    console.log("saving canvas");
-    saveCanvas(canvas, 'myCanvas', 'png');
+  // save a static image based on URL queries
+  if(!pngSaved) {
+    if(saveStill) {
+      saveCanvas(canvas, `frame`, 'png');
+      saveStill = false;
+    }
+    if (page && seed) {
+      saveCanvas(canvas, `${seed}_${page}`, 'png');
+      pngSaved = true;
+    }
   }
 }
 
 // URL Params
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-if (urlParams.has('frame')) {
-  GAME_STATE = "play"
-  canLoop = false;
-} else {
-  GAME_STATE = "intro"
-  canLoop = true;
-}
+const saveStill = urlParams.has('frame');
+const seed = parseInt(urlParams.get("seed"));
+const page = parseInt(urlParams.get("page"));
 
 let firsttime = true;
 
@@ -496,9 +511,6 @@ function mousePressed() {
       t2.press();
     }
   }
-}
-
-async function asyncCall() {
 }
 
 function mouseReleased() {
