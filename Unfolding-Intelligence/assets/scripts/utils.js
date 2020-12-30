@@ -27,6 +27,8 @@ const colors = {
   touch: [255, 150, 150, 100]
 }
 
+
+
 // Tonejs components
 
 let r1 = new Tone.Reverb({
@@ -116,44 +118,95 @@ function addItem(p) {
 }
 
 function generatePoisons() {
-  let sel = floor(random(4));
-
-  if(sel == 0) {
-    for(let i=0; i<stringnum; i++) {
-      let p = width/2;
-      var nx = p - (width - ww) / 2.0;
-      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
-      newit.v = new Vec(0, 0);
-      newit.rad = 5;
-      w.items.push(newit);    
-    }
-  } else if(sel == 1) {
-    for(let i=0; i<stringnum; i++) {
-      let p = width/2 + sin(i*0.1) * ww/2.5;
-      var nx = p - (width - ww) / 2.0;
-      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
-      newit.v = new Vec(0, 0);
-      newit.rad = 5;
-      w.items.push(newit); 
-    }   
-  } else if(sel == 2){
-    for(let i=0; i<stringnum; i++) {
-      let p = width/2 + sin(i*0.1) * ww/4;
-      var nx = p - (width - ww) / 2.0;
-      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
-      newit.v = new Vec(0, 0);
-      newit.rad = 5;
-      w.items.push(newit);   
-    } 
-    for(let i=0; i<stringnum; i++) {
-      let p = width/2 + cos(i*0.1) * ww/4;
-      var nx = p - (width - ww) / 2.0;
-      var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
-      newit.v = new Vec(0, 0);
-      newit.rad = 5;
-      w.items.push(newit);   
-    } 
-  } else {
+  let sel = floor(random(7));
+  switch(sel){
+    case 0: // curve, triple
+      let rnd3 = random(5,10);
+      let rnd4 = random(0.05,0.2);
+      let rnd5 = random(-ww/3,ww/3)
+      for(let i=0; i<stringnum; i++) {
+        for (let j=0;j<4;j++) {
+          let p = map(j,0,4,width/2-ww/2,width/2+ww/2) + sin(i*rnd4) * rnd5;
+          var nx = p - (width - ww) / 2.0;
+          var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+          newit.v = new Vec(0, 0);
+          newit.rad = 5;
+          if(i>rnd3 && i<stringnum-rnd3) {
+              if(j>0) w.items.push(newit);
+          }
+        }    
+      }
+      break;
+    case 1: // curve, single
+      let rnd1 = random(-0.1,0.1);
+      let rnd2 = random(-ww/2.5,ww/2.5);
+      for(let i=0; i<stringnum; i++) {
+        let p = width/2 + sin(i*rnd1) * rnd2;
+        var nx = p - (width - ww) / 2.0;
+        var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+        newit.v = new Vec(0, 0);
+        newit.rad = 5;
+        w.items.push(newit); 
+      }   
+      break;
+    case 2: // curve, double  
+      let rnd0 = random(0.1,0.3);
+      for(let i=0; i<stringnum; i++) {
+        let p = width/2 + sin(i*rnd0) * ww/4;
+        var nx = p - (width - ww) / 2.0;
+        var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+        newit.v = new Vec(0, 0);
+        newit.rad = 5;
+        w.items.push(newit);   
+      } 
+      for(let i=0; i<stringnum; i++) {
+        let p = width/2 + cos(i*0.1) * ww/4;
+        var nx = p - (width - ww) / 2.0;
+        var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+        newit.v = new Vec(0, 0);
+        newit.rad = 5;
+        w.items.push(newit);   
+      } 
+      break;
+    case 3: // vertical, single 
+      let rnd = random(10,20);
+      for(let i=0; i<stringnum; i++) {
+        let p = width/2;
+        var nx = p - (width - ww) / 2.0;
+        var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+        newit.v = new Vec(0, 0);
+        newit.rad = 5;
+        if(i>rnd && i<stringnum-rnd) {
+          w.items.push(newit);
+        }    
+      }
+      break;
+    case 4: // vertical, multi
+      let rnnd = random(10,20);
+      for(let i=0; i<stringnum; i++) {
+        for (let j=0;j<4;j++) {
+          let p = map(j,0,4,width/2-ww/2,width/2+ww/2);
+          var nx = p - (width - ww) / 2.0;
+          var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+          newit.v = new Vec(0, 0);
+          newit.rad = 5;
+          if(i>rnnd && i<stringnum-rnnd) {
+            w.items.push(newit);
+          }
+        }    
+      }
+      break;
+    case 5: // horizontal  
+      for(let i=0; i<40; i++) {
+        let p = map(i,0,40,width/2-ww/2,width/2+ww/2);
+        var nx = p - (width - ww) / 2.0;
+        var newit = new Item(nx, stringnum/2 * wh / stringnum + wh / stringnum * 2, 2, i);
+        newit.v = new Vec(0, 0);
+        newit.rad = 5;
+        w.items.push(newit);   
+      } 
+      break;
+    default:
       // add no items
   }
 }

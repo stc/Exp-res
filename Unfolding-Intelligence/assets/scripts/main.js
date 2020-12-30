@@ -10,7 +10,6 @@ var spec = {};
 // display 
 var font;
 var stats = {};
-var colora, colorb;
 
 var activestrings = [];
 
@@ -94,8 +93,6 @@ function setup() {
   t1 = new Triangulum(width/2 - ww/2 - 200, height/3, 100, 0);
   t2 = new Triangulum(width/2 + ww/2 + 200, height/3, 100, 1);
 
-  colora = color(110, 209, 230);
-  colorb = color(255, 140, 160);
   loadAgents();
 
   gfx1 = createGraphics(ww / 4, wh / 4);
@@ -293,7 +290,7 @@ function draw() {
 
           gfx1.noStroke();
           gfx1.fill(255);
-          gfx1.ellipse(trace0.x / 4, trace0.y / 4,5,5);
+          gfx1.ellipse(trace0.x / 4, trace0.y / 4,2,2);
         } else if (i == 1) { // second agent
           feedbackDelay2.set({
             delayTime: random(0.1, 0.5),
@@ -302,7 +299,7 @@ function draw() {
           fm2.triggerAttackRelease(Tone.Midi(36 - lastAppleY + 48).toFrequency(), "8n");
           gfx2.fill(255);
           gfx2.noStroke();
-          gfx2.ellipse(trace1.x / 4, trace1.y / 4,5,5);
+          gfx2.ellipse(trace1.x / 4, trace1.y / 4,2,2);
         }
 
         let rnd = floor(random(4));
@@ -408,6 +405,7 @@ function draw() {
     yoff += 0.001;
     endShape();
 
+    stroke(218, 90, 51,60);
     beginShape();
     for (let x = 0; x <= width/3; x += 10) {
       let y = map(noise(xoff, yoff), 0, 1, 200, 300);

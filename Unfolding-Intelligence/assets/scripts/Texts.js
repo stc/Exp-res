@@ -23,4 +23,4 @@ let pitches = [
     [0, 0.6, 0.8, 0]
 ]
 
-let harmonicities = [2,10,15]
+let harmonicities = [2,10,15];
