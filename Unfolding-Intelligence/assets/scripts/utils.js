@@ -28,7 +28,6 @@ const colors = {
 }
 
 
-
 // Tonejs components
 
 let r1 = new Tone.Reverb({
@@ -254,6 +253,40 @@ function loadAgents() {
       agent.fromJSON(data); 
     }
   });
+}
+
+// generate lines for gfx saving
+
+function gen(g,pts,a,b,c,d,...col) {
+  noiseSeed(seed);
+  randomSeed(seed);
+    
+  for(let i=0; i<maxScore/d; i++) {
+    let x = map(i/random(b,c),0,maxScore/d,0,g.width);
+    let y = noise(i*a);
+    pts.push(createVector(x,map(y,0,1,0,g.height)));
+  }
+  
+  g.stroke(col[0],col[1],col[2],col[3]);
+  g.noFill();
+  
+  g.line(pts[0].x,pts[0].y,pts[1].x,pts[1].y);
+  g.line(pts[pts.length-1].x,pts[pts.length-1].y,pts[pts.length-2].x,pts[pts.length-2].y);
+  
+  for(let i=0; i<pts.length; i++) {
+    g.fill(255);
+    g.noStroke();
+    g.ellipse(pts[i].x,pts[i].y,2,2);
+    
+    g.stroke(col[0],col[1],col[2],col[3]);
+    g.noFill();
+    
+    if(i>3){
+      g.strokeWeight(0.5);
+      g.bezier(pts[i-3].x,pts[i-3].y,pts[i-2].x,pts[i-2].y,
+                pts[i-1].x,pts[i-1].y,pts[i-2].x,pts[i-2].y);
+    }
+  }
 }
 
 function saveAgent() {

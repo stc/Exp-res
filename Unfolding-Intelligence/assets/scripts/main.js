@@ -49,6 +49,13 @@ let pitchSelect = 0;
 
 let yoff = 0.0;
 
+// generate gfx on end
+let pts1=[];
+let pts2=[];
+let col1 = [150,150,150,100];
+let col2 = [218, 90, 51,100];
+
+
 function preload() {
   font = loadFont("assets/data/Lekton-Italic.ttf");
   myCursor = createVector(0,0);
@@ -114,6 +121,8 @@ function setup() {
     }
     if(page == 3) {
       GAME_STATE = "outro";
+      gen(gfx1,pts1,10,0.4,2,11,col1);
+      gen(gfx2,pts2,2000,1,1.2,9,col2);
     }
   } else {
     GAME_STATE = "intro";
