@@ -88,6 +88,7 @@ function setup() {
   trace1.y = wh/2;
   ptrace1.y = wh/2;
 
+  if(seed) randomSeed(seed);
   initStrings(floor(random(4)));
   pitchSelect = floor(random(pitches.length));
   drone.set({
@@ -113,13 +114,16 @@ function setup() {
 
   // select & generate events for saving page
   if (page && seed) {
-    if(page == 1) {
-      GAME_STATE = "intro";
-    }
-    if(page == 2) {
+    if(page < 5) {
+      w.agents[0].apples = map(page,1,4,10,maxScore-1);
+      w.agents[1].apples = map(page,1,4,10,maxScore-40);
+
       GAME_STATE = "play";
-    }
-    if(page == 3) {
+      randomSeed(seed);
+      gen(gfx1,pts1,10,random(0.2,0.4),2,11,col1);
+      randomSeed(seed);
+      gen(gfx2,pts2,2000,random(0.5,1),1.2,9,col2);
+    } else {
       GAME_STATE = "outro";
       gen(gfx1,pts1,10,0.4,2,11,col1);
       gen(gfx2,pts2,2000,1,1.2,9,col2);
@@ -283,7 +287,13 @@ function draw() {
     // draw items (food)
     for (var i = 0; i < w.items.length; i++) {
       var it = w.items[i];
-      var coloralpha = it.age;
+      var coloralpha; 
+      if(seed&page) {
+        coloralpha = 255;
+      }else{
+        coloralpha = it.age;
+      }
+      
       let s = it.rad / 2;
       strokeWeight(4)
       if (it.type === 1) {

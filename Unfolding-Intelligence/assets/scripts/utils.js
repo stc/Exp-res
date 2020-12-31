@@ -117,11 +117,15 @@ function addItem(p) {
 }
 
 function generatePoisons() {
+  if(seed) randomSeed(seed);
   let sel = floor(random(7));
   switch(sel){
     case 0: // curve, triple
+      if(seed) randomSeed(seed);
       let rnd3 = random(5,10);
+      if(seed) randomSeed(seed);
       let rnd4 = random(0.05,0.2);
+      if(seed) randomSeed(seed);
       let rnd5 = random(-ww/3,ww/3)
       for(let i=0; i<stringnum; i++) {
         for (let j=0;j<4;j++) {
@@ -137,7 +141,9 @@ function generatePoisons() {
       }
       break;
     case 1: // curve, single
+      if(seed) randomSeed(seed);
       let rnd1 = random(-0.1,0.1);
+      if(seed) randomSeed(seed);
       let rnd2 = random(-ww/2.5,ww/2.5);
       for(let i=0; i<stringnum; i++) {
         let p = width/2 + sin(i*rnd1) * rnd2;
@@ -149,6 +155,7 @@ function generatePoisons() {
       }   
       break;
     case 2: // curve, double  
+      if(seed) randomSeed(seed);
       let rnd0 = random(0.1,0.3);
       for(let i=0; i<stringnum; i++) {
         let p = width/2 + sin(i*rnd0) * ww/4;
@@ -168,6 +175,7 @@ function generatePoisons() {
       } 
       break;
     case 3: // vertical, single 
+      if(seed) randomSeed(seed);
       let rnd = random(10,20);
       for(let i=0; i<stringnum; i++) {
         let p = width/2;
@@ -181,6 +189,7 @@ function generatePoisons() {
       }
       break;
     case 4: // vertical, multi
+      if(seed) randomSeed(seed);
       let rnnd = random(10,20);
       for(let i=0; i<stringnum; i++) {
         for (let j=0;j<4;j++) {
