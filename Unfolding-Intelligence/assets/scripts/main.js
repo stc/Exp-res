@@ -117,14 +117,31 @@ function setup() {
     if(page < 5) {
       w.agents[0].apples = map(page,1,4,10,maxScore-1);
       w.agents[1].apples = map(page,1,4,10,maxScore-40);
-
+      
       GAME_STATE = "play";
       randomSeed(seed);
       gen(gfx1,pts1,10,random(0.2,0.4),2,11,col1);
       randomSeed(seed);
       gen(gfx2,pts2,2000,random(0.5,1),1.2,9,col2);
+      if(page==1) {
+        //...
+      }
+      if(page==2) {
+        generateItems();
+      }
+      if(page==3) {
+        generateRandomPoisons();
+      } 
+      if(page==4) {
+        generateItems();
+        generateRandomPoisons();
+      }
     } else {
       GAME_STATE = "outro";
+      randomSeed(seed);
+      textSelect = floor(random(texts.length));
+      randomSeed(seed);
+      titleSelect = floor(random(titles.length));
       gen(gfx1,pts1,10,0.4,2,11,col1);
       gen(gfx2,pts2,2000,1,1.2,9,col2);
     }
@@ -288,12 +305,12 @@ function draw() {
     for (var i = 0; i < w.items.length; i++) {
       var it = w.items[i];
       var coloralpha; 
-      if(seed&page) {
+      if(seed&&page) {
         coloralpha = 255;
       }else{
         coloralpha = it.age;
       }
-      
+
       let s = it.rad / 2;
       strokeWeight(4)
       if (it.type === 1) {
@@ -427,7 +444,8 @@ function draw() {
     noFill();
     stroke(255,50);
     beginShape();
-    let xoff = 0; 
+    let xoff = 0;
+    noiseSeed(seed); 
     for (let x = 0; x <= width/3; x += 10) {
       let y = map(noise(xoff, yoff), 0, 1, 200, 300);
       vertex(x + width/3, y + height/2-gfx1.height);
@@ -438,6 +456,7 @@ function draw() {
 
     stroke(218, 90, 51,60);
     beginShape();
+    noiseSeed(seed);
     for (let x = 0; x <= width/3; x += 10) {
       let y = map(noise(xoff, yoff), 0, 1, 200, 300);
       vertex(x + width/3, y + height/2-gfx1.height);

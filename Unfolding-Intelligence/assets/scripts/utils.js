@@ -116,6 +116,33 @@ function addItem(p) {
   }
 }
 
+function generateItems() {
+  randomSeed(seed);
+            
+  for(let i=0; i<stringnum; i++) {
+        for (let j=0;j<2;j++) {
+          if (activestrings[i] == 1) {
+            var nx = (random(ww)+width/2) - (width - ww) / 2.0;
+            var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 1, i);
+            w.items.push(newit);
+          } 
+    }    
+  }
+}
+
+function generateRandomPoisons() {
+    randomSeed(seed);
+      for(let i=0; i<stringnum; i++) {
+        for (let j=0;j<2;j++) {
+          let p = map(random(i*j),0,i*j,width/2-ww/2,width/2+ww/2);
+          var nx = p - (width - ww) / 2.0;
+          var newit = new Item(nx, i * wh / stringnum + wh / stringnum * 2, 2, i);
+          if(activestrings[i]==0)w.items.push(newit);
+          
+        }    
+      }
+    }
+
 function generatePoisons() {
   if(seed) randomSeed(seed);
   let sel = floor(random(7));
@@ -235,13 +262,27 @@ function loadAgents() {
     a.brain = new RL.DQNAgent(env, spec); // give agent a TD brain
     a.epsilon = 0.0002;
     if(k==0) {
-      a.p = new Vec(0, wh/2);
+      if(seed & page) {
+        randomSeed(seed);
+        a.p.x = random(0,ww);
+        randomSeed(seed+163);
+        a.p.y = random(0,wh);
+      } else {
+        a.p = new Vec(0, wh/2);
+      }
       if(firsttime){
         t1.setPerception(a.eyes[0].max_range);
         t1.setReflex(a.speed);
       }
     } else {
-      a.p = new Vec(ww,wh/2);
+      if(seed & page) {
+        randomSeed(seed+2883);
+        a.p.x = random(0,ww);
+        randomSeed(seed+3333);
+        a.p.y = random(0,wh);
+      } else {
+        a.p = new Vec(ww,wh/2);
+      }
       ptrace0.x = 0;
       ptrace1.x = ww;
       if(firsttime){
@@ -269,11 +310,19 @@ function loadAgents() {
 function gen(g,pts,a,b,c,d,...col) {
   noiseSeed(seed);
   randomSeed(seed);
-    
-  for(let i=0; i<maxScore/d; i++) {
-    let x = map(i/random(b,c),0,maxScore/d,0,g.width);
-    let y = noise(i*a);
-    pts.push(createVector(x,map(y,0,1,0,g.height)));
+  
+  if(page<5) {  
+    for(let i=0; i<maxScore*page/d; i++) {
+      let x = map(i/random(b,c),0,maxScore/d,0,g.width);
+      let y = noise(i*a);
+      pts.push(createVector(x,map(y,0,1,0,g.height)));
+    }
+  } else {
+    for(let i=0; i<maxScore/d; i++) {
+      let x = map(i/random(b,c),0,maxScore/d,0,g.width);
+      let y = noise(i*a);
+      pts.push(createVector(x,map(y,0,1,0,g.height)));
+    }
   }
   
   g.stroke(col[0],col[1],col[2],col[3]);
