@@ -144,6 +144,7 @@ function setup() {
       titleSelect = floor(random(titles.length));
       gen(gfx1,pts1,10,0.4,2,11,col1);
       gen(gfx2,pts2,2000,1,1.2,9,col2);
+      gfxAlpha = 255;
     }
   } else {
     GAME_STATE = "intro";
