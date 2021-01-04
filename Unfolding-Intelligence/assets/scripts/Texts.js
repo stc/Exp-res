@@ -11,9 +11,10 @@ let texts = [
 ]
 
 let titles = [
-	"True dreaming track choreography",
+	"Deep dreaming track choreographies",
 	"Well crafted memory landmarks",
-	"Like pathways of animals, plants, rocks & waterholes"
+	"Mnemonic dot projections",
+	"Bending new corners"
 ]
 
 let pitches = [
