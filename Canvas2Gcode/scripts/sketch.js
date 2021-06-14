@@ -1,17 +1,18 @@
 function preload() {
-  recordCanvas(100, 100, true);
+  recordCanvas(200, 200, true);
 }
 
 function setup() {
   createCanvas(800, 800);
+  initSerial();
   noLoop();
 }
 
 function draw() {
-  beginRecord();  // start recording canvas calls
+  beginRecord();  
   background(220);
   drawPlotShapes();
-  endRecord(); // stop recording canvas calls and print array
+  endRecord(); 
 }
 
 function drawGCodeDebug() {
@@ -43,7 +44,7 @@ function keyPressed() {
   if (key == 'x') {
     serial.stop();
   } else if(key == 'p') {
-    sendGCODE(gcode, "/dev/cu.usbserial-1440");
+    sendGCODE(gcode, "/dev/cu.usbserial-1410");
   } else if(key == 'd') {
     downloadGCode("output.gcode",gcode);
   }

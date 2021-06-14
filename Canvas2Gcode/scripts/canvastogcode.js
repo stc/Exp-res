@@ -86,7 +86,7 @@ function recordCanvas(gw_, gh_) {
 }
 
 function beginRecord() {
-  gcode = "";
+  gcode = "G28\n";
 }
 
 function endRecord() {
@@ -99,10 +99,10 @@ let lastMoveToX = 0; // workaround for bezierTo
 let lastMoveToY = 0;
 
 function canvasToGcode(name, arguments) {
-  let g = "";
+  let g = ""; 
   switch (name) {
     case "beginPath":
-      g += "G28\n"; //Home
+      //g += "G28\n"; //Home
       gcode += g;
       break;
     case "endPath":
@@ -134,7 +134,7 @@ function canvasToGcode(name, arguments) {
       grw = map(arguments[2], 0, width, 0, gw);
       grh = map(arguments[3], 0, height, 0, gh);
       
-      g = "G01 Z10\n"
+      g += "G01 Z10\n"
       g += "G01 X" + gx + " Y" + gy + "\n";
       g += "G01 X" + (gx+grw) + " Y" + gy + "\n";
       g += "G01 X" + (gx+grw) + " Y" + (gy+grh) + "\n";
