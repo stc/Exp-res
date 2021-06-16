@@ -1,0 +1,53 @@
+// app & sockets
+const express = require("express");
+const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http, {
+  transports: ["websocket"] 
+}); 
+
+// serial port
+const SerialPort = require('serialport');
+const Readline = require('@serialport/parser-readline');
+
+const sport = new SerialPort('/dev/tty-usbserial1', function (err) {
+  if (err) {
+    return console.log('Serial Port Error >> ', err.message);
+  }
+})
+const parser = sport.pipe(new Readline({ delimiter: '\r\n' }))
+parser.on('data', console.log)
+
+const port = process.env.PORT || 8080;
+
+app.use(express.static(__dirname + "/public"));
+
+app.get("/", (req, res) => {
+  res.render("index.html");
+});
+
+http.listen(port, () => {
+  console.log(`Server is active at port:${port}`);
+});
+
+io.on("connection", (socket) => {
+  console.log(`${socket.id} connected`);
+  
+  socket.on("disconnect", () => {
+    console.log(`${socket.id} disconnected`);
+  });
+
+  socket.on("shareData", (data) => {
+    console.log(`server received: ${data} from client ${socket.id}`);
+    console.log(`sending ${data} to serial output`);
+    sport.write(data);
+  });
+});
+
+//send shared_data every framerate to each client
+/*
+const frameRate = 30;
+setInterval(() => {
+  io.emit("shareData", share_data);
+}, 1000 / frameRate);
+*/
