@@ -10,13 +10,15 @@ const io = require("socket.io")(http, {
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
 
-const sport = new SerialPort('/dev/tty-usbserial1', function (err) {
+const sport = new SerialPort('/dev/tty.usbserial-1440', { baudRate: 115200}, function (err) {
   if (err) {
     return console.log('Serial Port Error >> ', err.message);
   }
 })
 const parser = sport.pipe(new Readline({ delimiter: '\r\n' }))
-parser.on('data', console.log)
+parser.on('data', (data) => {
+  console.log(`Serial in >>> ${data}`);
+});
 
 const port = process.env.PORT || 8080;
 
@@ -37,10 +39,15 @@ io.on("connection", (socket) => {
     console.log(`${socket.id} disconnected`);
   });
 
-  socket.on("shareData", (data) => {
+  socket.on("send", (data) => {
     console.log(`server received: ${data} from client ${socket.id}`);
     console.log(`sending ${data} to serial output`);
-    sport.write(data);
+    sport.write(data, function(err) {
+      if (err) {
+        return console.log('Error on write: ', err.message)
+      }
+      console.log('message written')
+    })
   });
 });
 

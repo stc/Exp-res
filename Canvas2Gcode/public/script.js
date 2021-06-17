@@ -1,32 +1,22 @@
-const sketchContainer = document.getElementById("sketch-container");
-
 const socket = io({
   transports: ["websocket"]
 });
 
 const sketch = (p) => {
-  
   p.setup = () => {
-    const containerPos = sketchContainer.getBoundingClientRect();
-    const cnv = p.createCanvas(containerPos.width, containerPos.height);
-
-    p.frameRate(30); //set framerate to 30, same as server
-    
-    // client receives data
-    /*
-    socket.on("shareData", (data) => {
-      console.log(`client received: ${data}`);
-    });
-    */
+    p.createCanvas(p.windowWidth,p.windowHeight);
   };
 
   p.draw = () => {
-    p.background(0); 
+    p.background(200); 
+    p.stroke(0);
+    p.noFill();
+    p.rect(0,0,p.width,p.height);
   };
 
   p.keyPressed = () => {
-      socket.emit("shareData", "serial-test");
+      socket.emit("send", "$$\n");
   };
 };
 
-new p5(sketch, sketchContainer);
+new p5(sketch);
