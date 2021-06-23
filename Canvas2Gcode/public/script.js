@@ -3,6 +3,10 @@ const socket = io({
 });
 
 const sketch = (p) => {
+  p.preload = () => {
+    recordCanvas(p.windowWidth,p.windowHeight,100,100);
+  };
+
   p.setup = () => {
     p.createCanvas(p.windowWidth,p.windowHeight);
   };
@@ -15,8 +19,32 @@ const sketch = (p) => {
   };
 
   p.keyPressed = () => {
-      socket.emit("send", "$$\n");
+      if(p.key=='q') {
+        sendHELP();
+      } else if(p.key=='w') {
+        sendHOME();
+      } else if(p.keyCode === p.LEFT_ARROW) {
+        sendMOVEDIR(0);
+      } else if(p.keyCode === p.UP_ARROW) {
+        sendMOVEDIR(1);
+      } else if(p.keyCode === p.RIGHT_ARROW) {
+        sendMOVEDIR(2);
+      } else if(p.keyCode === p.DOWN_ARROW) {
+        sendMOVEDIR(3);
+      } else if(p.key == 'd') {
+        downloadGCode("output.gcode",gcode);
+      }
   };
 };
+
+function downloadGCode(filename, content) {
+  let element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
 
 new p5(sketch);

@@ -9,23 +9,23 @@ const io = require("socket.io")(http, {
 // serial port
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
-let sport, portaddress, parser;
+let sport, sportaddress, sparser;
 
 SerialPort.list().then(function(ports) {
   for (let p of ports) {
     if(p.path.includes("usbserial")) {
-      portaddress = p.path;
-      console.log(`opening serial at ${portaddress}`);
+      sportaddress = p.path;
+      console.log(`opening serial at ${sportaddress}`);
     }
   }
 
-  sport = new SerialPort(portaddress, { baudRate: 115200}, function (err) {
+  sport = new SerialPort(sportaddress, { baudRate: 115200}, function (err) {
     if (err) {
       return console.log('Serial Port Error >> ', err.message);
     }
   });
-  parser = sport.pipe(new Readline({ delimiter: '\r\n' }))
-  parser.on('data', (data) => {
+  sparser = sport.pipe(new Readline({ delimiter: '\r\n' }))
+  sparser.on('data', (data) => {
     console.log(`Serial in >>> ${data}`);
   });
 });
