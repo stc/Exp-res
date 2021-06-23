@@ -1,6 +1,7 @@
 // params for interacting with the grbl interface
 let moveSpeed = 7000;
 let moveDist = 10;
+let poll = false;
 
 // params for constructing gcode from canvas calls
 let gline = 0;
@@ -33,10 +34,18 @@ function sendUNLOCK() {
 
 function sendGCODE(g) {
     glines = g.split("\n");
-    console.log(`gcode length: ${glines.length}`);
     gindex = 0;
     socket.emit("send","F5000\n");
+    poll = true;
+}
 
+function pollGCODE() {
+    if (serialIn === "ok" && gindex < glines.length && gindex > -1) {
+        socket.emit("send", glines[gindex] + "\n");
+        gindex++;
+    }else {
+        poll = false;
+    }
 }
 
 function sendMOVEDIR(dir) {
@@ -53,5 +62,15 @@ function sendMOVEDIR(dir) {
       console.log("moving ↓");
       socket.emit("send","$J=G21G91Y-"  + moveDist + "F" + moveSpeed + "\n");
     }
-  }
+}
+
+function sendPENUP() {
+    console.log("PEN_UP");
+    socket.emit("send","$J=G21G91Z-10F1000\n");
+}
+
+function sendPENDOWN() {
+    console.log("PEN_DOWN");
+    socket.emit("send","$J=G21G91Z10F1000\n");
+}
   

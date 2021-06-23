@@ -6,7 +6,9 @@ let serialIn = "";
 
 socket.on("serialIn", (data) => {
   serialIn = data;
-  console.log(serialIn);
+  if(poll) {
+    pollGCODE();
+  }
 });
 
 const sketch = (p) => {
@@ -40,8 +42,12 @@ const sketch = (p) => {
         sendMOVEDIR(3);
       } else if(p.key == 'd') {
         downloadGCode("output.gcode",gcode);
-      } else if(key == 'p') {
+      } else if(p.key == 'p') {
         sendGCODE(gcode);
+      } else if(p.key == 'a') {
+        sendPENUP();
+      } else if(p.key == 's') {
+        sendPENDOWN();
       }
   };
 };
