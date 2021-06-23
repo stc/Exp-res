@@ -1,4 +1,5 @@
 var gcode = "";
+let g;
 var gx, gy, sw, sh;
 
 // sketch (canvas input) dimensions, physical (gcode output) dimensions
@@ -7,7 +8,7 @@ function recordCanvas(sw_, sh_, gw_, gh_) {
   gh = gh_;
   sw = sw_;
   sh = sh_;
-  gcode += "F5000\n";
+  //gcode += "F7000\n";
 
   var ctxFns = [
     'fillRect',

@@ -1,5 +1,6 @@
 // params for interacting with the grbl interface
 let moveSpeed = 7000;
+let drawSpeed = 7000;
 let moveDist = 10;
 let poll = false;
 
@@ -35,7 +36,7 @@ function sendUNLOCK() {
 function sendGCODE(g) {
     glines = g.split("\n");
     gindex = 0;
-    socket.emit("send","F5000\n");
+    socket.emit("send","F" + drawSpeed + "\n");
     poll = true;
 }
 

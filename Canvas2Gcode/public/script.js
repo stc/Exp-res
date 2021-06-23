@@ -13,18 +13,35 @@ socket.on("serialIn", (data) => {
 
 const sketch = (p) => {
   p.preload = () => {
-    recordCanvas(p.windowWidth,p.windowHeight,100,100);
+    recordCanvas(800,800,200,200);
   };
 
   p.setup = () => {
-    p.createCanvas(p.windowWidth,p.windowHeight);
+    p.createCanvas(800,800);
   };
 
   p.draw = () => {
     p.background(200); 
     p.stroke(0);
     p.noFill();
-    p.rect(0,0,p.width,p.height);
+
+    beginRecord();
+    
+    // draw shapes here
+    /*for(let i=0; i<15; i++) {
+      p.ellipse( 300 + i * 10,  300, 100 + i*20, 100 + i*20);
+    }*/
+    
+    p.line(0,0,p.width,p.height);
+    p.line(p.width,0,0,p.height);
+    p.line(0,0,p.width,0);
+    p.line(p.width,0,p.width,p.height);
+    p.line(p.width,p.height,0,p.height);
+    p.line(0,p.height,0,0);
+    
+    //p.rect(0,0,p.width,p.height);
+    
+    endRecord();
   };
 
   p.keyPressed = () => {
@@ -48,6 +65,10 @@ const sketch = (p) => {
         sendPENUP();
       } else if(p.key == 's') {
         sendPENDOWN();
+      } else if(p.key == 'u') {
+        sendUNLOCK();
+      } else if(p.key == 'l') {
+        sendLOCK();
       }
   };
 };
