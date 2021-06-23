@@ -9,7 +9,7 @@ function recordCanvas(sw_, sh_, gw_, gh_) {
   sw = sw_;
   sh = sh_;
   //gcode += "F7000\n";
-
+  
   var ctxFns = [
     'fillRect',
     'save',
@@ -133,16 +133,16 @@ function canvasToGcode(name, arguments) {
       gcode += g;
       break;
     case "rect":
-      gx = mapRange(arguments[0], 0, sw, gw, 0); // inverted
+      gx = mapRange(arguments[0], 0, sw, gw, 0); 
       gy = mapRange(arguments[1], 0, sh, 0, gh); // inverted  
       grw = mapRange(arguments[2], 0, sw, 0, gw);
       grh = mapRange(arguments[3], 0, sh, 0, gh);
       
       g += "G01 X" + gx + " Y" + gy + "\n";
       g += "G01 Z10\n"
-      g += "G01 X" + gx + " Y" + gy + "\n";
-      g += "G01 X" + (gx+grw) + " Y" + gy + "\n";
-      g += "G01 X" + (gx+grw) + " Y" + (gy+grh) + "\n";
+      //g += "G01 X" + gx + " Y" + gy + "\n";
+      g += "G01 X" + (gx-grw) + " Y" + gy + "\n";
+      g += "G01 X" + (gx-grw) + " Y" + (gy+grh) + "\n";
       g += "G01 X" + gx + " Y" + (gy+grh) + "\n";
       g += "G01 X" + gx + " Y" + gy + "\n";
       g += "G01 Z0\n"

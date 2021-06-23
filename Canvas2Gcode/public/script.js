@@ -1,8 +1,12 @@
+//const { listenerCount } = require("events");
+
 const socket = io({
   transports: ["websocket"]
 });
 
 let serialIn = "";
+
+let lines = [];
 
 socket.on("serialIn", (data) => {
   serialIn = data;
@@ -11,15 +15,25 @@ socket.on("serialIn", (data) => {
   }
 });
 
-const sketch = (p) => {
+let sketch = (p) => {
+  let g;
+  let lines = [];
+  let linesScreen = [];
+  
   p.preload = () => {
-    recordCanvas(800,800,200,200);
+    recordCanvas(400,800,100,200);
+    
   };
+
 
   p.setup = () => {
-    p.createCanvas(800,800);
-  };
-
+    p.createCanvas(400,800);
+    addScreenPositionFunction(p);
+    for(let i=0;i<10;i++) {
+      lines.push(p.createVector(0,0));
+      linesScreen.push(p.createVector(0,0));
+    }
+  
   p.draw = () => {
     p.background(200); 
     p.stroke(0);
@@ -27,24 +41,35 @@ const sketch = (p) => {
 
     beginRecord();
     
-    // draw shapes here
-    /*for(let i=0; i<15; i++) {
-      p.ellipse( 300 + i * 10,  300, 100 + i*20, 100 + i*20);
-    }*/
+    for(let i=0;i<10;i++) {
+      p.stroke(0);
+      p.push();
+      p.rotate(i/50);
+      p.translate(i*30,p.height/2);
+      
+      p.rect(lines[i].x,lines[i].y,5,50);
+      linesScreen[i] = p.screenPosition(lines[i]);
+      p.pop();
+    }
     
+    for(let i=0;i<10;i++) {
+      p.stroke(255,0,0);
+      p.ellipse(linesScreen[i].x,linesScreen[i].y,10,10);
+    }
+    /*
+    // draw shapes here
     p.line(0,0,p.width,p.height);
     p.line(p.width,0,0,p.height);
+    
     p.line(0,0,p.width,0);
     p.line(p.width,0,p.width,p.height);
     p.line(p.width,p.height,0,p.height);
     p.line(0,p.height,0,0);
-    
-    //p.rect(0,0,p.width,p.height);
-    
+    */
     endRecord();
-  };
+  }
 
-  p.keyPressed = () => {
+  p.keyPressed = function() {
       if(p.key==' ') {
         sendHELP();
       } else if(p.key=='h') {
@@ -70,8 +95,10 @@ const sketch = (p) => {
       } else if(p.key == 'l') {
         sendLOCK();
       }
-  };
-};
+  }
+}};
+
+
 
 function downloadGCode(filename, content) {
   let element = document.createElement('a');
