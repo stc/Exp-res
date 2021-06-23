@@ -8,7 +8,6 @@ function recordCanvas(sw_, sh_, gw_, gh_) {
   gh = gh_;
   sw = sw_;
   sh = sh_;
-  //gcode += "F7000\n";
   
   var ctxFns = [
     'fillRect',

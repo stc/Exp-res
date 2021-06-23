@@ -1,12 +1,8 @@
-//const { listenerCount } = require("events");
-
 const socket = io({
   transports: ["websocket"]
 });
 
 let serialIn = "";
-
-let lines = [];
 
 socket.on("serialIn", (data) => {
   serialIn = data;
@@ -16,56 +12,28 @@ socket.on("serialIn", (data) => {
 });
 
 let sketch = (p) => {
-  let g;
-  let lines = [];
-  let linesScreen = [];
-  
   p.preload = () => {
-    recordCanvas(400,800,100,200);
-    
+    recordCanvas(800,800,150,150);
   };
 
-
   p.setup = () => {
-    p.createCanvas(400,800);
+    p.createCanvas(800,800);
     addScreenPositionFunction(p);
-    for(let i=0;i<10;i++) {
-      lines.push(p.createVector(0,0));
-      linesScreen.push(p.createVector(0,0));
-    }
+    
+    // prepare shapes to draw
+    setupPlotShapes(p);
+  }
   
   p.draw = () => {
     p.background(200); 
     p.stroke(0);
     p.noFill();
 
-    beginRecord();
+    beginRecord(); 
     
-    for(let i=0;i<10;i++) {
-      p.stroke(0);
-      p.push();
-      p.rotate(i/50);
-      p.translate(i*30,p.height/2);
-      
-      p.rect(lines[i].x,lines[i].y,5,50);
-      linesScreen[i] = p.screenPosition(lines[i]);
-      p.pop();
-    }
-    
-    for(let i=0;i<10;i++) {
-      p.stroke(255,0,0);
-      p.ellipse(linesScreen[i].x,linesScreen[i].y,10,10);
-    }
-    /*
-    // draw shapes here
-    p.line(0,0,p.width,p.height);
-    p.line(p.width,0,0,p.height);
-    
-    p.line(0,0,p.width,0);
-    p.line(p.width,0,p.width,p.height);
-    p.line(p.width,p.height,0,p.height);
-    p.line(0,p.height,0,0);
-    */
+    // draw shapes, hook canvas drawing functions
+    drawPlotShapes(p);
+
     endRecord();
   }
 
@@ -96,9 +64,7 @@ let sketch = (p) => {
         sendLOCK();
       }
   }
-}};
-
-
+};
 
 function downloadGCode(filename, content) {
   let element = document.createElement('a');

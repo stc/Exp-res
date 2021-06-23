@@ -26,7 +26,6 @@ SerialPort.list().then(function(ports) {
   });
   sparser = sport.pipe(new Readline({ delimiter: '\r\n' }))
   sparser.on('data', (data) => {
-    console.log(`Serial in >>> ${data}`);
     io.emit("serialIn", data);
   });
 });
@@ -60,11 +59,3 @@ io.on("connection", (socket) => {
     })
   });
 });
-
-//send shared_data every framerate to each client
-/*
-const frameRate = 30;
-setInterval(() => {
-  io.emit("shareData", share_data);
-}, 1000 / frameRate);
-*/
