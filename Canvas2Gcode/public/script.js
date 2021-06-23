@@ -2,6 +2,13 @@ const socket = io({
   transports: ["websocket"]
 });
 
+let serialIn = "";
+
+socket.on("serialIn", (data) => {
+  serialIn = data;
+  console.log(serialIn);
+});
+
 const sketch = (p) => {
   p.preload = () => {
     recordCanvas(p.windowWidth,p.windowHeight,100,100);
@@ -19,9 +26,9 @@ const sketch = (p) => {
   };
 
   p.keyPressed = () => {
-      if(p.key=='q') {
+      if(p.key==' ') {
         sendHELP();
-      } else if(p.key=='w') {
+      } else if(p.key=='h') {
         sendHOME();
       } else if(p.keyCode === p.LEFT_ARROW) {
         sendMOVEDIR(0);
@@ -33,6 +40,8 @@ const sketch = (p) => {
         sendMOVEDIR(3);
       } else if(p.key == 'd') {
         downloadGCode("output.gcode",gcode);
+      } else if(key == 'p') {
+        sendGCODE(gcode);
       }
   };
 };

@@ -27,6 +27,7 @@ SerialPort.list().then(function(ports) {
   sparser = sport.pipe(new Readline({ delimiter: '\r\n' }))
   sparser.on('data', (data) => {
     console.log(`Serial in >>> ${data}`);
+    io.emit("serialIn", data);
   });
 });
 

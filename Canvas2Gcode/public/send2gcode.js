@@ -36,6 +36,7 @@ function sendGCODE(g) {
     console.log(`gcode length: ${glines.length}`);
     gindex = 0;
     socket.emit("send","F5000\n");
+
 }
 
 function sendMOVEDIR(dir) {
