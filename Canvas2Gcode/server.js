@@ -9,21 +9,30 @@ const io = require("socket.io")(http, {
 // serial port
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
+let sport, portaddress, parser;
 
-const sport = new SerialPort('/dev/tty.usbserial-1440', { baudRate: 115200}, function (err) {
-  if (err) {
-    return console.log('Serial Port Error >> ', err.message);
+SerialPort.list().then(function(ports) {
+  for (let p of ports) {
+    if(p.path.includes("usbserial")) {
+      portaddress = p.path;
+      console.log(`opening serial at ${portaddress}`);
+    }
   }
-})
-const parser = sport.pipe(new Readline({ delimiter: '\r\n' }))
-parser.on('data', (data) => {
-  console.log(`Serial in >>> ${data}`);
+
+  sport = new SerialPort(portaddress, { baudRate: 115200}, function (err) {
+    if (err) {
+      return console.log('Serial Port Error >> ', err.message);
+    }
+  });
+  parser = sport.pipe(new Readline({ delimiter: '\r\n' }))
+  parser.on('data', (data) => {
+    console.log(`Serial in >>> ${data}`);
+  });
 });
 
 const port = process.env.PORT || 8080;
 
 app.use(express.static(__dirname + "/public"));
-
 app.get("/", (req, res) => {
   res.render("index.html");
 });
