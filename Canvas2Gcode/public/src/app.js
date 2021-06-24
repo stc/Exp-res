@@ -9,23 +9,28 @@ socket.on("serialIn", (data) => {
   if(poll) {
     pollGCODE();
   }
+  console.log(serialIn);
+});
+
+socket.on("svgObj", (data) => {
+  //console.log(`svg object loaded with elements:\n${data}`);
 });
 
 let sketch = (p) => {
+  
   p.preload = () => {
-    recordCanvas(800,800,150,150);
+    recordCanvas(400,800,200,400);
   };
 
   p.setup = () => {
-    p.createCanvas(800,800);
+    p.createCanvas(400,800);
     addScreenPositionFunction(p);
-    
+
     // prepare shapes to draw
     setupPlotShapes(p);
   }
-  
   p.draw = () => {
-    p.background(200); 
+    p.background(230); 
     p.stroke(0);
     p.noFill();
 
@@ -33,13 +38,14 @@ let sketch = (p) => {
     
     // draw shapes, hook canvas drawing functions
     drawPlotShapes(p);
+    //drawPlotCalib(p);
 
     endRecord();
   }
 
   p.keyPressed = function() {
       if(p.key==' ') {
-        sendHELP();
+        sendZERO();
       } else if(p.key=='h') {
         sendHOME();
       } else if(p.keyCode === p.LEFT_ARROW) {

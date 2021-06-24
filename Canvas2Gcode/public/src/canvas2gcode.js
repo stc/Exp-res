@@ -90,11 +90,12 @@ function recordCanvas(sw_, sh_, gw_, gh_) {
 
 function beginRecord() {
   gcode = "G28\n";
+  gcode += "F5000\n";
 }
 
 function endRecord() {
   g = "G01 Z0\n";
-  g += "G28\n" // Home;
+  g += "G28\n"; // Home;
   gcode += g;
 }
 

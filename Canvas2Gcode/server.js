@@ -6,6 +6,13 @@ const io = require("socket.io")(http, {
   transports: ["websocket"] 
 }); 
 
+// svg processing idea
+const { parse, stringify } = require("svgson");
+let svgObj = {};
+parse(`<svg><line stroke= "#bada55" x1= "70" y1= "80" x2= "250" y2= "150"> </line> </svg>`).then((json) => {
+  svgObj = JSON.stringify(json, null, 2);
+});
+  
 // serial port
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
@@ -43,6 +50,8 @@ http.listen(port, () => {
 
 io.on("connection", (socket) => {
   console.log(`${socket.id} connected`);
+  
+  socket.emit("svgObj", svgObj);
   
   socket.on("disconnect", () => {
     console.log(`${socket.id} disconnected`);
