@@ -7,6 +7,8 @@ public:
     Graph();
     void update();
     void drawNodes();
+    void pressed();
+    void released();
     void applyForces();
     
     int findNode(Node * n);
@@ -23,8 +25,13 @@ public:
     int mNumberOfEdges;
     
     ofEvent<int> onNewNodeRegistered;
+    ofEvent<int> onNodeIdChanged;
     
     float mGravityConstant;
     float mForceConstant;
     float mRepulsionStrength;
+    
+    bool mTouched;
+    float mInterpolValue;
+    Node * mCloseNode;
 };

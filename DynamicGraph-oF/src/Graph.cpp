@@ -1,8 +1,8 @@
 #include "Graph.h"
 
 /*
-    physics related: should we change node mass values & mRepStr val?
-    time related: should we consider storing and reusing time between new nodes/edges added?
+    physics related: change mRepStr val?
+    time related: consider storing and reusing time between new nodes/edges added?
 */
 
 Graph::Graph(){
@@ -10,6 +10,8 @@ Graph::Graph(){
     mGravityConstant = 1.1;
     mForceConstant = 1000;
     mRepulsionStrength = 1;
+    mTouched = false;
+    mInterpolValue = 0.2;
 }
 
 void Graph::update() {
@@ -17,6 +19,35 @@ void Graph::update() {
     for(auto n : mNodes) {
         n->update();
     }
+    
+    if(mTouched) {
+        if(mNodes.size() > 0) {
+            ofVec2f touchPos = ofVec2f(ofGetMouseX() - ofGetWidth()/2, ofGetMouseY() - ofGetHeight()/2);
+            mCloseNode->mPos.interpolate(touchPos, mInterpolValue);
+            if(mInterpolValue < 0.95) {
+                mInterpolValue += 0.02;
+            }
+        }
+    }
+}
+
+void Graph::pressed() {
+    if(mNodes.size() > 0) {
+        mCloseNode = mNodes[0];
+        mTouched = true;
+        ofVec2f touchPos = ofVec2f(ofGetMouseX() - ofGetWidth()/2, ofGetMouseY() - ofGetHeight()/2);
+        for(auto n : mNodes) {
+            if( ofVec2f(ofVec2f(touchPos.x, touchPos.y) - n->mPos).length() - mCloseNode->mMass / (2 * PI) <
+               ofVec2f(ofVec2f(touchPos.x, touchPos.y) - mCloseNode->mPos).length() - mCloseNode->mMass / (2 * PI) ) {
+                mCloseNode = n;
+            }
+        }
+    }
+}
+
+void Graph::released() {
+    mTouched = false;
+    mInterpolValue = 0.2;
 }
 
 void Graph::applyForces() {
@@ -60,7 +91,7 @@ void Graph::drawEdges(int latestNodeId){
         if(startNode == latestNodeId) {
             // display number of latest node's edges
             ofSetColor(255);
-            ofDrawBitmapString(ofToString(mEdges[i].size()),mNodes[startNode]->mPos.x+20,mNodes[startNode]->mPos.y);
+            ofDrawBitmapString(ofToString(mEdges[i].size()-1),mNodes[startNode]->mPos.x+20,mNodes[startNode]->mPos.y);
         }
         
         for(int j=0; j<mEdges[i].size();j++) {
@@ -69,15 +100,15 @@ void Graph::drawEdges(int latestNodeId){
             ofSetColor(255,100);
             ofVec2f v1 = ofVec2f(mNodes[startNode]->mPos.x, mNodes[startNode]->mPos.y);
             ofVec2f v2 = ofVec2f(mNodes[endNode]->mPos.x, mNodes[endNode]->mPos.y);
-            //ofDrawLine(v1,v2);
             
-            //if(j==1) {
+            // avoid drawing self connecting edges
+            if(startNode!=endNode) {
                 ofBeginShape();
                 ofVertex(v1.x,v1.y);
                 ofBezierVertex(ofVec2f(v1.x,v1.y).interpolate(ofVec2f(v2.x,v2.y),0.33).rotate(10),
                                ofVec2f(v1.x,v1.y).interpolate(ofVec2f(v2.x,v2.y),0.66).rotate(10), v2);
                 ofEndShape();
-            //}
+            }
         }
     }
 }
@@ -92,10 +123,12 @@ int Graph::findNode(Node * n){
 }
 
 void Graph::getNextNode(int latestNodeId) {
-    // random walk over the graph edges:
-    if (mEdges[latestNodeId].size()>0) {
-        int nodeId = mEdges[latestNodeId][ floor(ofRandom( mEdges[latestNodeId].size() ))];
-        //ofNotifyEvent(onNodeIdChanged, nodeId);
+    // random walk over the graph edges (0th element is self, so avoid when selecting):
+    if (mEdges[latestNodeId].size()>1) {
+        int nodeId = mEdges[latestNodeId][ floor(ofRandom( 1, mEdges[latestNodeId].size()))];
+        ofNotifyEvent(onNodeIdChanged, nodeId);
+    } else {
+        ofLog() << "reached end of graph";
     }
 }
 

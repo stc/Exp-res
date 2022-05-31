@@ -1,0 +1,24 @@
+{
+  "name": "plotify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon --ignore params.json app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "node-webcam": "^0.8.0",
+    "serialport": "^9.0.6",
+    "simplify-path": "^1.1.0",
+    "svg-pathdata": "^5.0.5",
+    "svgson": "^4.1.0",
+    "transformation-matrix": "^2.7.0",
+    "unescape": "^1.0.1"
+  }
+}

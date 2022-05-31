@@ -5,7 +5,6 @@
 #include "Node.h"
 
 class ofApp : public ofBaseApp{
-
 	public:
 		void setup();
 		void update();
@@ -26,9 +25,5 @@ class ofApp : public ofBaseApp{
         Graph graph;
         int latestNodeId;
         void onNewNodeRegistered(int & nId);
-    
-        bool touched;
-        float interpolValue;
-        Node * closeNode;
-        
+        void onNodeIdChanged(int & nId);
 };

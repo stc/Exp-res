@@ -4,9 +4,7 @@ void ofApp::setup(){
     graph = Graph();
     latestNodeId = -99;
     ofAddListener(graph.onNewNodeRegistered, this, &ofApp::onNewNodeRegistered);
-    
-    touched = false;
-    interpolValue = 0.2;
+    ofAddListener(graph.onNodeIdChanged, this, &ofApp::onNodeIdChanged);
 }
 
 void ofApp::update(){
@@ -21,19 +19,13 @@ void ofApp::draw(){
     graph.drawEdges(latestNodeId);
     graph.drawNodes();
     ofPopMatrix();
-    
-    if(touched) {
-        if(graph.mNodes.size() > 0) {
-            ofVec2f touchPos = ofVec2f(ofGetMouseX() - ofGetWidth()/2, ofGetMouseY() - ofGetHeight()/2);
-            closeNode->mPos.interpolate(touchPos, interpolValue);
-            if(interpolValue < 0.95) {
-                interpolValue += 0.02;
-            }
-        }
-    }
 }
 
 void ofApp::onNewNodeRegistered(int & nId) {
+    latestNodeId = nId;
+}
+
+void ofApp::onNodeIdChanged(int & nId) {
     latestNodeId = nId;
 }
 
@@ -43,6 +35,7 @@ void ofApp::keyPressed(int key){
     if(key == 'd') graph.registerNewNode(latestNodeId, 200);
     if(key == 'f') graph.registerNewNode(latestNodeId, 250);
     if(key == ' ') graph.genRandomGraph();
+    if(key == 'n') graph.getNextNode(latestNodeId);
 }
 
 void ofApp::keyReleased(int key){
@@ -58,23 +51,11 @@ void ofApp::mouseDragged(int x, int y, int button){
 }
 
 void ofApp::mousePressed(int x, int y, int button){
-    //graph.getNextNode(latestNodeId);
-    if(graph.mNodes.size() > 0) {
-        closeNode = graph.mNodes[0];
-        touched = true;
-        ofVec2f touchPos = ofVec2f(ofGetMouseX() - ofGetWidth()/2, ofGetMouseY() - ofGetHeight()/2);
-        for(auto n : graph.mNodes) {
-            if( ofVec2f(ofVec2f(touchPos.x, touchPos.y) - n->mPos).length() - closeNode->mMass / (2 * PI) <
-               ofVec2f(ofVec2f(touchPos.x, touchPos.y) - closeNode->mPos).length() - closeNode->mMass / (2 * PI) ) {
-                closeNode = n;
-            }
-        }
-    }
+    graph.pressed();
 }
 
 void ofApp::mouseReleased(int x, int y, int button){
-    touched = false;
-    interpolValue = 0.2;
+    graph.released();
 }
 
 void ofApp::mouseEntered(int x, int y){

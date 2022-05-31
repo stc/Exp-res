@@ -13,7 +13,7 @@ socket.on("serialIn", (data) => {
 });
 
 socket.on("svgObj", (data) => {
-  //console.log(`svg object loaded with elements:\n${data}`);
+  console.log(`svg object loaded with elements:\n${data}`);
 });
 
 let sketch = (p) => {
@@ -37,8 +37,8 @@ let sketch = (p) => {
     beginRecord(); 
     
     // draw shapes, hook canvas drawing functions
-    drawPlotShapes(p);
-    //drawPlotCalib(p);
+    //drawPlotShapes(p);
+    drawPlotCalib(p);
 
     endRecord();
   }
