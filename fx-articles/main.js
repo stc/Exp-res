@@ -16,8 +16,8 @@ fetch('https://api.fxhash.xyz/graphql', {
 }).then(r => r.json()).then(data => initArticles(data));
 
 function initArticles(data) {
-    let aData = data.data.articles
-    let prefix = `https://www.fxhash.xyz/article/`
+    const aData = data.data.articles
+    const prefix = `https://www.fxhash.xyz/article/`
     
     for (let a of aData) {
         const p = document.createElement("p")
