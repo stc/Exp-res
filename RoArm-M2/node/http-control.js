@@ -1,8 +1,8 @@
 const http = require('http');
 
 let ip_addr = "192.168.4.1"
-//let cmd = `{"T":105}` // servo feedback
-let cmd = `{"T":100}` // go init position 
+//let cmd = `{"T":105}` // check servo feedback
+let cmd = `{"T":100}` // goto init position 
 
 http.get(`http://${ip_addr}/js?json=${cmd}`, (resp) => {
   let data = '';
