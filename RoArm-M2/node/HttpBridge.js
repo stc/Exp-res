@@ -43,10 +43,6 @@ export default class HttpBridge {
     }
   }
 
-  moveCallback() {
-    this.sendRequest( msg, logState );
-  }
-
   getData() {
     this.sendRequest( armCommands.getData );
   }
