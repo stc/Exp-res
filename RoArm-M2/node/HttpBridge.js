@@ -1,26 +1,37 @@
-import http from 'http';
+import { XMLHttpRequest } from "xmlhttprequest";
+import { armConfig } from "./Utils.js";
+import { armCommands } from "./Utils.js";
 
 export default class HttpBridge {
-    constructor() {
-    }
+  constructor() {
+  }
+  
+  wristMode() {
+    this.sendRequest( armCommands.setWristMode );
+    this.sendRequest( armCommands.setWristParams );
+  }
+  
+  moveInit() {
+    this.sendRequest( armCommands.moveInit );
+  }
+  
+  moveWristUp() {
+    this.sendRequest( armCommands.moveWristUp );
+  }
+  getData() {
+    this.sendRequest( armCommands.getData );
+  }
+
+  sendRequest( msg ) {
+    let url = `http://${armConfig.ip_addr}/js?json=`;
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let jsonResponse = JSON.parse(this.responseText);
+        console.log(jsonResponse);
+      }
+    };
+    xhttp.open("GET", url + msg, true);
+    xhttp.send();
+  }
 }
-
-
-/*
-let ip_addr = "192.168.4.1"
-//let cmd = `{"T":105}` // check servo feedback
-let cmd = `{"T":100}` // goto init position 
-
-http.get(`http://${ip_addr}/js?json=${cmd}`, (resp) => {
-  let data = '';
-  resp.on('data', (chunk) => {
-    data += chunk;
-  });
-  resp.on('end', () => {
-    console.log(JSON.parse(data));
-  });
-
-}).on("error", (err) => {
-  console.log("Error: " + err.message);
-});
-*/
