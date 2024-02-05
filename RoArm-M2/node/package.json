@@ -1,0 +1,15 @@
+{
+  "name": "arm-tool-control",
+  "version": "1.0.0",
+  "description": "controlling robotic arm tool ",
+  "main": "http-control.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "keypress": "^0.2.1"
+  },
+  "type": "module"
+}
