@@ -5,49 +5,68 @@ import { armCommands } from "./Utils.js";
 export default class HttpBridge {
   constructor() {
   }
-  
+
   wristMode() {
-    this.sendRequest( armCommands.setWristMode );
-    this.sendRequest( armCommands.setWristParams );
+    this.sendRequest(armCommands.setWristMode);
+    this.sendRequest(armCommands.setWristParams);
   }
-  
+
   moveInit() {
-    this.sendRequest( armCommands.moveInit );
+    this.sendRequest(armCommands.moveInit);
   }
-  
+
   moveWristUp() {
-    this.sendRequest( armCommands.moveWristUp );
+    this.sendRequest(armCommands.moveWristUp);
   }
 
   moveRect(n) {
-    if(n == 0) {
-      this.sendRequest( armCommands.rectSimple_0 );
-    } else if(n == 1) {
-      this.sendRequest( armCommands.rectSimple_1 );
-    } else if(n == 2) {
-      this.sendRequest( armCommands.rectSimple_2 );
-    } else if(n == 3) {
-      this.sendRequest( armCommands.rectSimple_3 );
+    if (n == 0) {
+      this.sendRequest(armCommands.rectSimple_0);
+    } else if (n == 1) {
+      this.sendRequest(armCommands.rectSimple_1);
+    } else if (n == 2) {
+      this.sendRequest(armCommands.rectSimple_2);
+    } else if (n == 3) {
+      this.sendRequest(armCommands.rectSimple_3);
+    }
+  }
+
+  moveSequence([...seq]) {
+    if (seq.length > 0) {
+      let url = `http://${armConfig.ip_addr}/js?json=`;
+      let xhttp = new XMLHttpRequest();
+      let that = this;
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          //let jsonResponse = JSON.parse(this.responseText);
+          seq.shift();
+          console.log("finished");
+          that.moveSequence(seq);
+        }
+      };
+      xhttp.open("GET", url + seq[0], true);
+      xhttp.send();
+      console.log("sent out")
     }
   }
 
   moveRectDown(n) {
-    if(n == 0) {
-      this.sendRequest( armCommands.rectDown_0 );
-    } else if(n == 1) {
-      this.sendRequest( armCommands.rectDown_1 );
-    } else if(n == 2) {
-      this.sendRequest( armCommands.rectDown_2 );
-    } else if(n == 3) {
-      this.sendRequest( armCommands.rectDown_3 );
+    if (n == 0) {
+      this.sendRequest(armCommands.rectDown_0);
+    } else if (n == 1) {
+      this.sendRequest(armCommands.rectDown_1);
+    } else if (n == 2) {
+      this.sendRequest(armCommands.rectDown_2);
+    } else if (n == 3) {
+      this.sendRequest(armCommands.rectDown_3);
     }
   }
 
   getData() {
-    this.sendRequest( armCommands.getData );
+    this.sendRequest(armCommands.getData);
   }
 
-  sendRequest( msg ) {
+  sendRequest(msg) {
     let url = `http://${armConfig.ip_addr}/js?json=`;
     let xhttp = new XMLHttpRequest();
     let that = this;
@@ -62,7 +81,7 @@ export default class HttpBridge {
   }
 
   requestFinished(in_msg, out_msg) {
-    if(out_msg == null) {
+    if (out_msg == null) {
       console.log("done");
     } else {
       console.log(out_msg);

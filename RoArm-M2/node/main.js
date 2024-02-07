@@ -1,8 +1,12 @@
 import HttpBridge from './HttpBridge.js';
 import readline from 'readline';
+import { armBaseSequence } from './Utils.js';
 
 const httpBridge = new HttpBridge();
 httpBridge.wristMode();
+
+
+
 
 // interact
 readline.emitKeypressEvents(process.stdin)
@@ -55,6 +59,10 @@ process.stdin.on('keypress', (chunk, key) => {
 
     if(key && key.name == 'f') {
         httpBridge.moveRectDown(3);
+    }
+
+    if(key && key.name == 'k') {
+        httpBridge.moveSequence( armBaseSequence );
     }
     
     if(key && key.name == 'escape') {
