@@ -1,6 +1,7 @@
 import HttpBridge from './HttpBridge.js';
 import readline from 'readline';
 import { armBaseSequence } from './Utils.js';
+import { armDownSequence } from './Utils.js';
 
 const httpBridge = new HttpBridge();
 httpBridge.wristMode();
@@ -63,6 +64,18 @@ process.stdin.on('keypress', (chunk, key) => {
 
     if(key && key.name == 'k') {
         httpBridge.moveSequence( armBaseSequence );
+    }
+
+    if(key && key.name == 't') {
+        httpBridge.takePaint();
+    }
+
+    if(key && key.name == 'y') {
+        httpBridge.centerBrush();
+    }
+
+    if(key && key.name == 'u') {
+        httpBridge.moveSequence( armDownSequence );
     }
     
     if(key && key.name == 'escape') {

@@ -31,6 +31,14 @@ export default class HttpBridge {
     }
   }
 
+  takePaint() {
+    this.sendRequest(armCommands.takePaint);
+  }
+
+  centerBrush() {
+    this.sendRequest(armCommands.centerBrush);
+  }
+
   moveSequence([...seq]) {
     if (seq.length > 0) {
       let url = `http://${armConfig.ip_addr}/js?json=`;
