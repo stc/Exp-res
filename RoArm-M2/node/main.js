@@ -7,8 +7,9 @@ import { vec2seq } from './Utils.js';
 const httpBridge = new HttpBridge();
 httpBridge.wristMode();
 
-let vectors = [[0,0,0],[0,1,0]];
-console.log( vec2seq( vectors ) );
+let positions = [[0,0,0],[0,1,0]];
+let speed = 0.35;
+console.log( vec2seq( positions, speed ) );
 
 
 // interact

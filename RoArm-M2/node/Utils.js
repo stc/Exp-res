@@ -41,10 +41,11 @@ let armDownSequence = [
     '{"T":104,"x":150,"y":130,"z":-0,"t":3.2,"spd":0.45}',
 ]
 
-const vec2seq = ( vectors ) => {
-    let sequence = "";
-    for(let v of vectors) {
-        sequence += `${v[0]} ${v[1]} ${v[2]} \n`;  
+const vec2seq = ( positions, speed ) => {
+    let wristAngle = 3.2;
+    let sequence = [];
+    for(let p of positions) {
+        sequence.push(`{"T":104,"x":${p[0]},"y":${p[1]},"z":${p[2]},"t":${wristAngle},"spd":${speed}}`); 
     }
     return sequence
 }
