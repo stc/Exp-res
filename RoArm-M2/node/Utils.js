@@ -41,9 +41,18 @@ let armDownSequence = [
     '{"T":104,"x":150,"y":130,"z":-0,"t":3.2,"spd":0.45}',
 ]
 
+const vec2seq = ( vectors ) => {
+    let sequence = "";
+    for(let v of vectors) {
+        sequence += `${v[0]} ${v[1]} ${v[2]} \n`;  
+    }
+    return sequence
+}
+
 export {
     armConfig,
     armCommands,
     armBaseSequence,
-    armDownSequence
+    armDownSequence,
+    vec2seq
 }

@@ -2,9 +2,14 @@ import HttpBridge from './HttpBridge.js';
 import readline from 'readline';
 import { armBaseSequence } from './Utils.js';
 import { armDownSequence } from './Utils.js';
+import { vec2seq } from './Utils.js';
 
 const httpBridge = new HttpBridge();
 httpBridge.wristMode();
+
+let vectors = [[0,0,0],[0,1,0]];
+console.log( vec2seq( vectors ) );
+
 
 // interact
 readline.emitKeypressEvents(process.stdin)
