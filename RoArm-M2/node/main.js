@@ -11,7 +11,6 @@ let positions = [[0,0,0],[0,1,0]];
 let speed = 0.35;
 console.log( vec2seq( positions, speed ) );
 
-
 // interact
 readline.emitKeypressEvents(process.stdin)
 if (process.stdin.isTTY) {
