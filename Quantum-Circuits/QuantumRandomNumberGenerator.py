@@ -33,7 +33,7 @@ counts = result.get_counts()
 # single_random_bit = list(single_shot_result.get_counts().keys())[0]
 
 # print(f"Random Bit: {single_random_bit}")
-
+print(qc)
 def generate_random_bits(n):
     random_bits = []
     for _ in range(n):
