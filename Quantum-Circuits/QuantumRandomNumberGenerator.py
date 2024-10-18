@@ -28,12 +28,8 @@ counts = result.get_counts()
 #plot_histogram(counts, title="Quantum Random Number Generator")
 #plt.show()
 
-# Execute the circuit with 1 shot to generate a single random bit
-# single_shot_result = simulator.run(transpiled_qc, shots=1).result()
-# single_random_bit = list(single_shot_result.get_counts().keys())[0]
-
-# print(f"Random Bit: {single_random_bit}")
 print(qc)
+
 def generate_random_bits(n):
     random_bits = []
     for _ in range(n):
@@ -43,5 +39,5 @@ def generate_random_bits(n):
     return ''.join(random_bits)
 
 # Generate 8 random bits
-random_bits = generate_random_bits(8)
-print(f"Random 8-bit number: {random_bits}")
+random_bits = generate_random_bits(100)
+print(f"Random number sequence: {random_bits}")
