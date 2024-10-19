@@ -5,13 +5,32 @@ service = QiskitRuntimeService(
     instance='ibm-q/open/main',
     token='e97cb70abdf2b346d87c00cbdf142528e7fcc8f07eb6dadc49e3318e8c5346b95494e2612ecb020af0c76dc410804251ba12eb1bad49e2110e5c86cb7b28bff4'
 )
-job = service.job('cw938jtggr6g0087r8p0')
+job = service.job('cw9t34c2802g0081nvq0')
 job_result = job.result()
-print(job_result)
-print(job_result[0].data.c0.get_counts())
-# To get counts for a particular pub result, use 
-#
-# pub_result = job_result[<idx>].data.<classical register>.get_counts()
-#
-# where <idx> is the index of the pub and <classical register> is the name of the classical register. 
-# You can use circuit.cregs to find the name of the classical registers.
+memory = job_result.get_memory()
+
+shots_array = []
+# Loop through each shot in the BitArray and print the results
+for i, shot in enumerate(memory):
+    # Convert the bitstring to a list of integers if needed
+    # bit_array = [int(bit) for bit in shot]
+    shots_array.append(shot)
+
+print(shots_array)
+
+"""
+job_result = job.result()
+print(job_result[0].join_data())
+counts = job_result[0].data.c0.get_counts()
+
+all_shots = []
+for bitstring, count in counts.items():
+    # Convert the bitstring to a list of integers
+    bit_array = [int(bit) for bit in bitstring]
+    # Repeat each bitstring for the number of times it occurred
+    all_shots.extend([bit_array] * count)
+
+# Loop through each shot
+for i, shot in enumerate(all_shots):
+    print(f"Shot {i+1}: {shot}")
+"""
