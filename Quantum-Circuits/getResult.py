@@ -5,7 +5,11 @@ service = QiskitRuntimeService(
     instance='ibm-q/open/main',
     token='e97cb70abdf2b346d87c00cbdf142528e7fcc8f07eb6dadc49e3318e8c5346b95494e2612ecb020af0c76dc410804251ba12eb1bad49e2110e5c86cb7b28bff4'
 )
-job = service.job('cw9t34c2802g0081nvq0')
+# bell-state results
+#job = service.job('cw9t34c2802g0081nvq0')
+
+# binary-random results
+job = service.job('cwabp899ezk00085nz50')
 job_result = job.result()
 memory = job_result.get_memory()
 
@@ -18,11 +22,8 @@ for i, shot in enumerate(memory):
 
 print(shots_array)
 
-"""
-job_result = job.result()
-print(job_result[0].join_data())
-counts = job_result[0].data.c0.get_counts()
 
+"""
 all_shots = []
 for bitstring, count in counts.items():
     # Convert the bitstring to a list of integers

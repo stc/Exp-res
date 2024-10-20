@@ -9,7 +9,7 @@ circuit.h([0]) # Apply Hadamard gate to first qubit
 circuit.cx(0, 1) # Apply a CNOT gate with qubit 0 as control and qubit 1 as target
 # circuit.measure(qr, cr)
 circuit.measure_all()
-
+print(circuit)
 service = QiskitRuntimeService(channel="ibm_quantum", token="e97cb70abdf2b346d87c00cbdf142528e7fcc8f07eb6dadc49e3318e8c5346b95494e2612ecb020af0c76dc410804251ba12eb1bad49e2110e5c86cb7b28bff4")
 backend = service.least_busy(operational=True, simulator=False, memory=True)
 print(service.backends())
@@ -17,15 +17,19 @@ print(service.backends())
 transpiled_qc = transpile(circuit, backend)
 
 # deprecated
-execute = backend.run([transpiled_qc], shots=1000, memory=True)
+# execute = backend.run([transpiled_qc], shots=1000, memory=True)
 
-# up to date
+# up to date 1
 #job = Sampler(backend).run([transpiled_qc], shots=1000)
 #result = job.result()
 
 
+# up to date 2
+job = backend.run(transpiled_qc, shots=1000, memory=True)
+result = job.result()
+
 # Get the memory (individual shots) from the result
-#memory = result.get_memory()
+memory = result.get_memory()
 
 # Print each shot
 #for i, shot in enumerate(memory):
