@@ -8,9 +8,10 @@ service = QiskitRuntimeService(
 
 # bell-state results
 #job = service.job('cw9t34c2802g0081nvq0')
+job = service.job('cwabsrqjyrs0008h1b4g')
 
 # binary-random results
-job = service.job('cwabp899ezk00085nz50')
+# job = service.job('cwabp899ezk00085nz50')
 
 job_result = job.result()
 memory = job_result.get_memory()
