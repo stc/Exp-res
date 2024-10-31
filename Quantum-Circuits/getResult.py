@@ -7,7 +7,10 @@ service = QiskitRuntimeService(
 )
 
 #random-hex results
-job = service.job('cwd30n22802g008m6nfg')
+# job = service.job('cwd30n22802g008m6nfg')
+
+#entangled hex results
+job = service.job('cwhqw3g40e000088xxjg')
 
 # bell-state results
 # job = service.job('cw9t34c2802g0081nvq0')
