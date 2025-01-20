@@ -2,3 +2,5 @@ lib/*
 bin/*
 include/*
 share/*
+results/*
+sketches/*
