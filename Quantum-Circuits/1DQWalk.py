@@ -1,5 +1,6 @@
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
+from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
 import numpy as np
 
 # Number of steps in the random walk
@@ -16,6 +17,19 @@ for i in range(num_steps):
 # Measure all qubits
 qc.measure(range(num_steps), range(num_steps))
 
+print(qc)
+
+# Run the circuit on an actual Quantum Processor
+service = QiskitRuntimeService(channel="ibm_quantum", token="e97cb70abdf2b346d87c00cbdf142528e7fcc8f07eb6dadc49e3318e8c5346b95494e2612ecb020af0c76dc410804251ba12eb1bad49e2110e5c86cb7b28bff4")
+backend = service.least_busy(operational=True, simulator=False, memory=True)
+transpiled_qc = transpile(qc, backend)
+
+job = Sampler(backend).run([transpiled_qc], shots=4096)
+result = job.result()
+# job = backend.run([transpiled_qc], shots=4096, memory=True)
+# result = job.result()
+
+'''
 # Run the circuit on a Qiskit simulator
 simulator = AerSimulator()
 transpiled_qc = transpile(qc, simulator)
@@ -50,3 +64,4 @@ with open("quantum-walk-probabilities.txt", "w") as file:
     for item in prob_results:
         file.write(f"{item},\n")
     file.write("]")
+'''
