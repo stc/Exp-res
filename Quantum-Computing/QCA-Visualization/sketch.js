@@ -83,8 +83,8 @@ function draw() {
     }
   }
   drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playhead_0, r_30_simulator, playhead_1,  50, 50, 10);
-  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  50, 300, 10);
-  drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  400, 300, 10);
+  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  400, 50, 10);
+  drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  50, 300, 10);
 }
 
 function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, quantum_index, xpos, ypos, s) {
