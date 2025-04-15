@@ -12,6 +12,9 @@ let playback_3 = false;
 let playback_4 = false;
 let playback_5 = false;
 
+let colr = 255;
+let bgCol = 140;
+
 function preload() {
   font = loadFont("IBMPlexSans-Medium.ttf");
 }
@@ -20,7 +23,7 @@ function setup() {
 }
 
 function draw() {
-  background(230);
+  background(bgCol);
   if(playback_0) {
     if(frameCount%10==0) {
       if(playhead_0<10) {
@@ -126,29 +129,37 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
   let maxcol = binary_cells[0].length;
   let maxrow = binary_cells.length;
   
-  for (let row = 0; row < maxrow; row++) {
-    for (let col = 0; col < maxcol; col++) {
-      stroke(0, 0, 200)
-      noFill();
-      rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
-    }
-  }
+  stroke(colr)
+  //fill(240)
+  noFill();
+  rectMode(CORNER)
+  //rect(xpos-s,ypos-s,maxcol*s*2,maxrow*s*2);
+  
+  
   for (let row = 0; row < binary_index; row++) {
     for (let col = 0; col < maxcol; col++) {
       noStroke();
       let value = map(binary_cells[row][col], 0., 1.0, 0, s*2);
-      fill(0, 0, 200);
+      fill(colr);
       rectMode(CENTER)
       rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
     }
   }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
-      stroke(0, 0, 200)
+      stroke(140)
       noFill();
-      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
+      rectMode(CENTER)
+      //rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
+      
     }
   }
+  
+  stroke(colr)
+  noFill();
+  rectMode(CORNER)
+  //rect(xpos-s + maxcol * s * 3,ypos-s,maxcol*s*2,maxrow*s*2);
+  
   if(quantum_index>0 && quantum_index<10) {
     random([0,1]) ? playWithADSR(floor(random(6)),0.05) : fill(255);
   }
@@ -156,21 +167,34 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
     for (let col = 0; col < maxcol; col++) {
       noStroke();
       let value = map(quantum_cells[row][col], 0.3, 1.0, 0, s*2);
+      let cv = map(quantum_cells[row][col],0.4,1.0,bgCol,colr,true);
       
       if(quantum_index>0 && quantum_index<10) {
-        random([0,1]) ? fill(0, 0, 200) : fill(230);
+        random([0,1]) ? fill(colr) : fill(bgCol);
         rectMode(CENTER)
-        rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s,s);
+        rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s*2,s*2);
         
       }
-      fill(0, 0, 200);
+      fill(20,map(quantum_index,0,10,0,255));
       rectMode(CENTER)
-      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value * map(quantum_index,0,10,0,1), value * map(quantum_index,0,10,0,1));
+      fill(cv, map(quantum_index,0,10,0,255));
+      //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value * map(quantum_index,0,10,0,1), value * map(quantum_index,0,10,0,1));
+      
+      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s*2,s*2);
+    }
+    for (let row = 0; row < maxrow; row++) {
+      for (let col = 0; col < maxcol; col++) {
+        stroke(140)
+        strokeWeight(1)
+        noFill();
+        rectMode(CENTER)
+        //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
+      }
     }
   }
 
   noStroke();
-  fill(0,0,200);
+  fill(colr);
   textFont(font);
   textSize(14)
   text(rule, xpos - s, ypos - s * 2)

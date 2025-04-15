@@ -5,7 +5,8 @@ let audioStarted = false;
 const numOscillators = 6;
 const oscillators = [];
 const gains = [];
-const pitches = [100,200,400,450,900,1000]
+const baseFreq = 200;
+const pitches = [baseFreq,baseFreq*2,baseFreq*3,baseFreq*4,baseFreq*5,baseFreq*7]
 initAudio = () => {
     if (!audioStarted) {
         audioContext = new AudioContext();
@@ -34,6 +35,7 @@ createAudioComponents = () => {
       
         osc.connect(gain);
         gain.connect(reverb);
+        gain.connect(audioContext.destination);
       
         osc.start();
       
@@ -42,7 +44,7 @@ createAudioComponents = () => {
       }
 }
 
-function playWithADSR(index, volume, adsr = { attack: 0.2, decay: 0.1, sustain: 0.01, release: 0.08, duration: 0.05 }) {
+function playWithADSR(index, volume, adsr = { attack: 0.005, decay: 0.001, sustain: 0.01, release: 0.01, duration: 0.05 }) {
     const now = audioContext.currentTime;
     const gainNode = gains[index];
   
