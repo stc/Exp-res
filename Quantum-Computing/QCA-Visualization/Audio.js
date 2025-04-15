@@ -5,6 +5,7 @@ let audioStarted = false;
 const numOscillators = 6;
 const oscillators = [];
 const gains = [];
+const pitches = [100,500,1000,2000,4000,8000]
 
 initAudio = () => {
     if (!audioStarted) {
@@ -19,8 +20,8 @@ createAudioComponents = () => {
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
       
-        osc.type = 'sine'; // or 'square', 'triangle', 'sawtooth'
-        osc.frequency.value = 200 + i * 220; // different frequency per oscillator
+        osc.type = 'triangle'; // or 'square', 'triangle', 'sawtooth'
+        osc.frequency.value = pitches[i]; // different frequency per oscillator
       
         gain.gain.value = 0.0; // adjust volume
       
@@ -34,7 +35,7 @@ createAudioComponents = () => {
       }
 }
 
-function playWithADSR(index, adsr = { attack: 0.01, decay: 0.02, sustain: 0.05, release: 0.1, duration: 0.05 }) {
+function playWithADSR(index, volume, adsr = { attack: 0.0, decay: 0.01, sustain: 0.01, release: 0.08, duration: 0.05 }) {
     const now = audioContext.currentTime;
     const gainNode = gains[index];
   
@@ -47,7 +48,7 @@ function playWithADSR(index, adsr = { attack: 0.01, decay: 0.02, sustain: 0.05, 
   
     gainNode.gain.cancelScheduledValues(now);
     gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.1, attackEnd);
+    gainNode.gain.linearRampToValueAtTime(volume, attackEnd);
     gainNode.gain.linearRampToValueAtTime(sustainLevel, decayEnd);
     gainNode.gain.setValueAtTime(sustainLevel, releaseStart);
     gainNode.gain.linearRampToValueAtTime(0, releaseStart + release);

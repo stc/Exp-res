@@ -27,7 +27,7 @@ function draw() {
         for(let i=0; i<r_30_binary[playhead_0].length; i++) {
           let value = r_30_binary[playhead_0][i];
           if(value > 0) {
-            playWithADSR(i);
+            playWithADSR(i, 0.1);
           }
         }
         playhead_0++;
@@ -41,6 +41,12 @@ function draw() {
     if(frameCount%20==0) {
       if(playhead_1<10) {
         console.log("play " + averageByIndex(r_30_simulator));
+        for(let i=0; i<r_30_simulator[playhead_1].length; i++) {
+          let value = r_30_simulator[playhead_1][i];
+          
+          playWithADSR(i, value * 0.1);
+          
+        }
         playhead_1++;
       } else {
         playback_1 = false;
@@ -54,7 +60,7 @@ function draw() {
         for(let i=0; i<r_90_binary[playhead_2].length; i++) {
           let value = r_90_binary[playhead_2][i];
           if(value > 0) {
-            playWithADSR(i);
+            playWithADSR(i, 0.1);
           }
         }
         playhead_2++;
@@ -80,7 +86,7 @@ function draw() {
         for(let i=0; i<r_101_binary[playhead_4].length; i++) {
           let value = r_101_binary[playhead_4][i];
           if(value > 0) {
-            playWithADSR(i);
+            playWithADSR(i, 0.1);
           }
         }
         playhead_4++;
@@ -137,6 +143,9 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
       rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
     }
   }
+  if(quantum_index>0 && quantum_index<10) {
+    random([0,1]) ? playWithADSR(floor(random(6)),0.001) : fill(255);
+  }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
       noStroke();
@@ -146,6 +155,7 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
         random([0,1]) ? fill(0, 0, 200) : fill(230);
         rectMode(CENTER)
         rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s,s);
+        
       }
       fill(0, 0, 200);
       rectMode(CENTER)
