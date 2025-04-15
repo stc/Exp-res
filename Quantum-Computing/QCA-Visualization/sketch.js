@@ -4,10 +4,10 @@ function setup() {
 
 function draw() {
   background(230);
-  drawCA_Pair(r_30_binary,r_30_simulator, 50, 50, 10);
+  drawCA_Pair("rule 30", r_30_binary,r_30_simulator, 50, 50, 10);
 }
 
-function drawCA_Pair(binary_cells, quantum_cells, xpos, ypos, s) {
+function drawCA_Pair(rule, binary_cells, quantum_cells, xpos, ypos, s) {
   let maxcol = binary_cells[0].length;
   let maxrow = binary_cells.length;
   for (let row = 0; row < maxrow; row++) {
@@ -34,6 +34,10 @@ function drawCA_Pair(binary_cells, quantum_cells, xpos, ypos, s) {
       rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
     }
   }
+
+  noStroke();
+  fill(0,0,200);
+  text(rule, xpos - s, ypos - s * 2)
 }
 
 let r_30_simulator = [
