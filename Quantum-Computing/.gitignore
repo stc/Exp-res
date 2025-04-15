@@ -1,0 +1,5 @@
+qiskit-circuits/lib/*
+qiskit-circuits/bin/*
+qiskit-circuits/include/*
+qiskit-circuits/share/*
+results/*
