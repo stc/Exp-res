@@ -115,6 +115,12 @@ function mousePressed() {
   playback_0 = true;
 }
 
+function keyPressed() {
+  for(let i=0; i<6; i++) {
+    fadeOut();
+  }
+}
+
 function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, quantum_index, xpos, ypos, s) {
   
   let maxcol = binary_cells[0].length;

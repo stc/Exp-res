@@ -5,8 +5,7 @@ let audioStarted = false;
 const numOscillators = 6;
 const oscillators = [];
 const gains = [];
-const pitches = [100,500,1000,2000,4000,8000]
-
+const pitches = [100,200,400,450,900,1000]
 initAudio = () => {
     if (!audioStarted) {
         audioContext = new AudioContext();
@@ -16,17 +15,25 @@ initAudio = () => {
 }
 
 createAudioComponents = () => {
+    let reverb = SimpleReverb(audioContext);
+    reverb.connect(audioContext.destination);
+    reverb.time = 0.6 //seconds
+    reverb.wet.value = 0.5
+    reverb.dry.value = 0.2
+    reverb.filterType = 'lowpass'
+    reverb.cutoff.value = 8000 //Hz
+
     for (let i = 0; i < numOscillators; i++) {
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
       
         osc.type = 'triangle'; // or 'square', 'triangle', 'sawtooth'
-        osc.frequency.value = pitches[i]; // different frequency per oscillator
+        osc.frequency.value = pitches[i];
       
         gain.gain.value = 0.0; // adjust volume
       
         osc.connect(gain);
-        gain.connect(audioContext.destination);
+        gain.connect(reverb);
       
         osc.start();
       
@@ -35,7 +42,7 @@ createAudioComponents = () => {
       }
 }
 
-function playWithADSR(index, volume, adsr = { attack: 0.0, decay: 0.01, sustain: 0.01, release: 0.08, duration: 0.05 }) {
+function playWithADSR(index, volume, adsr = { attack: 0.2, decay: 0.1, sustain: 0.01, release: 0.08, duration: 0.05 }) {
     const now = audioContext.currentTime;
     const gainNode = gains[index];
   
@@ -52,4 +59,14 @@ function playWithADSR(index, volume, adsr = { attack: 0.0, decay: 0.01, sustain:
     gainNode.gain.linearRampToValueAtTime(sustainLevel, decayEnd);
     gainNode.gain.setValueAtTime(sustainLevel, releaseStart);
     gainNode.gain.linearRampToValueAtTime(0, releaseStart + release);
-  }
+}
+
+function fadeOut() {
+    const now = audioContext.currentTime;
+    for(let i=0; i<gains.length; i++) {
+        const gainNode = gains[i];
+        gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(0, 1);
+    }
+}
