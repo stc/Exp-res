@@ -5,7 +5,7 @@ let playhead_2 = 0;
 let playhead_3 = 0;
 let playhead_4 = 0;
 let playhead_5 = 0;
-let playback_0 = true;
+let playback_0 = false;
 let playback_1 = false;
 let playback_2 = false;
 let playback_3 = false;
@@ -24,7 +24,12 @@ function draw() {
   if(playback_0) {
     if(frameCount%10==0) {
       if(playhead_0<10) {
-        console.log("play " + r_30_binary[playhead_0]);
+        for(let i=0; i<r_30_binary[playhead_0].length; i++) {
+          let value = r_30_binary[playhead_0][i];
+          if(value > 0) {
+            playWithADSR(i);
+          }
+        }
         playhead_0++;
       } else {
         playback_0 = false;
@@ -46,6 +51,12 @@ function draw() {
   if(playback_2) {
     if(frameCount%10==0) {
       if(playhead_2<10) {
+        for(let i=0; i<r_90_binary[playhead_2].length; i++) {
+          let value = r_90_binary[playhead_2][i];
+          if(value > 0) {
+            playWithADSR(i);
+          }
+        }
         playhead_2++;
       } else {
         playback_2 = false;
@@ -66,6 +77,12 @@ function draw() {
   if(playback_4) {
     if(frameCount%10==0) {
       if(playhead_4<10) {
+        for(let i=0; i<r_101_binary[playhead_4].length; i++) {
+          let value = r_101_binary[playhead_4][i];
+          if(value > 0) {
+            playWithADSR(i);
+          }
+        }
         playhead_4++;
       } else {
         playback_4 = false;
@@ -87,9 +104,16 @@ function draw() {
   drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  50, 300, 10);
 }
 
+function mousePressed() {
+  initAudio();
+  playback_0 = true;
+}
+
 function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, quantum_index, xpos, ypos, s) {
+  
   let maxcol = binary_cells[0].length;
   let maxrow = binary_cells.length;
+  
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
       stroke(0, 0, 200)
@@ -104,9 +128,6 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
       fill(0, 0, 200);
       rectMode(CENTER)
       rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
-      stroke(0, 0, 200)
-      noFill();
-      rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
     }
   }
   for (let row = 0; row < maxrow; row++) {
