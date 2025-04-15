@@ -144,7 +144,7 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
     }
   }
   if(quantum_index>0 && quantum_index<10) {
-    random([0,1]) ? playWithADSR(floor(random(6)),0.001) : fill(255);
+    random([0,1]) ? playWithADSR(floor(random(6)),0.05) : fill(255);
   }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
