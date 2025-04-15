@@ -1,16 +1,76 @@
+let font;
+let playhead_0 = 0;
+let playhead_1 = 0;
+let playhead_2 = 0;
+let playhead_3 = 0;
+let playback_0 = true;
+let playback_1 = false;
+let playback_2 = false;
+let playback_3 = false;
+
+function preload() {
+  font = loadFont("IBMPlexSans-Medium.ttf");
+}
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
   background(230);
-  drawCA_Pair("rule 30", r_30_binary,r_30_simulator, 50, 50, 10);
+  if(playback_0) {
+    if(frameCount%10==0) {
+      if(playhead_0<10) {
+        playhead_0++;
+      } else {
+        playback_0 = false;
+        playback_1 = true;
+      }
+    }
+  }
+  if(playback_1) {
+    if(frameCount%20==0) {
+      if(playhead_1<10) {
+        playhead_1++;
+      } else {
+        playback_1 = false;
+        playback_2 = true;
+      }
+    }
+  }
+  if(playback_2) {
+    if(frameCount%10==0) {
+      if(playhead_2<10) {
+        playhead_2++;
+      } else {
+        playback_2 = false;
+        playback_3 = true;
+      }
+    }
+  }
+  if(playback_3) {
+    if(frameCount%20==0) {
+      if(playhead_3<10) {
+        playhead_3++;
+      } else {
+        playback_3 = false;
+      }
+    }
+  }
+  drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playhead_0, r_30_simulator, playhead_1,  50, 50, 10);
+  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  50, 300, 10);
 }
 
-function drawCA_Pair(rule, binary_cells, quantum_cells, xpos, ypos, s) {
+function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, quantum_index, xpos, ypos, s) {
   let maxcol = binary_cells[0].length;
   let maxrow = binary_cells.length;
   for (let row = 0; row < maxrow; row++) {
+    for (let col = 0; col < maxcol; col++) {
+      stroke(0, 0, 200)
+      noFill();
+      rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
+    }
+  }
+  for (let row = 0; row < binary_index; row++) {
     for (let col = 0; col < maxcol; col++) {
       noStroke();
       let value = map(binary_cells[row][col], 0., 1.0, 0, s*2);
@@ -24,20 +84,34 @@ function drawCA_Pair(rule, binary_cells, quantum_cells, xpos, ypos, s) {
   }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
-      noStroke();
-      let value = map(quantum_cells[row][col], 0.47, 1.0, 0, s*2);
-      fill(0, 0, 200);
-      rectMode(CENTER)
-      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value, value);
       stroke(0, 0, 200)
       noFill();
       rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
     }
   }
+  for (let row = 0; row < maxrow; row++) {
+    for (let col = 0; col < maxcol; col++) {
+      noStroke();
+      let value = map(quantum_cells[row][col], 0.47, 1.0, 0, s*2);
+      
+      if(quantum_index>0 && quantum_index<10) {
+        random([0,1]) ? fill(0, 0, 200) : fill(230);
+        rectMode(CENTER)
+        rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s,s);
+      }
+      fill(0, 0, 200);
+      rectMode(CENTER)
+      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value * map(quantum_index,0,10,0,1), value * map(quantum_index,0,10,0,1));
+      
+    }
+  }
 
   noStroke();
   fill(0,0,200);
+  textFont(font);
+  textSize(14)
   text(rule, xpos - s, ypos - s * 2)
+  text(q_rule, xpos - s + maxcol * s * 3, ypos - s * 2)
 }
 
 let r_30_simulator = [
