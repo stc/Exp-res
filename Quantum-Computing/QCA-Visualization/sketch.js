@@ -12,18 +12,69 @@ let playback_3 = false;
 let playback_4 = false;
 let playback_5 = false;
 
-let colr = 255;
-let bgCol = 140;
+let colr = 0;
+let bgCol = 255;
+
+const vert = `
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying highp vec2 vVertTexCoord;
+
+void main() {
+	vec4 positionVec4 = vec4(aPosition, 1.0);
+  gl_Position = uProjectionMatrix * uModelViewMatrix * positionVec4;
+
+	vVertTexCoord = aTexCoord;
+} 
+`;
+
+const frag = `
+precision highp float;
+
+uniform sampler2D uTexture;
+uniform vec3 uColor;
+
+varying highp vec2 vVertTexCoord;
+
+const int N = 4;
+
+void main() {
+	float brightness = texture2D(uTexture, vVertTexCoord).r;
+	vec2 pos = floor(gl_FragCoord.xy / 2.0);
+	
+	float threshold = 0.0;
+	for (int n = N; n > 0; n--) {
+		float two_n = pow(2.0, float(n-1));
+		vec2 p = floor(pos / two_n);
+		threshold += pow(4.0, float(N - n)) * (mod(p.y, 2.0) + 2.0 * mod(p.x + p.y, 2.0));
+	}
+	threshold = (threshold + 1.0) / pow(4.0, float(N)) - 1e-4;
+	vec3 color = brightness > threshold ? uColor : uColor * 0.1;
+	gl_FragColor = vec4(color, 1.0);
+}
+`;
 
 function preload() {
   font = loadFont("IBMPlexSans-Medium.ttf");
 }
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  gfx = createGraphics(width,height);
+  mShader = createShader(vert, frag);
+	shader(mShader);
+	mShader.setUniform("uColor", color(`hsb(0%, 5%, 100%)`)._array);
 }
+
+let gfx;
+let mShader;
 
 function draw() {
   background(bgCol);
+  gfx.background(bgCol);
   if(playback_0) {
     if(frameCount%10==0) {
       if(playhead_0<10) {
@@ -111,6 +162,9 @@ function draw() {
   drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playhead_0, r_30_simulator, playhead_1,  50, 50, 10);
   drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  400, 50, 10);
   drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  50, 300, 10);
+
+  mShader.setUniform("uTexture",gfx);
+  rect(-width / 2, -height / 2, width, height);
 }
 
 function mousePressed() {
@@ -129,76 +183,76 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
   let maxcol = binary_cells[0].length;
   let maxrow = binary_cells.length;
   
-  stroke(colr)
+  gfx.stroke(colr)
   //fill(240)
-  noFill();
-  rectMode(CORNER)
+  gfx.noFill();
+  gfx.rectMode(CORNER)
   //rect(xpos-s,ypos-s,maxcol*s*2,maxrow*s*2);
   
   
   for (let row = 0; row < binary_index; row++) {
     for (let col = 0; col < maxcol; col++) {
-      noStroke();
+      gfx.noStroke();
       let value = map(binary_cells[row][col], 0., 1.0, 0, s*2);
-      fill(colr);
-      rectMode(CENTER)
-      rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
+      gfx.fill(colr);
+      gfx.rectMode(CENTER)
+      gfx.rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
     }
   }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
-      stroke(140)
-      noFill();
-      rectMode(CENTER)
+      gfx.stroke(140)
+      gfx.noFill();
+      gfx.rectMode(CENTER)
       //rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
       
     }
   }
   
-  stroke(colr)
-  noFill();
-  rectMode(CORNER)
+  gfx.stroke(colr)
+  gfx.noFill();
+  gfx.rectMode(CORNER)
   //rect(xpos-s + maxcol * s * 3,ypos-s,maxcol*s*2,maxrow*s*2);
   
   if(quantum_index>0 && quantum_index<10) {
-    random([0,1]) ? playWithADSR(floor(random(6)),0.05) : fill(255);
+    random([0,1]) ? playWithADSR(floor(random(6)),0.05) : gfx.fill(255);
   }
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
-      noStroke();
+      gfx.noStroke();
       let value = map(quantum_cells[row][col], 0.3, 1.0, 0, s*2);
       let cv = map(quantum_cells[row][col],0.4,1.0,bgCol,colr,true);
       
       if(quantum_index>0 && quantum_index<10) {
-        random([0,1]) ? fill(colr) : fill(bgCol);
-        rectMode(CENTER)
-        rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s*2,s*2);
+        random([0,1]) ? gfx.fill(colr) : gfx.fill(bgCol);
+        gfx.rectMode(CENTER)
+        gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s*2,s*2);
         
       }
-      fill(20,map(quantum_index,0,10,0,255));
-      rectMode(CENTER)
-      fill(cv, map(quantum_index,0,10,0,255));
+      gfx.fill(20,map(quantum_index,0,10,0,255));
+      gfx.rectMode(CENTER)
+      gfx.fill(cv, map(quantum_index,0,10,0,255));
       //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value * map(quantum_index,0,10,0,1), value * map(quantum_index,0,10,0,1));
       
-      rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s*2,s*2);
+      gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s*2,s*2);
     }
     for (let row = 0; row < maxrow; row++) {
       for (let col = 0; col < maxcol; col++) {
-        stroke(140)
-        strokeWeight(1)
-        noFill();
-        rectMode(CENTER)
+        gfx.stroke(140)
+        gfx.strokeWeight(1)
+        gfx.noFill();
+        gfx.rectMode(CENTER)
         //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
       }
     }
   }
 
-  noStroke();
-  fill(colr);
-  textFont(font);
-  textSize(14)
-  text(rule, xpos - s, ypos - s * 2)
-  text(q_rule, xpos - s + maxcol * s * 3, ypos - s * 2)
+  gfx.noStroke();
+  gfx.fill(colr);
+  gfx.textFont(font);
+  gfx.textSize(14)
+  gfx.text(rule, xpos - s, ypos - s * 2)
+  gfx.text(q_rule, xpos - s + maxcol * s * 3, ypos - s * 2)
 }
 
 function averageByIndex(arrays) {
