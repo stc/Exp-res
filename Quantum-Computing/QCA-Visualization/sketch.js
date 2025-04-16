@@ -5,12 +5,16 @@ let playhead_2 = 0;
 let playhead_3 = 0;
 let playhead_4 = 0;
 let playhead_5 = 0;
+let playhead_6 = 0;
+let playhead_7 = 0;
 let playback_0 = false;
 let playback_1 = false;
 let playback_2 = false;
 let playback_3 = false;
 let playback_4 = false;
 let playback_5 = false;
+let playback_6 = false;
+let playback_7 = false;
 
 let colr = 0;
 let bgCol = 255;
@@ -156,12 +160,39 @@ function draw() {
         playhead_5++;
       } else {
         playback_5 = false;
+        playback_6 = true;
+      }
+    }
+  }
+  if(playback_6) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playhead_6<10) {
+        for(let i=0; i<r_101_binary[playhead_6].length; i++) {
+          let value = r_101_binary[playhead_6][i];
+          if(value > 0) {
+            playWithADSR(i, 0.1);
+          }
+        }
+        playhead_6++;
+      } else {
+        playback_6 = false;
+        playback_7 = true;
+      }
+    }
+  }
+  if(playback_7) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playhead_7<10) {
+        playhead_7++;
+      } else {
+        playback_7 = false;
       }
     }
   }
   drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playhead_0, r_30_simulator, playhead_1,  50, 50, 10);
   drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  400, 50, 10);
   drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  50, 300, 10);
+  drawCA_Pair("RULE 105", "Q-GATE", r_105_binary, playhead_6, r_105_simulator, playhead_7,  400, 300, 10);
 
   mShader.setUniform("uTexture",gfx);
   rect(-width / 2, -height / 2, width, height);
@@ -345,4 +376,30 @@ let r_90_simulator = [
   [0.50, 0.49, 1.00, 0.53, 0.49, 0.52],
   [0.49, 0.50, 0.55, 0.51, 0.47, 0.49],
   [0.50, 0.53, 0.48, 0.51, 1.00, 0.47]
+]
+
+let r_105_binary = [
+  [0.00, 0.00, 0.00, 1.00, 0.00, 0.00],
+  [1.00, 1.00, 1.00, 1.00, 0.00, 1.00],
+  [0.00, 0.00, 0.00, 1.00, 1.00, 1.00],
+  [1.00, 1.00, 1.00, 0.00, 0.00, 1.00],
+  [0.00, 0.00, 1.00, 0.00, 1.00, 1.00],
+  [1.00, 1.00, 1.00, 1.00, 0.00, 1.00],
+  [0.00, 0.00, 0.00, 1.00, 1.00, 1.00],
+  [1.00, 1.00, 1.00, 0.00, 0.00, 1.00],
+  [0.00, 0.00, 1.00, 0.00, 1.00, 1.00],
+  [1.00, 1.00, 1.00, 1.00, 0.00, 1.00]
+]
+
+let r_105_simulator = [
+  [0.51, 0.50, 0.48, 1.00, 0.50, 0.53],
+  [0.75, 0.65, 0.52, 0.50, 0.53, 0.75], 
+  [0.48, 0.48, 0.59, 0.60, 0.72, 0.75],
+  [0.76, 0.65, 0.63, 0.27, 0.53, 0.75],
+  [0.41, 0.53, 0.57, 0.66, 0.72, 0.75],
+  [0.66, 0.73, 0.62, 0.44, 0.53, 0.75],
+  [0.34, 0.44, 0.62, 0.58, 0.72, 0.75],
+  [0.69, 0.69, 0.72, 0.29, 0.53, 0.75],
+  [0.34, 0.45, 0.61, 0.66, 0.72, 0.75],
+  [0.69, 0.69, 0.66, 0.48, 0.53, 0.75]
 ]
