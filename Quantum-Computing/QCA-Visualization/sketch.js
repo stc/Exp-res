@@ -53,7 +53,7 @@ void main() {
 		threshold += pow(4.0, float(N - n)) * (mod(p.y, 2.0) + 2.0 * mod(p.x + p.y, 2.0));
 	}
 	threshold = (threshold + 1.0) / pow(4.0, float(N)) - 1e-4;
-	vec3 color = brightness > threshold ? uColor : uColor * 0.1;
+	vec3 color = brightness > threshold ? uColor : uColor * 0.2;
 	gl_FragColor = vec4(color, 1.0);
 }
 `;
@@ -66,7 +66,7 @@ function setup() {
   gfx = createGraphics(width,height);
   mShader = createShader(vert, frag);
 	shader(mShader);
-	mShader.setUniform("uColor", color(`hsb(0%, 5%, 100%)`)._array);
+	mShader.setUniform("uColor", [0.8,0.8,0.8]);
 }
 
 let gfx;
@@ -76,7 +76,7 @@ function draw() {
   background(bgCol);
   gfx.background(bgCol);
   if(playback_0) {
-    if(frameCount%10==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_0<10) {
         for(let i=0; i<r_30_binary[playhead_0].length; i++) {
           let value = r_30_binary[playhead_0][i];
@@ -92,7 +92,7 @@ function draw() {
     }
   }
   if(playback_1) {
-    if(frameCount%20==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_1<10) {
         console.log("play " + averageByIndex(r_30_simulator));
         for(let i=0; i<r_30_simulator[playhead_1].length; i++) {
@@ -109,7 +109,7 @@ function draw() {
     }
   }
   if(playback_2) {
-    if(frameCount%10==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_2<10) {
         for(let i=0; i<r_90_binary[playhead_2].length; i++) {
           let value = r_90_binary[playhead_2][i];
@@ -125,7 +125,7 @@ function draw() {
     }
   }
   if(playback_3) {
-    if(frameCount%20==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_3<10) {
         playhead_3++;
       } else {
@@ -135,7 +135,7 @@ function draw() {
     }
   }
   if(playback_4) {
-    if(frameCount%10==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_4<10) {
         for(let i=0; i<r_101_binary[playhead_4].length; i++) {
           let value = r_101_binary[playhead_4][i];
@@ -151,7 +151,7 @@ function draw() {
     }
   }
   if(playback_5) {
-    if(frameCount%20==0) {
+    if(frameCount%random([5,10,20])==0) {
       if(playhead_5<10) {
         playhead_5++;
       } else {

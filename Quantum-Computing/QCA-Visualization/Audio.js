@@ -6,7 +6,7 @@ const numOscillators = 6;
 const oscillators = [];
 const gains = [];
 const baseFreq = 200;
-const pitches = [baseFreq,baseFreq*2,baseFreq*3,baseFreq*4,baseFreq*5,baseFreq*7]
+const pitches = [baseFreq,baseFreq*2,baseFreq*3,baseFreq*6,baseFreq*7,baseFreq*16]
 initAudio = () => {
     if (!audioStarted) {
         audioContext = new AudioContext();
