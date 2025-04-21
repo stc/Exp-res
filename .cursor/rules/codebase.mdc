@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+- generate functional code
+- Respond only with complete, working code. Do not include <think> sections, explanations, or inner monologue. Just return the code in a code block.
