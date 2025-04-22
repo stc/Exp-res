@@ -121,6 +121,7 @@ class CAPair {
 
   start() {
     this.playing = true;
+    changeDrones();
   }
 
   setNext(pair) {
@@ -130,7 +131,7 @@ class CAPair {
   update() {
     if (!this.playing) return;
 
-    if (frameCount % random([10,10,10,20]) === 0) {
+    if (frameCount % random([10,10,10,5]) === 0) {
       if (this.binaryIndex < 20) {
         if(this.binaryIndex<10) {
           this.binary[this.binaryIndex].forEach((v, i) => {
@@ -138,11 +139,11 @@ class CAPair {
           });
         }
         this.binaryIndex++;
-      } else if (this.quantumIndex < 10) {
-        this.quantum[this.quantumIndex].forEach((v, i) => {
+      } else if (floor(this.quantumIndex) < 10) {
+        this.quantum[floor(this.quantumIndex)].forEach((v, i) => {
           //playWithADSR(i, v * 0.1);
         });
-        this.quantumIndex++;
+        this.quantumIndex+=0.8;
       } else {
         this.playing = false;
         if (this.next) this.next.start();
@@ -169,7 +170,7 @@ class CAPair {
       }
     }
 
-    if (this.quantumIndex > 0 && this.quantumIndex < 10) {
+    if (floor(this.quantumIndex) > 0 && floor(this.quantumIndex) < 10) {
       random([0, 1]) ? playWithADSR(floor(random(6)), 0.05, { attack: 0.001, decay: 0.001, sustain: 0.005, release: 0.001, duration: 0.1 }) : g.fill(255);
     }
 
@@ -179,7 +180,7 @@ class CAPair {
         const val = map(this.quantum[row][col], 0.3, 1.0, 0, this.s * 2);
         const cv = map(this.quantum[row][col], 0.4, 1.0, bgCol, colr, true);
 
-        if (this.quantumIndex > 0 && this.quantumIndex < 10) {
+        if (floor(this.quantumIndex) > 0 && floor(this.quantumIndex) < 10) {
           random([0, 1]) ? g.fill(colr) : g.fill(bgCol);
           g.rectMode(CENTER);
           g.rect(col * this.s * 2 + this.x + maxCol * this.s * 3, row * this.s * 2 + this.y, this.s * 2, this.s * 2);
