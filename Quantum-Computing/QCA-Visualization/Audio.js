@@ -10,6 +10,7 @@ const pitches = [baseFreq, baseFreq * 2.5, baseFreq * 4.8, baseFreq * 8.2, baseF
 const drones = [];
 const dronePitches = [100, 120];
 const droneGains = [];
+let filter;
 
 initAudio = () => {
     if (!audioStarted) {
@@ -22,11 +23,18 @@ initAudio = () => {
 createAudioComponents = () => {
     let reverb = SimpleReverb(audioContext);
     reverb.connect(audioContext.destination);
-    reverb.time = 0.6 //seconds
-    reverb.wet.value = 0.2
-    reverb.dry.value = 0.5
+    reverb.time = 3.6 //seconds
+    reverb.wet.value = 0.0
+    reverb.dry.value = 1.0
     reverb.filterType = 'lowpass'
     reverb.cutoff.value = 8000 //Hz
+
+    filter = audioContext.createBiquadFilter();
+    filter.type = 'bandpass'; // Band-pass filter type
+    filter.frequency.setValueAtTime(4400, audioContext.currentTime); // Center frequency (Hz)
+    filter.Q.setValueAtTime(3, audioContext.currentTime); // Q factor (resonance), typically between 0.5 and 10
+
+    filter.connect(reverb);
 
     for (let i = 0; i < numOscillators; i++) {
         const osc = audioContext.createOscillator();
@@ -38,8 +46,8 @@ createAudioComponents = () => {
         gain.gain.value = 0.0; // adjust volume
 
         osc.connect(gain);
-        gain.connect(reverb);
-        gain.connect(audioContext.destination);
+        gain.connect(filter);
+        //gain.connect(audioContext.destination);
 
         osc.start();
 
@@ -54,9 +62,10 @@ createAudioComponents = () => {
         osc.type = 'sine';
         osc.frequency.value = dronePitches[i];
 
-        gain.gain.value = 0.1; // adjust volume
+        gain.gain.value = 0.0; // adjust volume
 
         osc.connect(gain);
+
         gain.connect(audioContext.destination);
 
         osc.start();
@@ -70,6 +79,29 @@ function changeDrones() {
     if (drones) {
         drones[0].frequency.setValueAtTime(random([80, 90, 100]), audioContext.currentTime);
         drones[1].frequency.setValueAtTime(random([120, 130, 135]), audioContext.currentTime);
+    }
+}
+
+function changeFilterFrequency(freq) {
+    if (filter) {
+        filter.frequency.setValueAtTime(freq, audioContext.currentTime);
+    }
+}
+
+function fadeDronesIn() {
+    const now = audioContext.currentTime;
+    if (drones) {
+        for (let i = 0; i < droneGains.length; i++) {
+            const gainNode = droneGains[i];
+            gainNode.gain.cancelScheduledValues(now);
+            gainNode.gain.linearRampToValueAtTime(0.1, now + 0.2);
+        }
+    }
+}
+
+function changeFilterQ(q) {
+    if (filter) {
+        filter.Q.setValueAtTime(q, audioContext.currentTime);
     }
 }
 
@@ -97,7 +129,12 @@ function fadeOut() {
     for (let i = 0; i < gains.length; i++) {
         const gainNode = gains[i];
         gainNode.gain.cancelScheduledValues(now);
-        gainNode.gain.setValueAtTime(0, now);
-        gainNode.gain.linearRampToValueAtTime(0, 1);
+        gainNode.gain.linearRampToValueAtTime(0, now + 1);
+    }
+
+    for (let i = 0; i < droneGains.length; i++) {
+        const gainNode = droneGains[i];
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.linearRampToValueAtTime(0, now + 1);
     }
 }
