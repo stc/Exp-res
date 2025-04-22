@@ -1,9 +1,9 @@
 let font;
-let playheads = Array(12).fill(0);
-let playbacks = Array(12).fill(false);
-
 let colr = 0;
 let bgCol = 255;
+let gfx, mShader;
+
+let caPairs = [];
 
 const vert = `
 attribute vec3 aPosition;
@@ -48,285 +48,147 @@ void main() {
 }
 `;
 
+let index = 0;
+
 function preload() {
   font = loadFont("IBMPlexSans-Medium.ttf");
 }
 
-let gfx;
-let mShader;
-
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  gfx = createGraphics(width,height);
+  gfx = createGraphics(width, height);
   mShader = createShader(vert, frag);
-	shader(mShader);
-	mShader.setUniform("uColor", [0.8,0.8,0.8]);
+  shader(mShader);
+  mShader.setUniform("uColor", [0.8, 0.8, 0.8]);
+
+  caPairs = [
+    new CAPair("RULE 30", "Q-GATE", r_30_binary, r_30_simulator, 50, 50, 10),
+    new CAPair("RULE 90", "Q-GATE", r_90_binary, r_90_simulator, 400, 50, 10),
+    new CAPair("RULE 101", "Q-GATE", r_101_binary, r_101_simulator, 50, 300, 10),
+    new CAPair("RULE 105", "Q-GATE", r_105_binary, r_105_simulator, 400, 300, 10),
+    new CAPair("RULE 150", "Q-GATE", r_150_binary, r_150_simulator, 50, 550, 10),
+    new CAPair("RULE 181", "Q-GATE", r_181_binary, r_181_simulator, 400, 550, 10),
+  ];
 }
 
 function draw() {
   background(bgCol);
   gfx.background(bgCol);
 
-  if(playbacks[0]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[0]<10) {
-        for(let i=0; i<r_30_binary[playheads[0]].length; i++) {
-          let value = r_30_binary[playheads[0]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[0]++;
-      } else {
-        playbacks[0] = false;
-        playbacks[1] = true;
-      }
-    }
+  for (let pair of caPairs) {
+    pair.update();
+    pair.display(gfx);
   }
 
-  if(playbacks[1]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[1]<10) {
-        console.log("play " + averageByIndex(r_30_simulator));
-        for(let i=0; i<r_30_simulator[playheads[1]].length; i++) {
-          let value = r_30_simulator[playheads[1]][i];
-          playWithADSR(i, value * 0.1);
-        }
-        playheads[1]++;
-      } else {
-        playbacks[1] = false;
-        playbacks[2] = true;
-      }
-    }
-  }
-
-  if(playbacks[2]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[2]<10) {
-        for(let i=0; i<r_90_binary[playheads[2]].length; i++) {
-          let value = r_90_binary[playheads[2]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[2]++;
-      } else {
-        playbacks[2] = false;
-        playbacks[3] = true;
-      }
-    }
-  }
-
-  if(playbacks[3]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[3]<10) {
-        playheads[3]++;
-      } else {
-        playbacks[3] = false;
-        playbacks[4] = true;
-      }
-    }
-  }
-
-  if(playbacks[4]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[4]<10) {
-        for(let i=0; i<r_101_binary[playheads[4]].length; i++) {
-          let value = r_101_binary[playheads[4]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[4]++;
-      } else {
-        playbacks[4] = false;
-        playbacks[5] = true;
-      }
-    }
-  }
-
-  if(playbacks[5]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[5]<10) {
-        playheads[5]++;
-      } else {
-        playbacks[5] = false;
-        playbacks[6] = true;
-      }
-    }
-  }
-
-  if(playbacks[6]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[6]<10) {
-        for(let i=0; i<r_101_binary[playheads[6]].length; i++) {
-          let value = r_101_binary[playheads[6]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[6]++;
-      } else {
-        playbacks[6] = false;
-        playbacks[7] = true;
-      }
-    }
-  }
-
-  if(playbacks[7]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[7]<10) {
-        playheads[7]++;
-      } else {
-        playbacks[7] = false;
-        playbacks[8] = true;
-      }
-    }
-  }
-  if(playbacks[8]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[8]<10) {
-        for(let i=0; i<r_150_binary[playheads[8]].length; i++) {
-          let value = r_150_binary[playheads[8]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[8]++;
-      } else {
-        playbacks[8] = false;
-        playbacks[9] = true;
-      }
-    }
-  }
-
-  if(playbacks[9]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[9]<10) {
-        playheads[9]++;
-      } else {
-        playbacks[9] = false;
-        playbacks[10] = true;
-      }
-    }
-  }
-
-  if(playbacks[10]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[10]<10) {
-        for(let i=0; i<r_181_binary[playheads[10]].length; i++) {
-          let value = r_181_binary[playheads[10]][i];
-          if(value > 0) {
-            playWithADSR(i, 0.1);
-          }
-        }
-        playheads[10]++;
-      } else {
-        playbacks[10] = false;
-        playbacks[11] = true;
-      }
-    }
-  }
-
-  if(playbacks[11]) {
-    if(frameCount%random([5,10,20])==0) {
-      if(playheads[11]<10) {
-        playheads[11]++;
-      } else {
-        playbacks[11] = false;
-        
-      }
-    }
-  }
-
-  drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playheads[0], r_30_simulator, playheads[1],  50, 50, 10);
-  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playheads[2], r_90_simulator, playheads[3],  400, 50, 10);
-  drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playheads[4], r_101_simulator, playheads[5],  50, 300, 10);
-  drawCA_Pair("RULE 105", "Q-GATE", r_105_binary, playheads[6], r_105_simulator, playheads[7],  400, 300, 10);
-  drawCA_Pair("RULE 150", "Q-GATE", r_150_binary, playheads[8], r_150_simulator, playheads[9],  50, 550, 10);
-  drawCA_Pair("RULE 181", "Q-GATE", r_181_binary, playheads[10], r_181_simulator, playheads[11],  400, 550, 10);
-
-  mShader.setUniform("uTexture",gfx);
+  mShader.setUniform("uTexture", gfx);
   rect(-width / 2, -height / 2, width, height);
 }
 
 function mousePressed() {
   initAudio();
-  playbacks[0] = true;
+  caPairs[index].start();
+  index++;
 }
 
 function keyPressed() {
-  for(let i=0; i<6; i++) {
+  for (let i = 0; i < 6; i++) {
     fadeOut();
   }
 }
 
-function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, quantum_index, xpos, ypos, s) {
-  
-  let maxcol = binary_cells[0].length;
-  let maxrow = binary_cells.length;
-  
-  gfx.stroke(colr)
-  gfx.noFill();
-  
-  for (let row = 0; row < binary_index; row++) {
-    for (let col = 0; col < maxcol; col++) {
-      gfx.noStroke();
-      let value = map(binary_cells[row][col], 0., 1.0, 0, s*2);
-      gfx.fill(colr);
-      gfx.rectMode(CENTER)
-      gfx.rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
-    }
+class CAPair {
+  constructor(rule, qRule, binaryData, quantumData, xpos, ypos, cellSize) {
+    this.rule = rule;
+    this.qRule = qRule;
+    this.binary = binaryData;
+    this.quantum = quantumData;
+    this.x = xpos;
+    this.y = ypos;
+    this.s = cellSize;
+    this.binaryIndex = 0;
+    this.quantumIndex = 0;
+    this.playing = false;
+    this.next = null; // for chaining
   }
 
-  for (let row = 0; row < maxrow; row++) {
-    for (let col = 0; col < maxcol; col++) {
-      gfx.stroke(140)
-      gfx.noFill();
-      gfx.rectMode(CENTER)
-    }
+  start() {
+    this.playing = true;
   }
-  
-  if(quantum_index>0 && quantum_index<10) {
-    random([0,1]) ? playWithADSR(floor(random(6)),0.05) : gfx.fill(255);
+
+  setNext(pair) {
+    this.next = pair;
   }
-  for (let row = 0; row < maxrow; row++) {
-    for (let col = 0; col < maxcol; col++) {
-      gfx.noStroke();
-      let value = map(quantum_cells[row][col], 0.3, 1.0, 0, s*2);
-      let cv = map(quantum_cells[row][col],0.4,1.0,bgCol,colr,true);
-      
-      if(quantum_index>0 && quantum_index<10) {
-        random([0,1]) ? gfx.fill(colr) : gfx.fill(bgCol);
-        gfx.rectMode(CENTER)
-        gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s*2,s*2);
+
+  update() {
+    if (!this.playing) return;
+
+    if (frameCount % random([5, 10, 20]) === 0) {
+      if (this.binaryIndex < 20) {
+        if(this.binaryIndex<10) {
+          this.binary[this.binaryIndex].forEach((v, i) => {
+          if (v > 0) playWithADSR(i, 0.1);
+          });
+        }
+        this.binaryIndex++;
+      } else if (this.quantumIndex < 10) {
+        this.quantum[this.quantumIndex].forEach((v, i) => {
+          playWithADSR(i, v * 0.1);
+        });
+        this.quantumIndex++;
+      } else {
+        this.playing = false;
+        if (this.next) this.next.start();
       }
-      
-      gfx.fill(20,map(quantum_index,0,10,0,255));
-      gfx.rectMode(CENTER)
-      gfx.fill(cv, map(quantum_index,0,10,0,255));
-      gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s*2,s*2);
     }
   }
 
-  gfx.noStroke();
-  gfx.fill(colr);
-  gfx.textFont(font);
-  gfx.textSize(14)
-  gfx.text(rule, xpos - s, ypos - s * 2)
-  gfx.text(q_rule, xpos - s + maxcol * s * 3, ypos - s * 2)
-}
+  display(g) {
+    const maxCol = this.binary[0].length;
+    const maxRow = this.binary.length;
 
-function averageByIndex(arrays) {
-  const numRows = arrays.length;
-  const numCols = arrays[0].length;
-  const result = new Array(numCols).fill(0);
+    g.stroke(colr);
+    g.noFill();
 
-  arrays.forEach(row => {
-    row.forEach((val, i) => {
-      result[i] += val;
-    });
-  });
+    for (let row = 0; row < this.binaryIndex; row++) {
+      if(row<10) {
+        for (let col = 0; col < maxCol; col++) {
+          const val = map(this.binary[row][col], 0, 1, 0, this.s * 2);
+          g.noStroke();
+          g.fill(colr);
+          g.rectMode(CENTER);
+          g.rect(col * this.s * 2 + this.x, row * this.s * 2 + this.y, val, val);
+        }
+      }
+    }
 
-  return result.map(sum => sum / numRows);
+    if (this.quantumIndex > 0 && this.quantumIndex < 10) {
+      random([0, 1]) ? playWithADSR(floor(random(6)), 0.05) : g.fill(255);
+    }
+
+    for (let row = 0; row < maxRow; row++) {
+      for (let col = 0; col < maxCol; col++) {
+        g.noStroke();
+        const val = map(this.quantum[row][col], 0.3, 1.0, 0, this.s * 2);
+        const cv = map(this.quantum[row][col], 0.4, 1.0, bgCol, colr, true);
+
+        if (this.quantumIndex > 0 && this.quantumIndex < 10) {
+          random([0, 1]) ? g.fill(colr) : g.fill(bgCol);
+          g.rectMode(CENTER);
+          g.rect(col * this.s * 2 + this.x + maxCol * this.s * 3, row * this.s * 2 + this.y, this.s * 2, this.s * 2);
+        }
+
+        g.fill(20, map(this.quantumIndex, 0, 10, 0, 255));
+        g.fill(cv, map(this.quantumIndex, 0, 10, 0, 255));
+        g.rectMode(CENTER);
+        g.rect(col * this.s * 2 + this.x + maxCol * this.s * 3, row * this.s * 2 + this.y, this.s * 2, this.s * 2);
+      }
+    }
+
+    g.noStroke();
+    g.fill(colr);
+    g.textFont(font);
+    g.textSize(14);
+    g.text(this.rule, this.x - this.s, this.y - this.s * 2);
+    g.text(this.qRule, this.x - this.s + maxCol * this.s * 3, this.y - this.s * 2);
+  }
 }
