@@ -5,8 +5,8 @@ let audioStarted = false;
 const numOscillators = 6;
 const oscillators = [];
 const gains = [];
-const baseFreq = 200;
-const pitches = [baseFreq*4,baseFreq*5,baseFreq*6,baseFreq*7,baseFreq*8,baseFreq*16]
+const baseFreq = 400;
+const pitches = [baseFreq,baseFreq*2.5,baseFreq*4.8,baseFreq*8.2,baseFreq*10.6,baseFreq*17.7]
 initAudio = () => {
     if (!audioStarted) {
         audioContext = new AudioContext();
@@ -19,8 +19,8 @@ createAudioComponents = () => {
     let reverb = SimpleReverb(audioContext);
     reverb.connect(audioContext.destination);
     reverb.time = 0.6 //seconds
-    reverb.wet.value = 0.0
-    reverb.dry.value = 1.0
+    reverb.wet.value = 0.2
+    reverb.dry.value = 0.5
     reverb.filterType = 'lowpass'
     reverb.cutoff.value = 8000 //Hz
 
@@ -44,7 +44,7 @@ createAudioComponents = () => {
       }
 }
 
-function playWithADSR(index, volume, adsr = { attack: 0.0, decay: 0.001, sustain: 0.01, release: 0.01, duration: 0.05 }) {
+function playWithADSR(index, volume, adsr = { attack: 0.0, decay: 0.001, sustain: 0.008, release: 0.001, duration: 0.01 }) {
     const now = audioContext.currentTime;
     const gainNode = gains[index];
   

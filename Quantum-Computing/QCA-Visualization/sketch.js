@@ -77,11 +77,19 @@ function draw() {
 
   for (let pair of caPairs) {
     pair.update();
-    pair.display(gfx);
+    pair.displayCells(gfx);
   }
 
   mShader.setUniform("uTexture", gfx);
   rect(-width / 2, -height / 2, width, height);
+
+  for (let pair of caPairs) {
+    push();
+    translate(-width/2,-height/2);
+    pair.displayLabel();
+    pair.displayCorner();
+    pop();
+  }
 }
 
 function mousePressed() {
@@ -122,7 +130,7 @@ class CAPair {
   update() {
     if (!this.playing) return;
 
-    if (frameCount % random([5, 10, 20]) === 0) {
+    if (frameCount % random([10,10,10,20]) === 0) {
       if (this.binaryIndex < 20) {
         if(this.binaryIndex<10) {
           this.binary[this.binaryIndex].forEach((v, i) => {
@@ -132,7 +140,7 @@ class CAPair {
         this.binaryIndex++;
       } else if (this.quantumIndex < 10) {
         this.quantum[this.quantumIndex].forEach((v, i) => {
-          playWithADSR(i, v * 0.1);
+          //playWithADSR(i, v * 0.1);
         });
         this.quantumIndex++;
       } else {
@@ -142,7 +150,7 @@ class CAPair {
     }
   }
 
-  display(g) {
+  displayCells(g) {
     const maxCol = this.binary[0].length;
     const maxRow = this.binary.length;
 
@@ -162,7 +170,7 @@ class CAPair {
     }
 
     if (this.quantumIndex > 0 && this.quantumIndex < 10) {
-      random([0, 1]) ? playWithADSR(floor(random(6)), 0.05) : g.fill(255);
+      random([0, 1]) ? playWithADSR(floor(random(6)), 0.05, { attack: 0.001, decay: 0.001, sustain: 0.005, release: 0.001, duration: 0.1 }) : g.fill(255);
     }
 
     for (let row = 0; row < maxRow; row++) {
@@ -183,12 +191,26 @@ class CAPair {
         g.rect(col * this.s * 2 + this.x + maxCol * this.s * 3, row * this.s * 2 + this.y, this.s * 2, this.s * 2);
       }
     }
+  }
+  displayLabel(){
+    const maxCol = this.binary[0].length;
+    noStroke();
+    fill(colr);
+    textFont(font);
+    textSize(10);
+    text(this.rule, this.x - this.s, this.y - this.s * 2);
+    text(this.qRule, this.x - this.s + maxCol * this.s * 3, this.y - this.s * 2);
+  }
 
-    g.noStroke();
-    g.fill(colr);
-    g.textFont(font);
-    g.textSize(14);
-    g.text(this.rule, this.x - this.s, this.y - this.s * 2);
-    g.text(this.qRule, this.x - this.s + maxCol * this.s * 3, this.y - this.s * 2);
+  displayCorner(){
+    const maxCol = this.binary[0].length;
+    const maxRow = this.binary.length;
+    fill(colr);
+    noStroke();
+    rectMode(CENTER);
+    rect(maxCol * this.s * 2 + this.x, maxRow * this.s * 2 + this.y, 10, 1);
+    rect(maxCol * this.s * 2 + this.x, maxRow * this.s * 2 + this.y, 1, 10);
+    rect(maxCol * this.s * 2 + this.x + maxCol * this.s * 3, maxRow * this.s * 2 + this.y, 10, 1);
+    rect(maxCol * this.s * 2 + this.x + maxCol * this.s * 3, maxRow * this.s * 2 + this.y, 1, 10);
   }
 }
