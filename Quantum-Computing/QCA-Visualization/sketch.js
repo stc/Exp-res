@@ -1,20 +1,6 @@
 let font;
-let playhead_0 = 0;
-let playhead_1 = 0;
-let playhead_2 = 0;
-let playhead_3 = 0;
-let playhead_4 = 0;
-let playhead_5 = 0;
-let playhead_6 = 0;
-let playhead_7 = 0;
-let playback_0 = false;
-let playback_1 = false;
-let playback_2 = false;
-let playback_3 = false;
-let playback_4 = false;
-let playback_5 = false;
-let playback_6 = false;
-let playback_7 = false;
+let playheads = Array(12).fill(0);
+let playbacks = Array(12).fill(false);
 
 let colr = 0;
 let bgCol = 255;
@@ -65,6 +51,10 @@ void main() {
 function preload() {
   font = loadFont("IBMPlexSans-Medium.ttf");
 }
+
+let gfx;
+let mShader;
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   gfx = createGraphics(width,height);
@@ -73,126 +63,188 @@ function setup() {
 	mShader.setUniform("uColor", [0.8,0.8,0.8]);
 }
 
-let gfx;
-let mShader;
-
 function draw() {
   background(bgCol);
   gfx.background(bgCol);
-  if(playback_0) {
+
+  if(playbacks[0]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_0<10) {
-        for(let i=0; i<r_30_binary[playhead_0].length; i++) {
-          let value = r_30_binary[playhead_0][i];
+      if(playheads[0]<10) {
+        for(let i=0; i<r_30_binary[playheads[0]].length; i++) {
+          let value = r_30_binary[playheads[0]][i];
           if(value > 0) {
             playWithADSR(i, 0.1);
           }
         }
-        playhead_0++;
+        playheads[0]++;
       } else {
-        playback_0 = false;
-        playback_1 = true;
+        playbacks[0] = false;
+        playbacks[1] = true;
       }
     }
   }
-  if(playback_1) {
+
+  if(playbacks[1]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_1<10) {
+      if(playheads[1]<10) {
         console.log("play " + averageByIndex(r_30_simulator));
-        for(let i=0; i<r_30_simulator[playhead_1].length; i++) {
-          let value = r_30_simulator[playhead_1][i];
-          
+        for(let i=0; i<r_30_simulator[playheads[1]].length; i++) {
+          let value = r_30_simulator[playheads[1]][i];
           playWithADSR(i, value * 0.1);
-          
         }
-        playhead_1++;
+        playheads[1]++;
       } else {
-        playback_1 = false;
-        playback_2 = true;
+        playbacks[1] = false;
+        playbacks[2] = true;
       }
     }
   }
-  if(playback_2) {
+
+  if(playbacks[2]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_2<10) {
-        for(let i=0; i<r_90_binary[playhead_2].length; i++) {
-          let value = r_90_binary[playhead_2][i];
+      if(playheads[2]<10) {
+        for(let i=0; i<r_90_binary[playheads[2]].length; i++) {
+          let value = r_90_binary[playheads[2]][i];
           if(value > 0) {
             playWithADSR(i, 0.1);
           }
         }
-        playhead_2++;
+        playheads[2]++;
       } else {
-        playback_2 = false;
-        playback_3 = true;
+        playbacks[2] = false;
+        playbacks[3] = true;
       }
     }
   }
-  if(playback_3) {
+
+  if(playbacks[3]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_3<10) {
-        playhead_3++;
+      if(playheads[3]<10) {
+        playheads[3]++;
       } else {
-        playback_3 = false;
-        playback_4 = true;
+        playbacks[3] = false;
+        playbacks[4] = true;
       }
     }
   }
-  if(playback_4) {
+
+  if(playbacks[4]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_4<10) {
-        for(let i=0; i<r_101_binary[playhead_4].length; i++) {
-          let value = r_101_binary[playhead_4][i];
+      if(playheads[4]<10) {
+        for(let i=0; i<r_101_binary[playheads[4]].length; i++) {
+          let value = r_101_binary[playheads[4]][i];
           if(value > 0) {
             playWithADSR(i, 0.1);
           }
         }
-        playhead_4++;
+        playheads[4]++;
       } else {
-        playback_4 = false;
-        playback_5 = true;
+        playbacks[4] = false;
+        playbacks[5] = true;
       }
     }
   }
-  if(playback_5) {
+
+  if(playbacks[5]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_5<10) {
-        playhead_5++;
+      if(playheads[5]<10) {
+        playheads[5]++;
       } else {
-        playback_5 = false;
-        playback_6 = true;
+        playbacks[5] = false;
+        playbacks[6] = true;
       }
     }
   }
-  if(playback_6) {
+
+  if(playbacks[6]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_6<10) {
-        for(let i=0; i<r_101_binary[playhead_6].length; i++) {
-          let value = r_101_binary[playhead_6][i];
+      if(playheads[6]<10) {
+        for(let i=0; i<r_101_binary[playheads[6]].length; i++) {
+          let value = r_101_binary[playheads[6]][i];
           if(value > 0) {
             playWithADSR(i, 0.1);
           }
         }
-        playhead_6++;
+        playheads[6]++;
       } else {
-        playback_6 = false;
-        playback_7 = true;
+        playbacks[6] = false;
+        playbacks[7] = true;
       }
     }
   }
-  if(playback_7) {
+
+  if(playbacks[7]) {
     if(frameCount%random([5,10,20])==0) {
-      if(playhead_7<10) {
-        playhead_7++;
+      if(playheads[7]<10) {
+        playheads[7]++;
       } else {
-        playback_7 = false;
+        playbacks[7] = false;
+        playbacks[8] = true;
       }
     }
   }
-  drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playhead_0, r_30_simulator, playhead_1,  50, 50, 10);
-  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playhead_2, r_90_simulator, playhead_3,  400, 50, 10);
-  drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playhead_4, r_101_simulator, playhead_5,  50, 300, 10);
-  drawCA_Pair("RULE 105", "Q-GATE", r_105_binary, playhead_6, r_105_simulator, playhead_7,  400, 300, 10);
+  if(playbacks[8]) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playheads[8]<10) {
+        for(let i=0; i<r_150_binary[playheads[8]].length; i++) {
+          let value = r_150_binary[playheads[8]][i];
+          if(value > 0) {
+            playWithADSR(i, 0.1);
+          }
+        }
+        playheads[8]++;
+      } else {
+        playbacks[8] = false;
+        playbacks[9] = true;
+      }
+    }
+  }
+
+  if(playbacks[9]) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playheads[9]<10) {
+        playheads[9]++;
+      } else {
+        playbacks[9] = false;
+        playbacks[10] = true;
+      }
+    }
+  }
+
+  if(playbacks[10]) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playheads[10]<10) {
+        for(let i=0; i<r_181_binary[playheads[10]].length; i++) {
+          let value = r_181_binary[playheads[10]][i];
+          if(value > 0) {
+            playWithADSR(i, 0.1);
+          }
+        }
+        playheads[10]++;
+      } else {
+        playbacks[10] = false;
+        playbacks[11] = true;
+      }
+    }
+  }
+
+  if(playbacks[11]) {
+    if(frameCount%random([5,10,20])==0) {
+      if(playheads[11]<10) {
+        playheads[11]++;
+      } else {
+        playbacks[11] = false;
+        
+      }
+    }
+  }
+
+  drawCA_Pair("RULE 30", "Q-GATE", r_30_binary, playheads[0], r_30_simulator, playheads[1],  50, 50, 10);
+  drawCA_Pair("RULE 90", "Q-GATE", r_90_binary, playheads[2], r_90_simulator, playheads[3],  400, 50, 10);
+  drawCA_Pair("RULE 101", "Q-GATE", r_101_binary, playheads[4], r_101_simulator, playheads[5],  50, 300, 10);
+  drawCA_Pair("RULE 105", "Q-GATE", r_105_binary, playheads[6], r_105_simulator, playheads[7],  400, 300, 10);
+  drawCA_Pair("RULE 150", "Q-GATE", r_150_binary, playheads[8], r_150_simulator, playheads[9],  50, 550, 10);
+  drawCA_Pair("RULE 181", "Q-GATE", r_181_binary, playheads[10], r_181_simulator, playheads[11],  400, 550, 10);
 
   mShader.setUniform("uTexture",gfx);
   rect(-width / 2, -height / 2, width, height);
@@ -200,7 +252,7 @@ function draw() {
 
 function mousePressed() {
   initAudio();
-  playback_0 = true;
+  playbacks[0] = true;
 }
 
 function keyPressed() {
@@ -215,11 +267,7 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
   let maxrow = binary_cells.length;
   
   gfx.stroke(colr)
-  //fill(240)
   gfx.noFill();
-  gfx.rectMode(CORNER)
-  //rect(xpos-s,ypos-s,maxcol*s*2,maxrow*s*2);
-  
   
   for (let row = 0; row < binary_index; row++) {
     for (let col = 0; col < maxcol; col++) {
@@ -230,20 +278,14 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
       gfx.rect(col * s * 2 + xpos, row * s * 2 + ypos, value, value);
     }
   }
+
   for (let row = 0; row < maxrow; row++) {
     for (let col = 0; col < maxcol; col++) {
       gfx.stroke(140)
       gfx.noFill();
       gfx.rectMode(CENTER)
-      //rect(col * s * 2 + xpos, row * s * 2 + ypos, s * 2, s * 2)
-      
     }
   }
-  
-  gfx.stroke(colr)
-  gfx.noFill();
-  gfx.rectMode(CORNER)
-  //rect(xpos-s + maxcol * s * 3,ypos-s,maxcol*s*2,maxrow*s*2);
   
   if(quantum_index>0 && quantum_index<10) {
     random([0,1]) ? playWithADSR(floor(random(6)),0.05) : gfx.fill(255);
@@ -258,23 +300,12 @@ function drawCA_Pair(rule, q_rule, binary_cells, binary_index, quantum_cells, qu
         random([0,1]) ? gfx.fill(colr) : gfx.fill(bgCol);
         gfx.rectMode(CENTER)
         gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos,s*2,s*2);
-        
       }
+      
       gfx.fill(20,map(quantum_index,0,10,0,255));
       gfx.rectMode(CENTER)
       gfx.fill(cv, map(quantum_index,0,10,0,255));
-      //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, value * map(quantum_index,0,10,0,1), value * map(quantum_index,0,10,0,1));
-      
       gfx.rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s*2,s*2);
-    }
-    for (let row = 0; row < maxrow; row++) {
-      for (let col = 0; col < maxcol; col++) {
-        gfx.stroke(140)
-        gfx.strokeWeight(1)
-        gfx.noFill();
-        gfx.rectMode(CENTER)
-        //rect(col * s * 2 + xpos + maxcol * s * 3, row * s * 2 + ypos, s * 2, s * 2)
-      }
     }
   }
 

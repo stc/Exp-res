@@ -97,28 +97,35 @@ rule105 = [
     [False, False, True],  
     [False, False, False], 
 ]
+rule150 = [
+    [True, True, True],
+    [True, False, False],
+    [False, True, False],
+    [False, False, True],
+]
+
+rule181 = [
+    [True, True, True],
+    [True, False, True],
+    [True, False, False],
+    [False, True, False],
+    [False, False, False],
+]
 
 # Configure the starting cells here:
 qc.x(4)
 
-# Superpositions
-# Doing so introduces what appear to be interference patterns in the ECA. 
-# Note that the color of each cell now represents the probability that it is |1⟩
-qc.h(1)
-qc.h(2)
-qc.h(3)
-qc.h(5)
-qc.h(6)
-
-#for i in range(n):
+for i in range(n):
     # Apply Hadamard to every qubit except central qubit
-    #if i != 2:
-    #    qc.h(i + 1)
+    if i != 2:
+        qc.h(i + 1)
 
 # Add the rules
-add_rules(qc, n, m, rule105)
+add_rules(qc, n, m, rule181)
+print(qc)
 
-#print(qc)
+print("measured results:\n")
+
 
 # run on simulator
 simulator = AerSimulator(method='matrix_product_state')

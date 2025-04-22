@@ -19,8 +19,8 @@ createAudioComponents = () => {
     let reverb = SimpleReverb(audioContext);
     reverb.connect(audioContext.destination);
     reverb.time = 0.6 //seconds
-    reverb.wet.value = 0.5
-    reverb.dry.value = 0.2
+    reverb.wet.value = 0.0
+    reverb.dry.value = 1.0
     reverb.filterType = 'lowpass'
     reverb.cutoff.value = 8000 //Hz
 
