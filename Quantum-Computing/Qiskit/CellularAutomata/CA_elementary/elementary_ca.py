@@ -112,20 +112,15 @@ rule181 = [
     [False, False, False],
 ]
 
-# Configure the starting cells here:
+# Configure the starting cells
 qc.x(4)
-
 for i in range(n):
     # Apply Hadamard to every qubit except central qubit
-    if i != 2:
+    if i != 3:
         qc.h(i + 1)
 
 # Add the rules
-add_rules(qc, n, m, rule181)
-print(qc)
-
-print("measured results:\n")
-
+add_rules(qc, n, m, rule30)
 
 # run on simulator
 simulator = AerSimulator(method='matrix_product_state')
