@@ -1,0 +1,44 @@
+Interference Fields
+
+- Chain of qubits: Each column corresponds to a qubit.
+- Time evolution: Each row is a timestep.
+- Marginal probabilities: P(qubit_i = |1>) gives the “intensity” for that qubit at that timestep.
+- Interference: Small rotations and entangling gates create constructive/destructive interference patterns along the chain.
+- Nearest-neighbor entanglement: CX gates propagate correlations along the chain.
+- Rotations (RY): Introduce interference, creating constructive and destructive patterns.
+- Space-time diagram: X-axis = qubit index, Y-axis = time, color = probability of |1>.
+- Result: You see interference “waves” moving along the chain over time.
+
+Why the current approach is consistent
+- We start with an initial state (|000…0> → superposition).
+- At each timestep:
+  1.	We apply RY rotations to all qubits (local evolution).
+	2.	We apply CX gates between neighbors (entanglement spread).
+	3.	We do not reset the circuit — we keep building on the same qc.
+	4.	We measure the statevector to compute marginal probabilities.
+
+- This means the circuit we simulate at timestep t actually contains all gates up to t.
+- Therefore, the probability distribution at timestep t depends on all previous timesteps — just like in a true unitary evolution.
+
+So, the rows are consistent — they represent snapshots of the same evolving quantum state.
+
+
+**** CONSIDERATIONS ****
+
+In the current code, organic_mode changes how the qubits are rotated and entangled at each timestep to create less regular, more “organic” interference patterns.
+
+Nearest Neighbour Entanglement:
+
+Effect on patterns:
+	•	Interference waves propagate locally along the chain.
+	•	You see a smooth “light-cone” effect: correlations spread gradually from each qubit to neighbors.
+	•	Patterns are more geometric and predictable, often symmetric along the chain.
+	•	Use case: Good for seeing how correlations propagate along a linear qubit chain.
+
+Alternating (Even) Entanglement:
+
+Effect on patterns:
+	•	Creates non-local correlations that skip qubits.
+	•	Interference waves are more intricate; patterns appear less linear and more global.
+	•	The Hadamard + CZ sequence introduces phase interference, generating more structured “fringe” patterns.
+	•	Use case: Produces richer, more complex interference, good for artistic or organic-looking patterns.
