@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 from qiskit import QuantumCircuit
@@ -8,7 +9,7 @@ entanglement_method = "even"  # options: "nearest", "even", "skip", "random", "h
 n_qubits = 12
 timesteps = 40
 theta = np.pi / 10
-organic_mode = False
+organic_mode = True
 
 # Simulator
 simulator = AerSimulator(method="matrix_product_state")
@@ -120,13 +121,29 @@ for t in range(timesteps):
 
     qc.data.pop()  # remove save_statevector instruction
 
+output = {
+    "n_qubits": n_qubits,
+    "timesteps": timesteps,
+    "entanglement_method": entanglement_method,
+    "probabilities": prob_matrix.tolist(),  # 2D array
+    "phases": phase_matrix.tolist(),        # 2D array
+    "entanglement_pairs": entanglement_pairs,  # already serializable
+}
+
+filename = f"quantum_{entanglement_method}.json"
+with open(filename, "w") as f:
+    json.dump(output, f, indent=2)
+
+print(f"✅ Saved {filename}")
+
 # === PLOTTING ===
 plt.figure(figsize=(12, 9))
 
 # Base heatmap for probabilities
 # cmap = "magma"
-plt.imshow(prob_matrix, cmap="gray", aspect="auto", origin="upper", vmin=0, vmax=1)
+#plt.imshow(prob_matrix, cmap="gray", aspect="auto", origin="upper", vmin=0, vmax=1)
 
+'''
 # Overlay entanglement connections
 for t, pairs in enumerate(entanglement_pairs):
     n_pairs = len(pairs)
@@ -139,8 +156,11 @@ for t, pairs in enumerate(entanglement_pairs):
         plt.scatter(control, y, color="lime", s=15, marker="o", zorder=3)
         plt.scatter(target, y, color="magenta", s=15, marker="^", zorder=3)
 
+'''
+
 # Overlay phase markers (hue = phase, alpha = prob)
 norm_phase = (phase_matrix + np.pi) / (2 * np.pi)  # map phase [-π, π] → [0,1]
+
 # Offset phase markers slightly to the right for better visibility
 x_positions = np.tile(np.arange(n_qubits), timesteps) + 0.25
 y_positions = np.repeat(np.arange(timesteps), n_qubits)
@@ -156,6 +176,7 @@ plt.scatter(
     edgecolors="none",
     zorder=4
 )
+
 
 plt.colorbar(label="Probability of |1>")
 plt.xlabel("Qubit index")
