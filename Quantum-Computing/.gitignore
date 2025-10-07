@@ -1,2 +1,4 @@
 qiskit-circuits/venv/*
 results/*
+*/venv/*
+venv/*
