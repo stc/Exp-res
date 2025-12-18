@@ -12,8 +12,9 @@
   <script>
     let events = [];
     let asciiChars = ['_', '/', '-', ':', '=', '+', '*', '#', '%', '@'];
-    let gridCols = 200;
-    let gridRows = 200;
+    let shades = ['░', '▒', '▓', '█']
+    let gridCols = 220;
+    let gridRows = 320;
     let cellSize = 8;
     let grid = [];
     let mFont;
@@ -21,16 +22,15 @@
     let eventCountsByRow = {};
 
     const labelColors = {
-      "ARC-00": [255, 255, 255],
-      "ARC-01": [255, 255, 255],
-      "ARC-02": [255, 255, 255],
-      "ARC-03": [255, 255, 255],
-      "ARC-04": [255, 255, 255]
+      "ARC1": [255, 255, 255],
+      "ARC2": [255, 255, 255],
+      "ARC3": [255, 255, 255],
+      "ARC4": [255, 255, 255]
     };
 
     function preload() {
       mFont = loadFont("IBMPlexMono-Medium.ttf");
-      events = loadStrings('../exports/collision_local03.txt');
+      events = loadStrings('../exports/collision_local04.txt');
     }
 
     function setup() {
@@ -38,14 +38,18 @@
       textFont(mFont, cellSize);
       noLoop();
 
-      // Define interval size for summing collisions
-      let intervalSize = 1; // e.g., sum collisions every 5 lines
+      // Jump every nth line
+      let n = 8;
+      events = events.filter((_, index) => index % n === 0);
 
       // Initialize grid
       for (let y = 0; y < gridRows; y++) {
         grid[y] = [];
         for (let x = 0; x < gridCols; x++) {
-          grid[y][x] = { char: random([asciiChars[floor(random([0, 0, 0, 0, 0, 1, 2]))], Number(y.toString()[0])]), label: null, type: null };
+          //grid[y][x] = { char: random([asciiChars[floor(random([0, 0, 0, 0, 0, 1, 2]))], Number(y.toString()[0])]), label: null, type: null };
+          //grid[y][x] = { char: asciiChars[floor(random([0, 0, 0, 0, 0, 1, 2]))], label: null, type: null };
+          //grid[y][x] = { char: random([asciiChars[floor(random([0, 0, 0, 0, 0, 1, 2]))], shades[y%4]]), label: null, type: null };
+          grid[y][x] = { char: y, label: null, type: null };
         }
       }
 
@@ -60,47 +64,50 @@
         let name = match[1].split("_")[0];
         let timestamp = parseFloat(match[2]).toFixed(2);
 
-        let coordsMatch = line.match(/X=([\d,-]+).*Z=([\d,-]+)/);
+        let coordsMatch = line.match(/X=([\d,-]+).*Y=([\d,-]+).*Z=([\d,-]+)/);
         if (!coordsMatch) continue;
         let xVal = parseFloat(coordsMatch[1].replace(',', '.'));
-        let zVal = parseFloat(coordsMatch[2].replace(',', '.')).toFixed(2);
+        let yVal = parseFloat(coordsMatch[2].replace(',', '.'));
+        let zVal = parseFloat(coordsMatch[3].replace(',', '.')).toFixed(2);
 
         minX = Math.min(minX, xVal);
         maxX = Math.max(maxX, xVal);
 
         if (!groupedEvents[timestamp]) groupedEvents[timestamp] = [];
-        groupedEvents[timestamp].push({ name, xVal, zVal });
+        groupedEvents[timestamp].push({ name, xVal, yVal, zVal });
       }
 
-      // Place grouped events in rows and sum collisions per interval
+      // Place grouped events in rows
       let rowIndex = 0;
-      let intervalCounter = 0;
-      let intervalSum = 0;
-
       for (let ts in groupedEvents) {
         if (rowIndex >= gridRows) break;
 
         let eventsRow = groupedEvents[ts];
-        intervalSum += eventsRow.length; // sum collisions
-
+        
         let firstEventX = eventsRow[0].xVal;
-        let startCol = Math.floor(map(firstEventX, minX, maxX, 0, gridCols - 1)) - floor(rowIndex / 1);
+        let startCol = Math.floor(map(firstEventX, minX, maxX, 0, gridCols - 1))// - floor(rowIndex * map(rowIndex,0,gridRows,1,0.01));
         startCol = constrain(startCol, 0, gridCols - 1);
         let colIndex = startCol;
 
+        // Store number of events per row
+        eventCountsByRow[rowIndex] = eventsRow.length;
+
+        let evIndex = 0
         for (let ev of eventsRow) {
           let name = ev.name;
-          let zStr = " " + ev.zVal.toString();
+          let coordsStr = ` X: ${ev.xVal}, Y: ${ev.yVal}, Z: ${ev.zVal}`;
 
           let labelKeys = Object.keys(labelColors);
           let label = labelKeys[floor(random(labelKeys.length))];
 
+          // Place name characters
           for (let i = 0; i < name.length; i++) {
             if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: name[i], label: label, type: "name" };
           }
 
-          for (let i = 0; i < zStr.length; i++) {
-            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: zStr[i], label: null, type: "z" };
+          // Place coordinates after name
+          for (let i = 0; i < coordsStr.length; i++) {
+            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: coordsStr[i], label: null, type: "coords" };
           }
 
           if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: ' ', label: null, type: null };
@@ -108,16 +115,6 @@
 
         if (!timestampsByRow[rowIndex]) timestampsByRow[rowIndex] = [];
         timestampsByRow[rowIndex].push(ts);
-
-        intervalCounter++;
-        if (intervalCounter === intervalSize) {
-          // Store the sum in the row corresponding to the interval
-          eventCountsByRow[rowIndex] = intervalSum;
-          intervalCounter = 0;
-          intervalSum = 0;
-        } else {
-          eventCountsByRow[rowIndex] = intervalSum; // show cumulative so far in the interval
-        }
 
         rowIndex++;
       }
@@ -127,6 +124,8 @@
       background(0);
 
       // Draw grid
+      let oStr = "OBJECT "
+      let pStr = "POSITIONS"
       for (let y = 0; y < gridRows; y++) {
         for (let x = 0; x < gridCols; x++) {
           let cell = grid[y][x];
@@ -134,17 +133,35 @@
           let label = cell.label;
           let type = cell.type;
 
-          //if (type === "z") fill(255, 105, 180);
-          if(type === "z") fill(0,100,255)
+          //if(type === "coords") fill(255, 105, 180); // coordinates in pink
+          if (type === "coords") fill(0,255,0); // coordinates in pink
           else if (label && labelColors[label]) fill(...labelColors[label]);
-          else fill(100);
+          else fill(77,20,100);
 
           noStroke();
-          text(char, x * cellSize / 1.7, y * cellSize + cellSize);
+          if(y>0) {
+            text(char, x * cellSize / 1.7, y * cellSize + cellSize);
+          }  else {
+            if(x<7) {
+              fill(100)
+              text("0",x * cellSize / 1.7,y * cellSize + cellSize )
+              fill(255)
+              text(oStr[x%9], x * cellSize / 1.7 + (cellSize*gridCols/4)+cellSize*4, y * cellSize + cellSize);
+            } else if(x>8&&x<18){
+              fill(100)
+              text("0",x * cellSize / 1.7,y * cellSize + cellSize )
+              fill(0,255,0)
+              text(pStr[x%9], x * cellSize / 1.7 + (cellSize*gridCols/4)+cellSize*3, y * cellSize + cellSize);
+            } else {
+              fill(100)
+              if(x>gridCols/2+6 || x <gridCols/2-10)text("0",x * cellSize / 1.7,y * cellSize + cellSize )
+            }
+          }
+          
         }
       }
 
-      // Draw timestamps and collision sums
+      // Draw timestamps and collision counts
       let baseX = gridCols * cellSize / 1.7 + 5;
       let maxColumnWidth = 150;
 
@@ -155,8 +172,7 @@
         let yPos = row * cellSize + cellSize;
 
         for (let ts of tsArray) {
-          // pad time with zeros
-          let paddedTime = ts//nf(parseFloat(ts), 3, 1);
+          let paddedTime = nf(parseFloat(ts), 5, 1);
           let tsText = `[${paddedTime}]`;
           let tsWidth = textWidth(tsText) + 10;
 
@@ -170,14 +186,10 @@
           xOffset += tsWidth;
         }
 
-        fill(200)
+        fill(150)
         if (eventCountsByRow[row] !== undefined) {
-          if (row == 0) {
-            text("COLLISIONS", xOffset, yPos);
-          } else {
-            text(`+ ${nf(eventCountsByRow[row], 5)}`, xOffset + 10, yPos);
-
-          }
+          if (row == 0) text("COLLISIONS", xOffset, yPos);
+          else text(`+ ${nf(eventCountsByRow[row], 3)}`, xOffset + 10, yPos);
         }
       }
     }
