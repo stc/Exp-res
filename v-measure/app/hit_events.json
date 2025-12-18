@@ -1,0 +1,1802 @@
+[
+  {
+    "timestamp": 1765876433.48,
+    "actor": "Actor_7",
+    "component": "Component_4",
+    "other_actor": "Actor_34",
+    "other_component": "Component_4",
+    "location": [
+      68.77,
+      -7.16,
+      -28.12
+    ],
+    "normal": [
+      78.46,
+      60.41,
+      -63.98
+    ],
+    "impulse": 1.42
+  },
+  {
+    "timestamp": 1765876433.58,
+    "actor": "Actor_33",
+    "component": "Component_44",
+    "other_actor": "Actor_16",
+    "other_component": "Component_17",
+    "location": [
+      -99.98,
+      86.06,
+      -21.05
+    ],
+    "normal": [
+      -81.45,
+      -17.89,
+      6.6
+    ],
+    "impulse": 38.32
+  },
+  {
+    "timestamp": 1765876433.68,
+    "actor": "Actor_37",
+    "component": "Component_27",
+    "other_actor": "Actor_42",
+    "other_component": "Component_9",
+    "location": [
+      82.46,
+      -56.97,
+      -6.33
+    ],
+    "normal": [
+      65.44,
+      -3.49,
+      -2.51
+    ],
+    "impulse": 12.4
+  },
+  {
+    "timestamp": 1765876433.78,
+    "actor": "Actor_34",
+    "component": "Component_45",
+    "other_actor": "Actor_47",
+    "other_component": "Component_8",
+    "location": [
+      20.43,
+      70.57,
+      41.76
+    ],
+    "normal": [
+      -7.41,
+      -57.88,
+      13.83
+    ],
+    "impulse": 18.27
+  },
+  {
+    "timestamp": 1765876433.88,
+    "actor": "Actor_50",
+    "component": "Component_26",
+    "other_actor": "Actor_28",
+    "other_component": "Component_30",
+    "location": [
+      -36.18,
+      84.18,
+      -31.15
+    ],
+    "normal": [
+      95.14,
+      9.42,
+      93.94
+    ],
+    "impulse": 26.71
+  },
+  {
+    "timestamp": 1765876433.98,
+    "actor": "Actor_29",
+    "component": "Component_27",
+    "other_actor": "Actor_5",
+    "other_component": "Component_36",
+    "location": [
+      -26.14,
+      65.01,
+      -62.7
+    ],
+    "normal": [
+      38.08,
+      -98.77,
+      -91.3
+    ],
+    "impulse": 12.71
+  },
+  {
+    "timestamp": 1765876434.08,
+    "actor": "Actor_29",
+    "component": "Component_10",
+    "other_actor": "Actor_37",
+    "other_component": "Component_32",
+    "location": [
+      28.21,
+      -70.4,
+      -8.18
+    ],
+    "normal": [
+      38.27,
+      -0.06,
+      92.08
+    ],
+    "impulse": 36.97
+  },
+  {
+    "timestamp": 1765876434.18,
+    "actor": "Actor_32",
+    "component": "Component_35",
+    "other_actor": "Actor_4",
+    "other_component": "Component_37",
+    "location": [
+      96.23,
+      -48.28,
+      27.33
+    ],
+    "normal": [
+      -14.09,
+      -36.53,
+      50.71
+    ],
+    "impulse": 34.24
+  },
+  {
+    "timestamp": 1765876434.28,
+    "actor": "Actor_31",
+    "component": "Component_47",
+    "other_actor": "Actor_20",
+    "other_component": "Component_12",
+    "location": [
+      22.8,
+      -75.19,
+      59.49
+    ],
+    "normal": [
+      36.9,
+      42.38,
+      -76.02
+    ],
+    "impulse": 42.94
+  },
+  {
+    "timestamp": 1765876434.38,
+    "actor": "Actor_50",
+    "component": "Component_17",
+    "other_actor": "Actor_17",
+    "other_component": "Component_11",
+    "location": [
+      -59.24,
+      -59.27,
+      61.23
+    ],
+    "normal": [
+      -20.78,
+      -99.12,
+      -20.65
+    ],
+    "impulse": 16.76
+  },
+  {
+    "timestamp": 1765876434.48,
+    "actor": "Actor_49",
+    "component": "Component_34",
+    "other_actor": "Actor_11",
+    "other_component": "Component_15",
+    "location": [
+      -25.72,
+      23.06,
+      -16.36
+    ],
+    "normal": [
+      65.15,
+      44.1,
+      23.93
+    ],
+    "impulse": 47.9
+  },
+  {
+    "timestamp": 1765876434.58,
+    "actor": "Actor_5",
+    "component": "Component_13",
+    "other_actor": "Actor_10",
+    "other_component": "Component_27",
+    "location": [
+      -33.87,
+      12.9,
+      75.91
+    ],
+    "normal": [
+      -1.67,
+      51.4,
+      43.05
+    ],
+    "impulse": 0.66
+  },
+  {
+    "timestamp": 1765876434.68,
+    "actor": "Actor_3",
+    "component": "Component_5",
+    "other_actor": "Actor_8",
+    "other_component": "Component_5",
+    "location": [
+      -50.1,
+      -38.87,
+      44.98
+    ],
+    "normal": [
+      -83.69,
+      -17.79,
+      53.21
+    ],
+    "impulse": 43.62
+  },
+  {
+    "timestamp": 1765876434.78,
+    "actor": "Actor_14",
+    "component": "Component_27",
+    "other_actor": "Actor_14",
+    "other_component": "Component_12",
+    "location": [
+      90.28,
+      -5.55,
+      30.43
+    ],
+    "normal": [
+      -38.54,
+      -91.43,
+      48.42
+    ],
+    "impulse": 42.31
+  },
+  {
+    "timestamp": 1765876434.88,
+    "actor": "Actor_26",
+    "component": "Component_37",
+    "other_actor": "Actor_19",
+    "other_component": "Component_7",
+    "location": [
+      22.18,
+      -70.27,
+      18.17
+    ],
+    "normal": [
+      -59.11,
+      48.23,
+      43.81
+    ],
+    "impulse": 5.34
+  },
+  {
+    "timestamp": 1765876434.98,
+    "actor": "Actor_18",
+    "component": "Component_8",
+    "other_actor": "Actor_34",
+    "other_component": "Component_37",
+    "location": [
+      -70.43,
+      78.7,
+      97.66
+    ],
+    "normal": [
+      -1.8,
+      -51.83,
+      -56.74
+    ],
+    "impulse": 28.23
+  },
+  {
+    "timestamp": 1765876435.08,
+    "actor": "Actor_4",
+    "component": "Component_39",
+    "other_actor": "Actor_18",
+    "other_component": "Component_40",
+    "location": [
+      63.28,
+      12.51,
+      9.45
+    ],
+    "normal": [
+      79.96,
+      36.32,
+      30.66
+    ],
+    "impulse": 5.19
+  },
+  {
+    "timestamp": 1765876435.18,
+    "actor": "Actor_25",
+    "component": "Component_50",
+    "other_actor": "Actor_37",
+    "other_component": "Component_15",
+    "location": [
+      -2.32,
+      7.82,
+      -82.01
+    ],
+    "normal": [
+      42.4,
+      7.92,
+      26.59
+    ],
+    "impulse": 48.83
+  },
+  {
+    "timestamp": 1765876435.28,
+    "actor": "Actor_48",
+    "component": "Component_10",
+    "other_actor": "Actor_34",
+    "other_component": "Component_14",
+    "location": [
+      -47.3,
+      -97.59,
+      -5.67
+    ],
+    "normal": [
+      96.65,
+      -42.32,
+      -71.43
+    ],
+    "impulse": 44.62
+  },
+  {
+    "timestamp": 1765876435.38,
+    "actor": "Actor_41",
+    "component": "Component_31",
+    "other_actor": "Actor_20",
+    "other_component": "Component_43",
+    "location": [
+      -97.94,
+      5.26,
+      -80.9
+    ],
+    "normal": [
+      37.57,
+      78.92,
+      24.81
+    ],
+    "impulse": 29.89
+  },
+  {
+    "timestamp": 1765876435.48,
+    "actor": "Actor_29",
+    "component": "Component_27",
+    "other_actor": "Actor_50",
+    "other_component": "Component_12",
+    "location": [
+      -22.16,
+      -98.13,
+      82.64
+    ],
+    "normal": [
+      -98.7,
+      -83.16,
+      59.29
+    ],
+    "impulse": 43.02
+  },
+  {
+    "timestamp": 1765876435.58,
+    "actor": "Actor_3",
+    "component": "Component_14",
+    "other_actor": "Actor_1",
+    "other_component": "Component_40",
+    "location": [
+      85.46,
+      -37.9,
+      -5.52
+    ],
+    "normal": [
+      -74.15,
+      74.77,
+      55.8
+    ],
+    "impulse": 31.41
+  },
+  {
+    "timestamp": 1765876435.68,
+    "actor": "Actor_14",
+    "component": "Component_31",
+    "other_actor": "Actor_43",
+    "other_component": "Component_12",
+    "location": [
+      97.81,
+      54.4,
+      -26.93
+    ],
+    "normal": [
+      15.18,
+      18.9,
+      -40.15
+    ],
+    "impulse": 35.35
+  },
+  {
+    "timestamp": 1765876435.78,
+    "actor": "Actor_38",
+    "component": "Component_44",
+    "other_actor": "Actor_27",
+    "other_component": "Component_46",
+    "location": [
+      -72.14,
+      -27.87,
+      -31.18
+    ],
+    "normal": [
+      -44.25,
+      -9.18,
+      17.76
+    ],
+    "impulse": 19.7
+  },
+  {
+    "timestamp": 1765876435.88,
+    "actor": "Actor_15",
+    "component": "Component_30",
+    "other_actor": "Actor_48",
+    "other_component": "Component_15",
+    "location": [
+      -32.26,
+      -5.25,
+      35.29
+    ],
+    "normal": [
+      -73.44,
+      -21.24,
+      47.3
+    ],
+    "impulse": 26.67
+  },
+  {
+    "timestamp": 1765876435.98,
+    "actor": "Actor_12",
+    "component": "Component_22",
+    "other_actor": "Actor_37",
+    "other_component": "Component_24",
+    "location": [
+      50.63,
+      95.21,
+      -67.66
+    ],
+    "normal": [
+      -93.11,
+      53.91,
+      -0.26
+    ],
+    "impulse": 1.19
+  },
+  {
+    "timestamp": 1765876436.08,
+    "actor": "Actor_11",
+    "component": "Component_46",
+    "other_actor": "Actor_40",
+    "other_component": "Component_48",
+    "location": [
+      -12.6,
+      87.51,
+      -74.23
+    ],
+    "normal": [
+      -59.58,
+      -43.74,
+      5.38
+    ],
+    "impulse": 38.87
+  },
+  {
+    "timestamp": 1765876436.18,
+    "actor": "Actor_6",
+    "component": "Component_49",
+    "other_actor": "Actor_45",
+    "other_component": "Component_10",
+    "location": [
+      81.34,
+      -7.77,
+      50.35
+    ],
+    "normal": [
+      87.0,
+      -93.5,
+      -25.25
+    ],
+    "impulse": 26.77
+  },
+  {
+    "timestamp": 1765876436.28,
+    "actor": "Actor_31",
+    "component": "Component_40",
+    "other_actor": "Actor_6",
+    "other_component": "Component_5",
+    "location": [
+      50.62,
+      36.85,
+      63.68
+    ],
+    "normal": [
+      87.18,
+      -13.23,
+      -65.95
+    ],
+    "impulse": 47.94
+  },
+  {
+    "timestamp": 1765876436.38,
+    "actor": "Actor_34",
+    "component": "Component_6",
+    "other_actor": "Actor_35",
+    "other_component": "Component_1",
+    "location": [
+      -31.08,
+      -58.42,
+      -86.98
+    ],
+    "normal": [
+      -60.46,
+      -87.52,
+      -93.95
+    ],
+    "impulse": 25.95
+  },
+  {
+    "timestamp": 1765876436.48,
+    "actor": "Actor_15",
+    "component": "Component_40",
+    "other_actor": "Actor_19",
+    "other_component": "Component_48",
+    "location": [
+      -39.08,
+      -45.77,
+      -98.6
+    ],
+    "normal": [
+      -94.62,
+      96.97,
+      -10.28
+    ],
+    "impulse": 46.51
+  },
+  {
+    "timestamp": 1765876436.58,
+    "actor": "Actor_47",
+    "component": "Component_10",
+    "other_actor": "Actor_4",
+    "other_component": "Component_37",
+    "location": [
+      -77.0,
+      -77.52,
+      -34.49
+    ],
+    "normal": [
+      34.34,
+      37.73,
+      -51.4
+    ],
+    "impulse": 49.42
+  },
+  {
+    "timestamp": 1765876436.68,
+    "actor": "Actor_37",
+    "component": "Component_43",
+    "other_actor": "Actor_34",
+    "other_component": "Component_2",
+    "location": [
+      64.67,
+      -88.69,
+      79.24
+    ],
+    "normal": [
+      -74.97,
+      13.17,
+      82.21
+    ],
+    "impulse": 18.87
+  },
+  {
+    "timestamp": 1765876436.78,
+    "actor": "Actor_16",
+    "component": "Component_7",
+    "other_actor": "Actor_48",
+    "other_component": "Component_16",
+    "location": [
+      -94.63,
+      -3.84,
+      -91.92
+    ],
+    "normal": [
+      8.28,
+      -76.63,
+      68.66
+    ],
+    "impulse": 18.54
+  },
+  {
+    "timestamp": 1765876436.88,
+    "actor": "Actor_14",
+    "component": "Component_24",
+    "other_actor": "Actor_25",
+    "other_component": "Component_42",
+    "location": [
+      -82.03,
+      64.31,
+      -27.28
+    ],
+    "normal": [
+      -47.84,
+      88.89,
+      28.8
+    ],
+    "impulse": 34.59
+  },
+  {
+    "timestamp": 1765876436.98,
+    "actor": "Actor_30",
+    "component": "Component_48",
+    "other_actor": "Actor_37",
+    "other_component": "Component_10",
+    "location": [
+      -43.96,
+      -55.84,
+      54.93
+    ],
+    "normal": [
+      -8.87,
+      22.58,
+      82.53
+    ],
+    "impulse": 15.8
+  },
+  {
+    "timestamp": 1765876437.08,
+    "actor": "Actor_25",
+    "component": "Component_6",
+    "other_actor": "Actor_49",
+    "other_component": "Component_22",
+    "location": [
+      -11.69,
+      -8.66,
+      38.24
+    ],
+    "normal": [
+      86.49,
+      -82.77,
+      -23.72
+    ],
+    "impulse": 13.87
+  },
+  {
+    "timestamp": 1765876437.18,
+    "actor": "Actor_10",
+    "component": "Component_43",
+    "other_actor": "Actor_17",
+    "other_component": "Component_6",
+    "location": [
+      -28.32,
+      88.87,
+      10.59
+    ],
+    "normal": [
+      82.21,
+      -3.72,
+      28.4
+    ],
+    "impulse": 40.93
+  },
+  {
+    "timestamp": 1765876437.28,
+    "actor": "Actor_32",
+    "component": "Component_44",
+    "other_actor": "Actor_9",
+    "other_component": "Component_2",
+    "location": [
+      -66.62,
+      22.94,
+      -49.1
+    ],
+    "normal": [
+      22.32,
+      -13.98,
+      76.37
+    ],
+    "impulse": 12.34
+  },
+  {
+    "timestamp": 1765876437.38,
+    "actor": "Actor_24",
+    "component": "Component_44",
+    "other_actor": "Actor_6",
+    "other_component": "Component_7",
+    "location": [
+      37.43,
+      11.85,
+      37.11
+    ],
+    "normal": [
+      61.15,
+      77.8,
+      -20.63
+    ],
+    "impulse": 30.36
+  },
+  {
+    "timestamp": 1765876437.48,
+    "actor": "Actor_2",
+    "component": "Component_24",
+    "other_actor": "Actor_18",
+    "other_component": "Component_14",
+    "location": [
+      -32.4,
+      -65.27,
+      -14.41
+    ],
+    "normal": [
+      -54.4,
+      -9.62,
+      14.96
+    ],
+    "impulse": 25.35
+  },
+  {
+    "timestamp": 1765876437.58,
+    "actor": "Actor_39",
+    "component": "Component_11",
+    "other_actor": "Actor_39",
+    "other_component": "Component_4",
+    "location": [
+      -30.74,
+      -17.72,
+      -21.7
+    ],
+    "normal": [
+      61.51,
+      13.36,
+      44.15
+    ],
+    "impulse": 27.54
+  },
+  {
+    "timestamp": 1765876437.68,
+    "actor": "Actor_20",
+    "component": "Component_18",
+    "other_actor": "Actor_25",
+    "other_component": "Component_4",
+    "location": [
+      -98.49,
+      -87.32,
+      67.43
+    ],
+    "normal": [
+      -33.66,
+      75.03,
+      -21.47
+    ],
+    "impulse": 13.74
+  },
+  {
+    "timestamp": 1765876437.78,
+    "actor": "Actor_36",
+    "component": "Component_48",
+    "other_actor": "Actor_7",
+    "other_component": "Component_50",
+    "location": [
+      1.92,
+      87.65,
+      60.19
+    ],
+    "normal": [
+      -40.68,
+      93.88,
+      -28.9
+    ],
+    "impulse": 13.04
+  },
+  {
+    "timestamp": 1765876437.88,
+    "actor": "Actor_44",
+    "component": "Component_11",
+    "other_actor": "Actor_14",
+    "other_component": "Component_32",
+    "location": [
+      -12.93,
+      78.96,
+      -24.92
+    ],
+    "normal": [
+      -5.04,
+      54.21,
+      -4.77
+    ],
+    "impulse": 44.69
+  },
+  {
+    "timestamp": 1765876437.98,
+    "actor": "Actor_27",
+    "component": "Component_30",
+    "other_actor": "Actor_2",
+    "other_component": "Component_22",
+    "location": [
+      -99.59,
+      6.97,
+      -47.01
+    ],
+    "normal": [
+      47.63,
+      -82.63,
+      -90.16
+    ],
+    "impulse": 35.85
+  },
+  {
+    "timestamp": 1765876438.08,
+    "actor": "Actor_2",
+    "component": "Component_37",
+    "other_actor": "Actor_44",
+    "other_component": "Component_8",
+    "location": [
+      99.54,
+      19.39,
+      92.93
+    ],
+    "normal": [
+      50.72,
+      17.96,
+      75.42
+    ],
+    "impulse": 26.42
+  },
+  {
+    "timestamp": 1765876438.18,
+    "actor": "Actor_8",
+    "component": "Component_10",
+    "other_actor": "Actor_28",
+    "other_component": "Component_23",
+    "location": [
+      92.29,
+      46.32,
+      -9.81
+    ],
+    "normal": [
+      -60.27,
+      34.44,
+      -66.66
+    ],
+    "impulse": 48.3
+  },
+  {
+    "timestamp": 1765876438.28,
+    "actor": "Actor_41",
+    "component": "Component_28",
+    "other_actor": "Actor_17",
+    "other_component": "Component_25",
+    "location": [
+      18.14,
+      79.02,
+      -18.36
+    ],
+    "normal": [
+      -68.05,
+      61.09,
+      -59.41
+    ],
+    "impulse": 40.1
+  },
+  {
+    "timestamp": 1765876438.38,
+    "actor": "Actor_42",
+    "component": "Component_24",
+    "other_actor": "Actor_38",
+    "other_component": "Component_35",
+    "location": [
+      -13.88,
+      -28.98,
+      -99.79
+    ],
+    "normal": [
+      -73.66,
+      -51.67,
+      64.83
+    ],
+    "impulse": 10.16
+  },
+  {
+    "timestamp": 1765876438.48,
+    "actor": "Actor_21",
+    "component": "Component_21",
+    "other_actor": "Actor_45",
+    "other_component": "Component_14",
+    "location": [
+      -59.48,
+      -40.29,
+      -58.79
+    ],
+    "normal": [
+      -14.86,
+      -12.47,
+      -89.45
+    ],
+    "impulse": 18.48
+  },
+  {
+    "timestamp": 1765876438.58,
+    "actor": "Actor_43",
+    "component": "Component_30",
+    "other_actor": "Actor_1",
+    "other_component": "Component_22",
+    "location": [
+      -44.93,
+      -97.45,
+      -74.04
+    ],
+    "normal": [
+      43.25,
+      -92.74,
+      -97.59
+    ],
+    "impulse": 40.29
+  },
+  {
+    "timestamp": 1765876438.68,
+    "actor": "Actor_2",
+    "component": "Component_12",
+    "other_actor": "Actor_16",
+    "other_component": "Component_26",
+    "location": [
+      75.03,
+      74.53,
+      60.07
+    ],
+    "normal": [
+      -85.6,
+      -4.91,
+      -60.92
+    ],
+    "impulse": 0.53
+  },
+  {
+    "timestamp": 1765876438.78,
+    "actor": "Actor_46",
+    "component": "Component_17",
+    "other_actor": "Actor_3",
+    "other_component": "Component_15",
+    "location": [
+      5.13,
+      75.16,
+      -18.26
+    ],
+    "normal": [
+      0.89,
+      77.07,
+      58.6
+    ],
+    "impulse": 35.71
+  },
+  {
+    "timestamp": 1765876438.88,
+    "actor": "Actor_46",
+    "component": "Component_43",
+    "other_actor": "Actor_3",
+    "other_component": "Component_44",
+    "location": [
+      -96.44,
+      -67.3,
+      55.1
+    ],
+    "normal": [
+      41.11,
+      85.26,
+      53.98
+    ],
+    "impulse": 37.02
+  },
+  {
+    "timestamp": 1765876438.98,
+    "actor": "Actor_26",
+    "component": "Component_43",
+    "other_actor": "Actor_38",
+    "other_component": "Component_25",
+    "location": [
+      8.35,
+      45.86,
+      87.56
+    ],
+    "normal": [
+      -19.61,
+      21.21,
+      40.27
+    ],
+    "impulse": 16.0
+  },
+  {
+    "timestamp": 1765876439.08,
+    "actor": "Actor_12",
+    "component": "Component_24",
+    "other_actor": "Actor_22",
+    "other_component": "Component_22",
+    "location": [
+      -44.3,
+      -43.95,
+      78.4
+    ],
+    "normal": [
+      81.75,
+      67.19,
+      96.56
+    ],
+    "impulse": 47.7
+  },
+  {
+    "timestamp": 1765876439.18,
+    "actor": "Actor_19",
+    "component": "Component_14",
+    "other_actor": "Actor_10",
+    "other_component": "Component_23",
+    "location": [
+      4.41,
+      52.15,
+      -36.77
+    ],
+    "normal": [
+      30.19,
+      75.78,
+      -45.32
+    ],
+    "impulse": 17.12
+  },
+  {
+    "timestamp": 1765876439.28,
+    "actor": "Actor_8",
+    "component": "Component_40",
+    "other_actor": "Actor_29",
+    "other_component": "Component_4",
+    "location": [
+      81.72,
+      85.54,
+      -47.35
+    ],
+    "normal": [
+      -61.95,
+      -71.71,
+      -51.78
+    ],
+    "impulse": 42.72
+  },
+  {
+    "timestamp": 1765876439.38,
+    "actor": "Actor_27",
+    "component": "Component_40",
+    "other_actor": "Actor_29",
+    "other_component": "Component_7",
+    "location": [
+      -31.99,
+      -34.5,
+      -50.61
+    ],
+    "normal": [
+      4.29,
+      -83.31,
+      -99.51
+    ],
+    "impulse": 13.98
+  },
+  {
+    "timestamp": 1765876439.48,
+    "actor": "Actor_34",
+    "component": "Component_25",
+    "other_actor": "Actor_22",
+    "other_component": "Component_7",
+    "location": [
+      -20.32,
+      69.89,
+      -90.82
+    ],
+    "normal": [
+      -56.12,
+      -71.97,
+      1.19
+    ],
+    "impulse": 0.09
+  },
+  {
+    "timestamp": 1765876439.58,
+    "actor": "Actor_17",
+    "component": "Component_43",
+    "other_actor": "Actor_40",
+    "other_component": "Component_25",
+    "location": [
+      -4.97,
+      10.79,
+      -63.6
+    ],
+    "normal": [
+      56.53,
+      -28.73,
+      -41.97
+    ],
+    "impulse": 1.02
+  },
+  {
+    "timestamp": 1765876439.68,
+    "actor": "Actor_8",
+    "component": "Component_25",
+    "other_actor": "Actor_23",
+    "other_component": "Component_13",
+    "location": [
+      -46.92,
+      47.54,
+      42.4
+    ],
+    "normal": [
+      -24.02,
+      25.33,
+      -1.96
+    ],
+    "impulse": 6.69
+  },
+  {
+    "timestamp": 1765876439.78,
+    "actor": "Actor_18",
+    "component": "Component_47",
+    "other_actor": "Actor_48",
+    "other_component": "Component_49",
+    "location": [
+      -8.01,
+      -54.09,
+      1.31
+    ],
+    "normal": [
+      99.08,
+      44.1,
+      72.13
+    ],
+    "impulse": 42.35
+  },
+  {
+    "timestamp": 1765876439.88,
+    "actor": "Actor_3",
+    "component": "Component_25",
+    "other_actor": "Actor_11",
+    "other_component": "Component_50",
+    "location": [
+      -44.16,
+      70.76,
+      -50.64
+    ],
+    "normal": [
+      58.25,
+      -23.7,
+      1.73
+    ],
+    "impulse": 24.82
+  },
+  {
+    "timestamp": 1765876439.98,
+    "actor": "Actor_5",
+    "component": "Component_37",
+    "other_actor": "Actor_35",
+    "other_component": "Component_44",
+    "location": [
+      59.16,
+      48.29,
+      85.89
+    ],
+    "normal": [
+      47.83,
+      96.9,
+      51.97
+    ],
+    "impulse": 21.67
+  },
+  {
+    "timestamp": 1765876440.08,
+    "actor": "Actor_7",
+    "component": "Component_6",
+    "other_actor": "Actor_35",
+    "other_component": "Component_13",
+    "location": [
+      93.24,
+      -92.48,
+      69.48
+    ],
+    "normal": [
+      -37.79,
+      18.12,
+      43.73
+    ],
+    "impulse": 8.46
+  },
+  {
+    "timestamp": 1765876440.18,
+    "actor": "Actor_5",
+    "component": "Component_14",
+    "other_actor": "Actor_38",
+    "other_component": "Component_22",
+    "location": [
+      -50.03,
+      62.26,
+      -96.17
+    ],
+    "normal": [
+      -66.82,
+      -32.82,
+      -93.32
+    ],
+    "impulse": 30.68
+  },
+  {
+    "timestamp": 1765876440.28,
+    "actor": "Actor_32",
+    "component": "Component_10",
+    "other_actor": "Actor_27",
+    "other_component": "Component_48",
+    "location": [
+      55.17,
+      -17.06,
+      -99.95
+    ],
+    "normal": [
+      -2.87,
+      -67.48,
+      49.16
+    ],
+    "impulse": 27.16
+  },
+  {
+    "timestamp": 1765876440.38,
+    "actor": "Actor_45",
+    "component": "Component_40",
+    "other_actor": "Actor_11",
+    "other_component": "Component_6",
+    "location": [
+      88.94,
+      4.48,
+      -51.53
+    ],
+    "normal": [
+      -75.87,
+      55.19,
+      -58.72
+    ],
+    "impulse": 17.04
+  },
+  {
+    "timestamp": 1765876440.48,
+    "actor": "Actor_18",
+    "component": "Component_20",
+    "other_actor": "Actor_25",
+    "other_component": "Component_19",
+    "location": [
+      -79.39,
+      29.5,
+      32.07
+    ],
+    "normal": [
+      -17.93,
+      -52.03,
+      60.85
+    ],
+    "impulse": 34.57
+  },
+  {
+    "timestamp": 1765876440.58,
+    "actor": "Actor_46",
+    "component": "Component_50",
+    "other_actor": "Actor_25",
+    "other_component": "Component_7",
+    "location": [
+      -6.23,
+      85.51,
+      49.55
+    ],
+    "normal": [
+      -0.49,
+      14.78,
+      39.67
+    ],
+    "impulse": 18.59
+  },
+  {
+    "timestamp": 1765876440.68,
+    "actor": "Actor_45",
+    "component": "Component_26",
+    "other_actor": "Actor_23",
+    "other_component": "Component_13",
+    "location": [
+      -67.51,
+      44.76,
+      -32.25
+    ],
+    "normal": [
+      48.98,
+      85.55,
+      16.58
+    ],
+    "impulse": 39.54
+  },
+  {
+    "timestamp": 1765876440.78,
+    "actor": "Actor_36",
+    "component": "Component_32",
+    "other_actor": "Actor_5",
+    "other_component": "Component_7",
+    "location": [
+      32.16,
+      -98.08,
+      -90.74
+    ],
+    "normal": [
+      53.91,
+      97.45,
+      16.46
+    ],
+    "impulse": 17.78
+  },
+  {
+    "timestamp": 1765876440.88,
+    "actor": "Actor_13",
+    "component": "Component_3",
+    "other_actor": "Actor_7",
+    "other_component": "Component_40",
+    "location": [
+      -68.51,
+      68.31,
+      67.11
+    ],
+    "normal": [
+      -19.2,
+      -10.7,
+      -25.91
+    ],
+    "impulse": 8.62
+  },
+  {
+    "timestamp": 1765876440.98,
+    "actor": "Actor_38",
+    "component": "Component_27",
+    "other_actor": "Actor_5",
+    "other_component": "Component_47",
+    "location": [
+      86.44,
+      69.57,
+      -95.17
+    ],
+    "normal": [
+      0.42,
+      -77.99,
+      10.51
+    ],
+    "impulse": 7.88
+  },
+  {
+    "timestamp": 1765876441.08,
+    "actor": "Actor_38",
+    "component": "Component_23",
+    "other_actor": "Actor_44",
+    "other_component": "Component_8",
+    "location": [
+      -77.49,
+      80.54,
+      51.08
+    ],
+    "normal": [
+      83.65,
+      -75.96,
+      11.37
+    ],
+    "impulse": 33.94
+  },
+  {
+    "timestamp": 1765876441.18,
+    "actor": "Actor_49",
+    "component": "Component_41",
+    "other_actor": "Actor_21",
+    "other_component": "Component_12",
+    "location": [
+      -85.22,
+      -0.38,
+      84.27
+    ],
+    "normal": [
+      63.81,
+      45.09,
+      26.62
+    ],
+    "impulse": 36.23
+  },
+  {
+    "timestamp": 1765876441.28,
+    "actor": "Actor_48",
+    "component": "Component_46",
+    "other_actor": "Actor_43",
+    "other_component": "Component_17",
+    "location": [
+      -20.64,
+      -97.22,
+      -44.16
+    ],
+    "normal": [
+      -17.18,
+      -6.18,
+      -84.57
+    ],
+    "impulse": 29.84
+  },
+  {
+    "timestamp": 1765876441.38,
+    "actor": "Actor_4",
+    "component": "Component_30",
+    "other_actor": "Actor_27",
+    "other_component": "Component_18",
+    "location": [
+      -92.69,
+      98.75,
+      -97.65
+    ],
+    "normal": [
+      82.48,
+      89.78,
+      19.28
+    ],
+    "impulse": 3.49
+  },
+  {
+    "timestamp": 1765876441.48,
+    "actor": "Actor_7",
+    "component": "Component_17",
+    "other_actor": "Actor_8",
+    "other_component": "Component_46",
+    "location": [
+      -87.55,
+      -61.82,
+      -13.38
+    ],
+    "normal": [
+      -81.7,
+      0.06,
+      -60.58
+    ],
+    "impulse": 4.45
+  },
+  {
+    "timestamp": 1765876441.58,
+    "actor": "Actor_22",
+    "component": "Component_44",
+    "other_actor": "Actor_50",
+    "other_component": "Component_13",
+    "location": [
+      33.68,
+      53.55,
+      81.05
+    ],
+    "normal": [
+      47.27,
+      -21.41,
+      -4.35
+    ],
+    "impulse": 36.2
+  },
+  {
+    "timestamp": 1765876441.68,
+    "actor": "Actor_15",
+    "component": "Component_35",
+    "other_actor": "Actor_32",
+    "other_component": "Component_44",
+    "location": [
+      -23.52,
+      -77.07,
+      -52.45
+    ],
+    "normal": [
+      66.86,
+      -56.75,
+      35.71
+    ],
+    "impulse": 12.65
+  },
+  {
+    "timestamp": 1765876441.78,
+    "actor": "Actor_41",
+    "component": "Component_39",
+    "other_actor": "Actor_23",
+    "other_component": "Component_40",
+    "location": [
+      -49.85,
+      4.86,
+      20.35
+    ],
+    "normal": [
+      55.62,
+      98.92,
+      3.05
+    ],
+    "impulse": 3.96
+  },
+  {
+    "timestamp": 1765876441.88,
+    "actor": "Actor_28",
+    "component": "Component_7",
+    "other_actor": "Actor_25",
+    "other_component": "Component_12",
+    "location": [
+      -78.76,
+      -61.93,
+      60.57
+    ],
+    "normal": [
+      -44.53,
+      -3.69,
+      32.85
+    ],
+    "impulse": 45.52
+  },
+  {
+    "timestamp": 1765876441.98,
+    "actor": "Actor_32",
+    "component": "Component_38",
+    "other_actor": "Actor_29",
+    "other_component": "Component_15",
+    "location": [
+      66.04,
+      -7.04,
+      69.87
+    ],
+    "normal": [
+      -55.65,
+      76.14,
+      -44.35
+    ],
+    "impulse": 42.94
+  },
+  {
+    "timestamp": 1765876442.08,
+    "actor": "Actor_18",
+    "component": "Component_44",
+    "other_actor": "Actor_2",
+    "other_component": "Component_43",
+    "location": [
+      89.55,
+      57.04,
+      -12.68
+    ],
+    "normal": [
+      -98.72,
+      -15.18,
+      -20.68
+    ],
+    "impulse": 48.6
+  },
+  {
+    "timestamp": 1765876442.18,
+    "actor": "Actor_16",
+    "component": "Component_38",
+    "other_actor": "Actor_47",
+    "other_component": "Component_9",
+    "location": [
+      -56.8,
+      -3.87,
+      -98.33
+    ],
+    "normal": [
+      19.1,
+      49.18,
+      97.71
+    ],
+    "impulse": 18.45
+  },
+  {
+    "timestamp": 1765876442.28,
+    "actor": "Actor_6",
+    "component": "Component_25",
+    "other_actor": "Actor_43",
+    "other_component": "Component_2",
+    "location": [
+      44.46,
+      -17.29,
+      -40.03
+    ],
+    "normal": [
+      5.01,
+      33.2,
+      2.98
+    ],
+    "impulse": 37.4
+  },
+  {
+    "timestamp": 1765876442.38,
+    "actor": "Actor_45",
+    "component": "Component_23",
+    "other_actor": "Actor_23",
+    "other_component": "Component_30",
+    "location": [
+      -42.89,
+      40.95,
+      20.24
+    ],
+    "normal": [
+      87.35,
+      -6.32,
+      86.62
+    ],
+    "impulse": 12.82
+  },
+  {
+    "timestamp": 1765876442.48,
+    "actor": "Actor_40",
+    "component": "Component_50",
+    "other_actor": "Actor_45",
+    "other_component": "Component_34",
+    "location": [
+      -19.84,
+      25.16,
+      65.24
+    ],
+    "normal": [
+      -67.04,
+      43.79,
+      -77.09
+    ],
+    "impulse": 31.46
+  },
+  {
+    "timestamp": 1765876442.58,
+    "actor": "Actor_40",
+    "component": "Component_37",
+    "other_actor": "Actor_32",
+    "other_component": "Component_20",
+    "location": [
+      -46.08,
+      -73.08,
+      86.07
+    ],
+    "normal": [
+      48.16,
+      23.79,
+      -94.42
+    ],
+    "impulse": 42.27
+  },
+  {
+    "timestamp": 1765876442.68,
+    "actor": "Actor_29",
+    "component": "Component_35",
+    "other_actor": "Actor_22",
+    "other_component": "Component_27",
+    "location": [
+      -63.2,
+      -96.2,
+      -77.88
+    ],
+    "normal": [
+      24.58,
+      73.83,
+      -43.6
+    ],
+    "impulse": 2.24
+  },
+  {
+    "timestamp": 1765876442.78,
+    "actor": "Actor_46",
+    "component": "Component_40",
+    "other_actor": "Actor_38",
+    "other_component": "Component_34",
+    "location": [
+      -22.31,
+      -56.78,
+      77.86
+    ],
+    "normal": [
+      -97.06,
+      -64.25,
+      97.94
+    ],
+    "impulse": 11.06
+  },
+  {
+    "timestamp": 1765876442.88,
+    "actor": "Actor_38",
+    "component": "Component_12",
+    "other_actor": "Actor_12",
+    "other_component": "Component_12",
+    "location": [
+      -56.44,
+      27.77,
+      -90.42
+    ],
+    "normal": [
+      -33.44,
+      -38.65,
+      95.74
+    ],
+    "impulse": 34.23
+  },
+  {
+    "timestamp": 1765876442.98,
+    "actor": "Actor_6",
+    "component": "Component_14",
+    "other_actor": "Actor_26",
+    "other_component": "Component_26",
+    "location": [
+      -4.97,
+      -7.31,
+      -97.6
+    ],
+    "normal": [
+      -12.73,
+      -77.81,
+      -10.7
+    ],
+    "impulse": 0.89
+  },
+  {
+    "timestamp": 1765876443.08,
+    "actor": "Actor_40",
+    "component": "Component_41",
+    "other_actor": "Actor_37",
+    "other_component": "Component_43",
+    "location": [
+      -52.33,
+      26.3,
+      39.43
+    ],
+    "normal": [
+      -10.14,
+      66.48,
+      60.13
+    ],
+    "impulse": 22.61
+  },
+  {
+    "timestamp": 1765876443.18,
+    "actor": "Actor_7",
+    "component": "Component_27",
+    "other_actor": "Actor_13",
+    "other_component": "Component_27",
+    "location": [
+      -75.08,
+      7.59,
+      -58.3
+    ],
+    "normal": [
+      -8.7,
+      -58.13,
+      36.5
+    ],
+    "impulse": 36.42
+  },
+  {
+    "timestamp": 1765876443.28,
+    "actor": "Actor_36",
+    "component": "Component_19",
+    "other_actor": "Actor_42",
+    "other_component": "Component_50",
+    "location": [
+      -17.48,
+      51.95,
+      35.08
+    ],
+    "normal": [
+      -47.77,
+      21.68,
+      80.8
+    ],
+    "impulse": 49.47
+  },
+  {
+    "timestamp": 1765876443.38,
+    "actor": "Actor_1",
+    "component": "Component_4",
+    "other_actor": "Actor_42",
+    "other_component": "Component_1",
+    "location": [
+      -43.16,
+      19.53,
+      -34.44
+    ],
+    "normal": [
+      -40.92,
+      45.07,
+      -79.15
+    ],
+    "impulse": 18.16
+  }
+]
