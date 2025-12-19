@@ -1,102 +1,235 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>ASCII Hit Event Grid with Non-Overlapping Timestamp Columns</title>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js"></script>
-    <script src="https://unpkg.com/p5.js-svg@1.6.0"></script>
-  </head>
- <body style="margin:100px; background-color:black;">
-    <script>
-      let events;
-      let asciiChars = ['_','/', ':', '-', '=', '+', '*', '#', '%', '@'];
-      let gridCols = 100;
-      let gridRows = 100;
-      let cellSize = 14;
-      let grid = [];
-      let mFont;
-      let timestampsByRow = {}; // {row: [timestamps]}
 
-      function preload() {
-        events = loadJSON('hit_events.json'); 
-        mFont = loadFont("IBMPlexMono-Medium.ttf");
+<head>
+  <meta charset="UTF-8">
+  <title>V-COLLISION-TXT</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js"></script>
+  <script src="https://unpkg.com/p5.js-svg@1.6.0"></script>
+</head>
+
+<body style="margin:100px; background-color:black;">
+  <script>
+    let events = [];
+    let asciiChars = ['_', '/', '-', ':', '=', '+', '*', '#', '%', '@'];
+    let shades = ['░', '▒', '▓', '█']
+    let gridCols = 220;
+    let gridRows = 320;
+    let cellSize = 8;
+    let grid = [];
+    let mFont;
+    let timestampsByRow = {};
+    let eventCountsByRow = {};
+
+    let colors = {
+      // purple
+      /*
+      "label": [255,255,255],
+      "positions": [0,255,0],
+      "noise": [77,20,100],
+      "time": [255,255,255],
+      "collisions": [150,150,150],
+      "header": [150,150,150]
+      */
+
+      // green
+      /*
+       "label": [0, 255, 0, ],
+       "positions": [65, 212, 176],
+       "noise": [3,36,114],
+       "time": [255, 255, 255],
+       "collisions": [150, 150, 150],
+       "header": [150, 150, 150]
+       */
+
+      // yellow
+      
+      "label": [212, 198, 0],
+      "positions": [255,255,255],
+      "noise": [105,0,33],
+      "time": [255, 255, 255],
+      "collisions": [150, 150, 150],
+      "header": [150, 150, 150]
+      
+     // extra
+     /*
+      "label": [0,200,0,100],
+      "positions": [10,100,200],
+      "noise": [200],
+      "time": [255, 255, 255],
+      "collisions": [150, 150, 150],
+      "header": [150, 150, 150]
+      */
+    }
+    const labelColors = {
+      "ARC1": [255, 255, 255],
+      "ARC2": [255, 255, 255],
+      "ARC3": [255, 255, 255],
+      "ARC4": [255, 255, 255]
+    };
+
+    function preload() {
+      mFont = loadFont("IBMPlexMono-Medium.ttf");
+      events = loadStrings('../exports/yellow_collision.txt');
+    }
+
+    function setup() {
+      createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize, SVG);
+      textFont(mFont, cellSize);
+      noLoop();
+
+      let n = 1;
+      events = events.filter((_, index) => index % n === 0);
+
+      for (let y = 0; y < gridRows; y++) {
+        grid[y] = [];
+        for (let x = 0; x < gridCols; x++) {
+          grid[y][x] = { char: y, label: null, type: null };
+        }
       }
 
-      function setup() {
-        createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize, SVG);
-        textFont(mFont, cellSize);
-        noLoop();
+      // Group events by timestamp
+      let groupedEvents = {};
+      let minX = Infinity, maxX = -Infinity;
 
-        // Initialize grid with random ASCII chars
-        for (let y = 0; y < gridRows; y++) {
-          grid[y] = [];
-          for (let x = 0; x < gridCols; x++) {
-            grid[y][x] = asciiChars[floor(random([0,0,0,0,0,0,1]))];
-          }
-        }
+      for (let line of events) {
+        let match = line.match(/\[([^\]]+)\].*T=([\d.]+)/);
+        if (!match) continue;
 
-        // Insert actor/component names and collect timestamps
-        let eventsArray = Object.values(events);
-        for (let event of eventsArray) {
-          let loc = event.location;
-          let gridX = floor(map(loc[0], -100, 100, 0, gridCols - 1));
-          let gridY = floor(map(loc[1], -100, 100, 0, gridRows - 1));
+        let name = match[1].split("_")[0];
+        let timestamp = parseFloat(match[2]).toFixed(2);
 
-          let nameString = `${event.actor}_${event.component}`;
-          for (let i = 0; i < nameString.length; i++) {
-            let x = gridX + i;
-            if (x < gridCols) {
-              grid[gridY][x] = nameString[i];
-            }
-          }
+        let coordsMatch = line.match(/X=([\d,-]+).*Y=([\d,-]+).*Z=([\d,-]+)/);
+        if (!coordsMatch) continue;
+        let xVal = parseFloat(coordsMatch[1].replace(',', '.'));
+        let yVal = parseFloat(coordsMatch[2].replace(',', '.'));
+        let zVal = parseFloat(coordsMatch[3].replace(',', '.')).toFixed(2);
 
-          // Store timestamp for the row
-          if (!timestampsByRow[gridY]) timestampsByRow[gridY] = [];
-          timestampsByRow[gridY].push(event.timestamp.toFixed(2));
-        }
+        minX = Math.min(minX, xVal);
+        maxX = Math.max(maxX, xVal);
+
+        if (!groupedEvents[timestamp]) groupedEvents[timestamp] = [];
+        groupedEvents[timestamp].push({ name, xVal, yVal, zVal });
       }
 
-      function draw() {
-        background(0);
+      // Place grouped events in rows
+      let rowIndex = 0;
+      for (let ts in groupedEvents) {
+        if (rowIndex >= gridRows) break;
 
-        // Draw grid
-        for (let y = 0; y < gridRows; y++) {
-          for (let x = 0; x < gridCols; x++) {
-            let char = grid[y][x];
-            fill(char === '/' || char === '_' ? 100 : 255);
-            noStroke();
+        let eventsRow = groupedEvents[ts];
+
+        let firstEventX = eventsRow[0].xVal;
+        let startCol = Math.floor(map(firstEventX, minX, maxX, 0, gridCols - 1))
+        startCol = constrain(startCol, 0, gridCols - 1);
+        let colIndex = startCol;
+
+        // Store number of events per row
+        eventCountsByRow[rowIndex] = eventsRow.length;
+
+        let evIndex = 0
+        for (let ev of eventsRow) {
+          let name = ev.name;
+          let coordsStr = ` X: ${ev.xVal}, Y: ${ev.yVal}, Z: ${ev.zVal}`;
+
+          let labelKeys = Object.keys(labelColors);
+          let label = labelKeys[floor(random(labelKeys.length))];
+
+          // Place name characters
+          for (let i = 0; i < name.length; i++) {
+            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: name[i], label: label, type: "name" };
+          }
+
+          // Place coordinates after name
+          for (let i = 0; i < coordsStr.length; i++) {
+            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: coordsStr[i], label: null, type: "coords" };
+          }
+
+          if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: ' ', label: null, type: null };
+        }
+
+        if (!timestampsByRow[rowIndex]) timestampsByRow[rowIndex] = [];
+        timestampsByRow[rowIndex].push(ts);
+
+        rowIndex++;
+      }
+    }
+
+    function draw() {
+      background(0);
+
+      let oStr = "OBJECT "
+      let pStr = "POSITIONS"
+      for (let y = 0; y < gridRows; y++) {
+        for (let x = 0; x < gridCols; x++) {
+          let cell = grid[y][x];
+          let char = cell.char;
+          let label = cell.label;
+          let type = cell.type;
+
+          if (type === "coords") fill(colors.positions);
+          else if (label) fill(...colors.label);
+          else fill(colors.noise);
+
+          noStroke();
+          if (y > 0) {
             text(char, x * cellSize / 1.7, y * cellSize + cellSize);
-          }
-        }
-
-        // Draw timestamps in **dedicated columns** to avoid overlaps
-        fill(255);
-        let baseX = gridCols * cellSize / 1.7 + 5;
-        let maxColumnWidth = 150; // maximum width per column before wrapping to next column
-
-        for (let row in timestampsByRow) {
-          let tsArray = timestampsByRow[row];
-          let colIndex = 0;
-          let xOffset = baseX;
-          let yPos = row * cellSize + cellSize;
-
-          for (let ts of tsArray) {
-            let tsText = `[${ts}]`;
-            let tsWidth = textWidth(tsText) + 10;
-
-            // wrap to next column if exceeding max width
-            if (xOffset + tsWidth - baseX > maxColumnWidth) {
-              colIndex++;
-              xOffset = baseX + colIndex * maxColumnWidth;
+          } else {
+            if (x < 7) {
+              fill(colors.header)
+              text("0", x * cellSize / 1.7, y * cellSize + cellSize)
+              fill(colors.label)
+              text(oStr[x % 9], x * cellSize / 1.7 + (cellSize * gridCols / 4) + cellSize * 4, y * cellSize + cellSize);
+            } else if (x > 8 && x < 18) {
+              fill(colors.header)
+              text("0", x * cellSize / 1.7, y * cellSize + cellSize)
+              fill(colors.positions)
+              text(pStr[x % 9], x * cellSize / 1.7 + (cellSize * gridCols / 4) + cellSize * 3, y * cellSize + cellSize);
+            } else {
+              fill(colors.header)
+              if (x > gridCols / 2 + 6 || x < gridCols / 2 - 10) text("0", x * cellSize / 1.7, y * cellSize + cellSize)
             }
-
-            text(tsText, xOffset, yPos);
-            xOffset += tsWidth;
           }
+
+        }
+      }
+
+      let baseX = gridCols * cellSize / 1.7 + 5;
+      let maxColumnWidth = 150;
+
+      for (let row in timestampsByRow) {
+        let tsArray = timestampsByRow[row];
+        let colIndex = 0;
+        let xOffset = baseX;
+        let yPos = row * cellSize + cellSize;
+
+        for (let ts of tsArray) {
+          let paddedTime = nf(parseFloat(ts), 5, 1);
+          let tsText = `[${paddedTime}]`;
+          let tsWidth = textWidth(tsText) + 10;
+
+          if (xOffset + tsWidth - baseX > maxColumnWidth) {
+            colIndex++;
+            xOffset = baseX + colIndex * maxColumnWidth;
+          }
+          fill(colors.time);
+          if (row == 0) text("TIME(s)", xOffset, yPos);
+          else text(tsText, xOffset, yPos);
+          xOffset += tsWidth;
         }
 
-        //save("hit_events_nonoverlap.svg");
+        fill(colors.collisions)
+        if (eventCountsByRow[row] !== undefined) {
+          if (row == 0) text("COLLISIONS", xOffset, yPos);
+          else text(`+ ${nf(eventCountsByRow[row], 3)}`, xOffset + 10, yPos);
+        }
       }
-    </script>
-  </body>
+    }
+
+    function keyPressed() {
+      if (key == "s") save("collisions-last.svg");
+    }
+  </script>
+</body>
+
 </html>
