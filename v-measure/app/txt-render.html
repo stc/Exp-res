@@ -61,20 +61,14 @@
       "header": [150, 150, 150]
       */
     }
-    const labelColors = {
-      "ARC1": [255, 255, 255],
-      "ARC2": [255, 255, 255],
-      "ARC3": [255, 255, 255],
-      "ARC4": [255, 255, 255]
-    };
 
     function preload() {
       mFont = loadFont("IBMPlexMono-Medium.ttf");
-      events = loadStrings('../exports/yellow_collision.txt');
+      events = loadStrings('../exports/data/yellow_collision.txt');
     }
 
     function setup() {
-      createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize, SVG);
+      createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize);
       textFont(mFont, cellSize);
       noLoop();
 
@@ -132,20 +126,17 @@
           let name = ev.name;
           let coordsStr = ` X: ${ev.xVal}, Y: ${ev.yVal}, Z: ${ev.zVal}`;
 
-          let labelKeys = Object.keys(labelColors);
-          let label = labelKeys[floor(random(labelKeys.length))];
-
           // Place name characters
           for (let i = 0; i < name.length; i++) {
-            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: name[i], label: label, type: "name" };
+            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: name[i], label: true, type: "name" };
           }
 
           // Place coordinates after name
           for (let i = 0; i < coordsStr.length; i++) {
-            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: coordsStr[i], label: null, type: "coords" };
+            if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: coordsStr[i], label: false, type: "coords" };
           }
 
-          if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: ' ', label: null, type: null };
+          if (colIndex < gridCols) grid[rowIndex][colIndex++] = { char: ' ', label: false, type: null };
         }
 
         if (!timestampsByRow[rowIndex]) timestampsByRow[rowIndex] = [];
