@@ -43,23 +43,24 @@
        */
 
       // yellow
-      
+      /*
       "label": [212, 198, 0],
       "positions": [255,255,255],
       "noise": [105,0,33],
       "time": [255, 255, 255],
       "collisions": [150, 150, 150],
       "header": [150, 150, 150]
+      */
       
      // extra
-     /*
-      "label": [0,200,0,100],
-      "positions": [10,100,200],
+     
+      "label": [0,200,0],
+      "positions": [10,200,255],
       "noise": [200],
       "time": [255, 255, 255],
       "collisions": [150, 150, 150],
       "header": [150, 150, 150]
-      */
+      
     }
 
     function preload() {
@@ -68,7 +69,7 @@
     }
 
     function setup() {
-      createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize);
+      createCanvas((gridCols + 200) * cellSize / 1.7, gridRows * cellSize, SVG);
       textFont(mFont, cellSize);
       noLoop();
 
