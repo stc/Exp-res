@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Regression</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
+<style>
+  body { display:flex; flex-direction:column; align-items:center; font-family:sans-serif; padding:10px; margin: 0; }
+  #prediction { 
+    position: sticky; 
+    top: 0; 
+    z-index: 100;
+    font-size: 28px; 
+    font-weight: bold; 
+    color: white;
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    margin: 0 0 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+  }
+  video { border:2px solid #4caf50; margin-bottom:10px; border-radius: 8px; max-width: 100%; }
+  .controls { display: flex; gap: 10px; margin: 10px 0; align-items: center; flex-wrap: wrap; justify-content: center; }
+  input[type="number"] { width: 80px; padding: 5px; }
+  button { padding: 8px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #45a049; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+  #status { margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 4px; min-width: 300px; text-align: center; max-width: 500px; }
+  #examples { margin: 10px 0; max-width: 500px; }
+  .example-item { background: #e8f5e9; padding: 5px 10px; margin: 2px 0; border-radius: 4px; }
+  @media (max-width: 600px) {
+    #prediction { font-size: 24px; padding: 12px; }
+    button { padding: 6px 12px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="prediction">No prediction yet</div>
+
+<h2>Webcam Image Regression</h2>
+<p>Train a model to predict continuous values from webcam images</p>
+
+<video id="webcam" autoplay playsinline width="224" height="224"></video>
+
+<div class="controls">
+  <input type="number" id="valueInput" placeholder="Target value" step="0.1" />
+  <button id="addExample">Add Training Example</button>
+  <button id="trainModel" disabled>Train Model</button>
+</div>
+
+<div class="controls">
+  <button id="saveModel" disabled>Save Model</button>
+  <button id="loadModel">Load Model</button>
+  <input type="file" id="modelFiles" multiple accept=".json,.bin" style="display:none">
+</div>
+
+<div id="status">Loading MobileNet...</div>
+<div id="examples"></div>
+
+<script>
+let mobilenetModel;
+let regressionModel;
+const webcamElement = document.getElementById('webcam');
+const valueInput = document.getElementById('valueInput');
+const statusEl = document.getElementById('status');
+const examplesEl = document.getElementById('examples');
+const predictionEl = document.getElementById('prediction');
+const trainButton = document.getElementById('trainModel');
+const saveButton = document.getElementById('saveModel');
+const loadButton = document.getElementById('loadModel');
+const modelFilesInput = document.getElementById('modelFiles');
+
+// Store training data
+const trainingData = {
+  embeddings: [],
+  values: []
+};
+
+// Setup webcam
+async function setupWebcam() {
+  return new Promise((resolve, reject) => {
+    // Use back camera on mobile devices
+    const constraints = {
+      video: {
+        facingMode: { ideal: 'environment' }
+      }
+    };
+    
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(stream => {
+        webcamElement.srcObject = stream;
+        webcamElement.addEventListener('loadeddata', () => resolve(), false);
+      }).catch(reject);
+  });
+}
+
+// Load MobileNet
+async function loadMobileNet() {
+  mobilenetModel = await mobilenet.load();
+  statusEl.innerText = "MobileNet loaded! Add training examples.";
+}
+
+// Get embedding from current webcam frame
+function getEmbedding() {
+  return tf.tidy(() => {
+    const img = tf.browser.fromPixels(webcamElement);
+    const embedding = mobilenetModel.infer(img, 'conv_preds');
+    return embedding.flatten();
+  });
+}
+
+// Add training example
+document.getElementById('addExample').addEventListener('click', () => {
+  const value = parseFloat(valueInput.value);
+  if (isNaN(value)) return alert("Enter a valid number!");
+  
+  const embedding = getEmbedding();
+  trainingData.embeddings.push(embedding);
+  trainingData.values.push(value);
+  
+  updateExamplesList();
+  trainButton.disabled = trainingData.embeddings.length < 5;
+  statusEl.innerText = `${trainingData.embeddings.length} examples collected. ${trainingData.embeddings.length < 5 ? 'Need at least 5 to train.' : 'Ready to train!'}`;
+});
+
+// Update examples display
+function updateExamplesList() {
+  examplesEl.innerHTML = '<strong>Training Examples:</strong><br>' + 
+    trainingData.values.map((val, i) => 
+      `<div class="example-item">Example ${i + 1}: ${val}</div>`
+    ).join('');
+}
+
+// Build regression model
+function createRegressionModel(inputShape) {
+  const model = tf.sequential();
+  
+  model.add(tf.layers.dense({
+    inputShape: [inputShape],
+    units: 128,
+    activation: 'relu'
+  }));
+  
+  model.add(tf.layers.dropout({ rate: 0.3 }));
+  
+  model.add(tf.layers.dense({
+    units: 64,
+    activation: 'relu'
+  }));
+  
+  model.add(tf.layers.dense({
+    units: 1
+  }));
+  
+  model.compile({
+    optimizer: tf.train.adam(0.001),
+    loss: 'meanSquaredError',
+    metrics: ['mae']
+  });
+  
+  return model;
+}
+
+// Train the model
+trainButton.addEventListener('click', async () => {
+  if (trainingData.embeddings.length < 5) return;
+  
+  trainButton.disabled = true;
+  statusEl.innerText = "Training model...";
+  
+  // Stack embeddings into a single tensor
+  const xs = tf.stack(trainingData.embeddings);
+  const ys = tf.tensor2d(trainingData.values, [trainingData.values.length, 1]);
+  
+  // Create model if it doesn't exist
+  if (!regressionModel) {
+    const inputShape = trainingData.embeddings[0].shape[0];
+    regressionModel = createRegressionModel(inputShape);
+  }
+  
+  // Train
+  await regressionModel.fit(xs, ys, {
+    epochs: 50,
+    batchSize: 8,
+    shuffle: true,
+    callbacks: {
+      onEpochEnd: (epoch, logs) => {
+        if (epoch % 10 === 0) {
+          statusEl.innerText = `Training... Epoch ${epoch + 1}/50 - Loss: ${logs.loss.toFixed(4)}`;
+        }
+      }
+    }
+  });
+  
+  xs.dispose();
+  ys.dispose();
+  
+  statusEl.innerText = "Training complete! Model is now predicting.";
+  trainButton.disabled = false;
+  saveButton.disabled = false;
+});
+
+// Continuous prediction loop
+async function predictLoop() {
+  if (regressionModel) {
+    const embedding = getEmbedding();
+    const prediction = regressionModel.predict(embedding.expandDims(0));
+    const value = await prediction.data();
+    
+    predictionEl.innerText = `Predicted Value: ${value[0].toFixed(2)}`;
+    
+    embedding.dispose();
+    prediction.dispose();
+  }
+  requestAnimationFrame(predictLoop);
+}
+
+// Initialize
+async function init() {
+  await setupWebcam();
+  await loadMobileNet();
+  predictLoop();
+}
+
+init();
+</script>
+</body>
+</html>
