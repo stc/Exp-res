@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webcam Regression Sequence</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>
+<style>
+body { display:flex; flex-direction:column; align-items:center; font-family:sans-serif; padding:10px; margin:0; }
+#prediction { font-size:28px; font-weight:bold; margin-bottom:10px; }
+video, canvas { border:2px solid #4caf50; border-radius:8px; margin-bottom:10px; max-width:100%; }
+.controls { display:flex; gap:10px; margin:10px 0; flex-wrap:wrap; justify-content:center; }
+button { padding:8px 16px; background:#4caf50; color:white; border:none; border-radius:4px; cursor:pointer; }
+button:hover { background:#45a049; }
+#status { margin:10px 0; padding:10px; background:#f0f0f0; border-radius:4px; min-width:300px; text-align:center; }
+</style>
+</head>
+<body>
+
+<div id="prediction">No prediction yet</div>
+<video id="webcam" autoplay playsinline width="224" height="224"></video>
+<canvas id="sequenceCanvas" width="224" height="224"></canvas>
+
+<div class="controls">
+<input type="number" id="valueInput" placeholder="Target value" step="0.1" />
+<button id="addExample">Add Training Example</button>
+<button id="trainModel" disabled>Train Model</button>
+</div>
+
+<div class="controls">
+<button id="saveModel" disabled>Save Model</button>
+<button id="loadModel">Load Model</button>
+<input type="file" id="modelFiles" multiple accept=".json,.bin" style="display:none">
+</div>
+
+<div id="status">Loading MobileNet...</div>
+
+<script>
+let mobilenetModel;
+let regressionModel;
+const webcamElement = document.getElementById('webcam');
+const valueInput = document.getElementById('valueInput');
+const statusEl = document.getElementById('status');
+const predictionEl = document.getElementById('prediction');
+const trainButton = document.getElementById('trainModel');
+const saveButton = document.getElementById('saveModel');
+const canvas = document.getElementById('sequenceCanvas');
+const ctx = canvas.getContext('2d');
+
+const sequenceImages = [];
+const numImages = 150; // total number of frames in folder
+
+const nf = new Intl.NumberFormat('en-US', {
+  minimumIntegerDigits: 3,
+  useGrouping: false
+});
+
+// Load images from folder automatically
+for (let i = 0; i < numImages; i++) {
+  const img = new Image();
+  img.src = `images/00${nf.format(i+1)}.png`; // adjust folder/path and filenames
+  img.onload = () => console.log(`Loaded frame${i}.png`);
+  sequenceImages.push(img);
+}
+
+
+
+// Training data
+const trainingData = { embeddings: [], values: [] };
+
+// Setup webcam
+async function setupWebcam() {
+  return new Promise((resolve, reject) => {
+    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}})
+      .then(stream => {
+        webcamElement.srcObject = stream;
+        webcamElement.addEventListener('loadeddata',()=>resolve(), false);
+      }).catch(reject);
+  });
+}
+
+// Load MobileNet
+async function loadMobileNet() {
+  mobilenetModel = await mobilenet.load();
+  statusEl.innerText = "MobileNet loaded! Add training examples.";
+}
+
+// Get embedding
+function getEmbedding() {
+  return tf.tidy(()=>{
+    const img = tf.browser.fromPixels(webcamElement);
+    const embedding = mobilenetModel.infer(img,'conv_preds');
+    return embedding.flatten();
+  });
+}
+
+// Add training example
+document.getElementById('addExample').addEventListener('click',()=>{
+  const value = parseFloat(valueInput.value);
+  if(isNaN(value)) return alert("Enter a valid number!");
+  const embedding = getEmbedding();
+  trainingData.embeddings.push(embedding);
+  trainingData.values.push(value);
+  trainButton.disabled = trainingData.embeddings.length < 5;
+  statusEl.innerText=`Collected ${trainingData.embeddings.length} examples. ${trainingData.embeddings.length<5?'Need at least 5':'Ready to train'}`;
+});
+
+// Build regression model
+function createRegressionModel(inputShape){
+  const model = tf.sequential();
+  model.add(tf.layers.dense({inputShape:[inputShape], units:128, activation:'relu'}));
+  model.add(tf.layers.dropout({rate:0.3}));
+  model.add(tf.layers.dense({units:64, activation:'relu'}));
+  model.add(tf.layers.dense({units:1}));
+  model.compile({optimizer:tf.train.adam(0.001), loss:'meanSquaredError', metrics:['mae']});
+  return model;
+}
+
+// Train model
+trainButton.addEventListener('click',async()=>{
+  if(trainingData.embeddings.length<5) return;
+  trainButton.disabled=true;
+  statusEl.innerText="Training model...";
+  const xs = tf.stack(trainingData.embeddings);
+  const ys = tf.tensor2d(trainingData.values,[trainingData.values.length,1]);
+  if(!regressionModel) regressionModel = createRegressionModel(trainingData.embeddings[0].shape[0]);
+  await regressionModel.fit(xs,ys,{epochs:50,batchSize:8,shuffle:true, callbacks:{onEpochEnd:(epoch,logs)=>{if(epoch%10===0) statusEl.innerText=`Training... Epoch ${epoch+1}/50 Loss:${logs.loss.toFixed(4)}`}}});
+  xs.dispose(); ys.dispose();
+  statusEl.innerText="Training complete! Model predicting.";
+  trainButton.disabled=false;
+  saveButton.disabled=false;
+});
+
+// Predict loop
+async function predictLoop(){
+  if(regressionModel && sequenceImages.length>0){
+    const embedding = getEmbedding();
+    const prediction = regressionModel.predict(embedding.expandDims(0));
+    const value = (await prediction.data())[0];
+    predictionEl.innerText=`Predicted Value: ${value.toFixed(2)}`;
+
+    // Map value to sequence index
+    let index = Math.floor(value * sequenceImages.length);
+    index = Math.min(sequenceImages.length-1, Math.max(0,index));
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(sequenceImages[index],0,0,canvas.width,canvas.height);
+
+    embedding.dispose();
+    prediction.dispose();
+  }
+  requestAnimationFrame(predictLoop);
+}
+
+// Initialize
+async function init(){
+  await setupWebcam();
+  await loadMobileNet();
+  predictLoop();
+}
+
+init();
+</script>
+</body>
+</html>

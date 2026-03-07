@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+      "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+    }
+  }
+  </script>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    #control {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="control">
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+  </div>
+  <div id="container"></div>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { MindARThree } from "mindar-image-three";
+
+    /* -------------------- MindAR setup -------------------- */
+
+    const container = document.querySelector("#container");
+
+    const mindarThree = new MindARThree({
+      container,
+      imageTargetSrc: "./MRKRS.mind",
+      maxTrack: 2,
+      uiLoading: false,
+      uiScanning: false,
+      uiError: false
+    });
+
+    const { renderer, scene, camera } = mindarThree;
+
+    /* -------------------- Debug UI -------------------- */
+
+    const debugDiv = document.createElement("div");
+    Object.assign(debugDiv.style, {
+      position: "fixed",
+      top: "10px",
+      left: "10px",
+      color: "#00ff00",
+      background: "rgba(0,0,0,0.6)",
+      padding: "6px",
+      fontFamily: "monospace",
+      zIndex: 999
+    });
+    document.body.appendChild(debugDiv);
+
+    /* -------------------- Kalman filter -------------------- */
+
+    class Kalman3D {
+      constructor(q = 0.001, r = 0.01) {
+        this.q = q;
+        this.r = r;
+        this.x = new THREE.Vector3();
+        this.v = new THREE.Vector3();
+        this.p = new THREE.Vector3(1, 1, 1);
+      }
+
+      update(m, dt) {
+        this.x.add(this.v.clone().multiplyScalar(dt));
+        this.p.addScalar(this.q);
+
+        if (m) {
+          const k = new THREE.Vector3(
+            this.p.x / (this.p.x + this.r),
+            this.p.y / (this.p.y + this.r),
+            this.p.z / (this.p.z + this.r)
+          );
+
+          const d = m.clone().sub(this.x);
+          this.x.add(d.multiply(k));
+          this.v.copy(d).divideScalar(dt);
+          this.p.multiply(new THREE.Vector3(
+            1 - k.x,
+            1 - k.y,
+            1 - k.z
+          ));
+        }
+      }
+
+      predict(dt) {
+        return this.x.clone().add(this.v.clone().multiplyScalar(dt));
+      }
+    }
+
+    /* -------------------- Anchors (2 markers) -------------------- */
+
+    const anchor0 = mindarThree.addAnchor(0);
+    const anchor1 = mindarThree.addAnchor(1);
+
+    function makePlane(color) {
+      const geo = new THREE.PlaneGeometry(1, 1);
+      const mat = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: 0.5
+      });
+      return new THREE.Mesh(geo, mat);
+    }
+
+    anchor0.group.add(makePlane(0x00ffff)); // cyan
+    anchor1.group.add(makePlane(0xff00ff)); // magenta
+
+    /* -------------------- Tracking state -------------------- */
+
+    const kalman0 = new Kalman3D();
+    const kalman1 = new Kalman3D();
+
+    const world0 = new THREE.Vector3();
+    const world1 = new THREE.Vector3();
+
+    const smooth0 = new THREE.Vector3();
+    const smooth1 = new THREE.Vector3();
+
+    /* -------------------- Animation loop -------------------- */
+
+    const start = async () => {
+      await mindarThree.start();
+
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+
+        const dt = 1 / 60;
+
+        // Marker 0
+        if (anchor0.visible) {
+          anchor0.group.getWorldPosition(world0);
+          kalman0.update(world0, dt);
+        }
+        smooth0.lerp(kalman0.predict(dt), 0.1);
+
+        // Marker 1
+        if (anchor1.visible) {
+          anchor1.group.getWorldPosition(world1);
+          kalman1.update(world1, dt);
+        }
+        smooth1.lerp(kalman1.predict(dt), 0.1);
+
+        debugDiv.innerText = `
+Marker 0: ${anchor0.visible ? "VISIBLE" : "hidden"}
+  x=${smooth0.x.toFixed(2)}
+  y=${smooth0.y.toFixed(2)}
+  z=${smooth0.z.toFixed(2)}
+
+Marker 1: ${anchor1.visible ? "VISIBLE" : "hidden"}
+  x=${smooth1.x.toFixed(2)}
+  y=${smooth1.y.toFixed(2)}
+  z=${smooth1.z.toFixed(2)}
+        `;
+      });
+    };
+
+    const stop = () => {
+      renderer.setAnimationLoop(null);
+      mindarThree.stop();
+      debugDiv.innerText = "AR stopped";
+    };
+
+    document.querySelector("#startButton").addEventListener("click", start);
+    document.querySelector("#stopButton").addEventListener("click", stop);
+
+  </script>
+</body>
+</html>
