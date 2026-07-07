@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MindAR Quaternion Drift</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: monospace;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+      z-index: 2;
+    }
+
+    button {
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="ui">
+  <button id="startBtn">START AR</button>
+  <div id="status">waiting</div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.156/build/three.module.js';
+import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
+
+let markerVisible = false;
+
+// --- ORIENTATION STATE ---
+const deviceEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+const deviceQuat = new THREE.Quaternion();
+
+let referenceQuat = null;
+const driftQuat = new THREE.Quaternion();
+
+// --- OBJECTS ---
+let ghostGroup;
+let realGroup;
+
+// --- UI ---
+const statusEl = document.getElementById("status");
+
+// --- DEVICE ORIENTATION ---
+function setupOrientationTracking() {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then(state => {
+      if (state === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation);
+      } else {
+        alert("Orientation permission denied");
+      }
+    });
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+
+function handleOrientation(e) {
+  const alpha = THREE.MathUtils.degToRad(e.alpha || 0);
+  const beta  = THREE.MathUtils.degToRad(e.beta || 0);
+  const gamma = THREE.MathUtils.degToRad(e.gamma || 0);
+
+  // Device → Three.js conversion
+  deviceEuler.set(beta, alpha, -gamma, 'YXZ');
+  deviceQuat.setFromEuler(deviceEuler);
+
+  if (!markerVisible && referenceQuat) {
+    driftQuat.copy(deviceQuat).multiply(referenceQuat.clone().invert());
+  }
+}
+
+// --- MAIN ---
+async function startAR() {
+
+  const mindarThree = new MindARThree({
+    container: document.body,
+    imageTargetSrc: './targets.mind'
+  });
+
+  const { renderer, scene, camera } = mindarThree;
+
+  const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+  scene.add(light);
+
+  const anchor = mindarThree.addAnchor(0);
+  realGroup = anchor.group;
+
+  // --- REAL OBJECT ---
+  const realMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(0.4, 0.4, 0.4),
+    new THREE.MeshNormalMaterial()
+  );
+  realGroup.add(realMesh);
+
+  // --- GHOST OBJECT ---
+  ghostGroup = new THREE.Group();
+  scene.add(ghostGroup);
+
+  const ghostMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(0.4, 0.4, 0.4),
+    new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      wireframe: true
+    })
+  );
+  ghostGroup.add(ghostMesh);
+
+  // --- MARKER EVENTS ---
+  anchor.onTargetFound = () => {
+    markerVisible = true;
+    statusEl.innerText = "marker found → reset";
+
+    referenceQuat = deviceQuat.clone();
+
+    ghostGroup.position.copy(realGroup.position);
+    ghostGroup.quaternion.copy(realGroup.quaternion);
+  };
+
+  anchor.onTargetLost = () => {
+    markerVisible = false;
+    statusEl.innerText = "marker lost → drifting";
+  };
+
+  await mindarThree.start();
+
+  renderer.setAnimationLoop(() => {
+
+    if (!markerVisible && referenceQuat) {
+      ghostGroup.quaternion
+        .copy(realGroup.quaternion)
+        .multiply(driftQuat);
+    }
+
+    renderer.render(scene, camera);
+  });
+
+  setupOrientationTracking();
+}
+
+// --- START BUTTON ---
+document.getElementById("startBtn").addEventListener("click", startAR);
+
+</script>
+
+</body>
+</html>
