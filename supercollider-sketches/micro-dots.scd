@@ -60,7 +60,7 @@ Ndef(\minimalDigital, {
 
 	bass = LPF.ar(bass, 280);
 
-    sig = tone + pulse + click + bass;
+    sig = click + tone + pulse + bass;
 
     sig = tanh(sig * 1.5);
 
