@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperCollider Simple Synths</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #2d7ff9;
+            color: white;
+        }
+
+        button:hover {
+            background: #1b63cc;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button id="boot-btn">Boot</button>
+    <button id="trig-btn" disabled>Trigger</button>
+</div>
+
+<div id="status">Not initialized</div>
+
+<script type="module">
+import { SuperSonic } from "https://unpkg.com/supersonic-scsynth@latest";
+
+const supersonic = new SuperSonic({
+  wasmBaseURL: "https://unpkg.com/supersonic-scsynth-core@latest/wasm/",
+  workletUrl: "https://unpkg.com/supersonic-scsynth-core@latest/workers/scsynth_audio_worklet.js",
+  workerBaseURL: "https://unpkg.com/supersonic-scsynth@latest/dist/workers/",
+  synthdefBaseURL: "https://unpkg.com/supersonic-scsynth-synthdefs@latest/synthdefs/",
+});
+
+const bootBtn = document.getElementById("boot-btn");
+const trigBtn = document.getElementById("trig-btn");
+const status = document.getElementById("status");
+
+bootBtn.onclick = async () => {
+    try {
+        status.textContent = "Initializing...";
+        bootBtn.disabled = true;
+
+        await supersonic.init();
+        await supersonic.loadSynthDef("/synthdefs/mysine.scsyndef")
+
+        status.textContent = "Ready";
+        trigBtn.disabled = false;
+    } catch (err) {
+        console.error(err);
+        status.textContent = "Initialization failed";
+        bootBtn.disabled = false;
+    }
+};
+
+
+let nodeID = 1000;
+let activeNodes = new Set();
+
+trigBtn.onclick = () => {
+    const id = nodeID++;
+    activeNodes.add(id);
+
+    supersonic.send(
+        "/s_new",
+        "mysine",
+        id,
+        0,
+        0,
+        "freq",
+        (Math.floor(Math.random() * 10) + 1) * 100,
+        "amp",
+        Math.random() * 0.2 + 0.1,
+        "gate",
+        1
+    );
+
+    // release after 10 millis
+    setTimeout(() => {
+        supersonic.send(
+            "/n_set",
+            id,
+            "gate",
+            0
+        );
+
+        activeNodes.delete(id);
+
+    }, 10);
+};
+</script>
+
+</body>
+</html>
