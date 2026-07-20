@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro-GLitch</title>
+
+    <!-- p5.js -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* p5 canvas behind everything */
+        canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            display: block;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+
+            display: flex;
+            gap: 1rem;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #2d7ff9;
+            color: white;
+        }
+
+        button:hover {
+            background: #1b63cc;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            position: fixed;
+            z-index: 1;
+            bottom: 20px;
+            left: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <button id="boot-btn">Boot</button>
+        <button id="trig-btn" disabled>Trigger</button>
+    </div>
+
+    <div id="status">Not initialized</div>
+
+
+    <script>
+        let c1 = 0;
+        
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            background(0);
+        }
+
+        function draw() {
+            noStroke();
+            fill(c1);
+            rect(0,height/2-4,width,8);
+            if(c1>0) c1 -= 40;
+
+            
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            background(0);
+        }
+    </script>
+
+
+    <script type="module">
+        import { SuperSonic } from "https://unpkg.com/supersonic-scsynth@latest";
+
+        const supersonic = new SuperSonic({
+            debug: false,
+            wasmBaseURL: "https://unpkg.com/supersonic-scsynth-core@latest/wasm/",
+            workletUrl: "https://unpkg.com/supersonic-scsynth-core@latest/workers/scsynth_audio_worklet.js",
+            workerBaseURL: "https://unpkg.com/supersonic-scsynth@latest/dist/workers/",
+            synthdefBaseURL: "https://unpkg.com/supersonic-scsynth-synthdefs@latest/synthdefs/",
+        });
+
+        let microStarted = false;
+        let microNodeID = 1000;
+
+        const bootBtn = document.getElementById("boot-btn");
+        const trigBtn = document.getElementById("trig-btn");
+        const status = document.getElementById("status");
+
+
+        supersonic.on("in", (message) => {
+            if (!message || typeof message.address !== "string") {
+
+                const addr = message[0];
+
+                if (addr === "/microGlitch") {
+                    console.log("Trigger");
+                    c1 = 255;
+                } 
+                return;
+            }
+        });
+
+
+        bootBtn.onclick = async () => {
+            try {
+                status.textContent = "Initializing...";
+                bootBtn.disabled = true;
+
+                await supersonic.init();
+
+                supersonic.send("/notify", 1);
+
+                await supersonic.loadSynthDef(
+                    "/synthdefs/microGlitch.scsyndef"
+                );
+
+                status.textContent = "Ready";
+                trigBtn.disabled = false;
+
+            } catch (err) {
+                console.error(err);
+                status.textContent = "Initialization failed";
+                bootBtn.disabled = false;
+            }
+        };
+
+
+        trigBtn.onclick = () => {
+            if (microStarted) return;
+
+            supersonic.send(
+                "/s_new",
+                "microGlitch",
+                microNodeID,
+                1,
+                0,
+                "amp",
+                0.2
+            );
+
+            droneStarted = true;
+            status.textContent = "Drone running";
+        };
+    </script>
+
+</body>
+
+</html>

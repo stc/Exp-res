@@ -8,7 +8,7 @@ SynthDef(\densityDrone, {
     var clickTrig;
 
     // Control-rate clock
-    clock = Impulse.kr(32);
+    clock = Impulse.kr(64);
 
 
     // --------------------
